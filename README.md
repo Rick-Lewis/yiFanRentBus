@@ -1,4 +1,4 @@
-# yifanrent
+# yifanrentbus
 
 > A Vue.js project
 
