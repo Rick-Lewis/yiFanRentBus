@@ -5,11 +5,11 @@
 export default {
   name: '',
   data: function () {
-    return {}
+    return {};
   },
   computed: {},
   methods: {},
   components: {}
-}
+};
 </script>
 <style lang='scss' scoped></style>

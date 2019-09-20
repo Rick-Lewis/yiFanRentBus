@@ -1,15 +1,19 @@
-import Vue from 'vue'
-import Router from 'vue-router'
-import HelloWorld from '@/components/HelloWorld'
-import Home from '@/pages/home'
-import Li from '@/pages/home/Mr.li'
-import Long from '@/pages/home/Mr.long'
-import Wang from '@/pages/home/Mr.wang'
+import Vue from 'vue';
+import Router from 'vue-router';
+import HelloWorld from '@/components/HelloWorld';
+import Home from '@/pages/home';
+import Li from '@/pages/home/Mr.li';
+import Long from '@/pages/home/Mr.long';
+import Wang from '@/pages/home/Mr.wang';
 
-Vue.use(Router)
+Vue.use(Router);
 
 export default new Router({
   routes: [
+    {
+      path: '/',
+      redirect: '/home/'
+    },
     {
       path: '/welcome',
       name: 'HelloWorld',
@@ -37,4 +41,4 @@ export default new Router({
       ]
     }
   ]
-})
+});

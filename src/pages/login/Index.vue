@@ -3,12 +3,12 @@
 </template>
 <script>
 export default {
-  name: '',
+  name: 'login',
   data: function () {
-    return {}
+    return {};
   },
   methods: {},
   components: {}
-}
+};
 </script>
 <style lang='scss' scoped></style>
