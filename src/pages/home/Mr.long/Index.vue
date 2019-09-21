@@ -1,10 +1,10 @@
 <template>
-    <div>Mr.long</div>
+  <div>Mr.long</div>
 </template>
 <script>
 export default {
   name: '',
-  data: function () {
+  data: function() {
     return {};
   },
   computed: {},

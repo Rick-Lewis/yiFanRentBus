@@ -2,31 +2,15 @@
   <div class="layout">
     <Layout class="container">
       <Header>
-        <Menu mode="horizontal" theme="dark" active-name="1">
-          <div class="layout-logo"></div>
-          <div class="layout-nav">
-            <MenuItem name="1">
-              <Icon type="ios-navigate"></Icon>Item 1
-            </MenuItem>
-            <MenuItem name="2">
-              <Icon type="ios-keypad"></Icon>Item 2
-            </MenuItem>
-            <MenuItem name="3">
-              <Icon type="ios-analytics"></Icon>Item 3
-            </MenuItem>
-            <MenuItem name="4">
-              <Icon type="ios-paper"></Icon>Item 4
-            </MenuItem>
-          </div>
-        </Menu>
+        <!-- <img class="layout-logo" src="../../assets/logo.jpg" /> -->
+        <div class="layout-logo"></div>
       </Header>
       <Layout>
         <Sider ref="side1" hide-trigger collapsible :collapsed-width="78" v-model="isCollapsed">
           <Menu
-            active-name="1-1"
+            :active-name="activeMenuItem"
             theme="dark"
             width="auto"
-            :class="menuitemClasses"
             @on-select="handleSelect"
           >
             <MenuItem name="1-1">
@@ -44,15 +28,6 @@
           </Menu>
         </Sider>
         <Layout>
-          <!-- <Header :style="{padding: 0}" class="layout-header-bar">
-            <Icon
-              @click.native="collapsedSider"
-              :class="rotateIcon"
-              :style="{margin: '0 20px'}"
-              type="md-menu"
-              size="24"
-            ></Icon>
-          </Header>-->
           <Content :style="{margin: '20px', background: '#fff', minHeight: '260px'}">
             <router-view />
           </Content>
@@ -65,12 +40,12 @@
 import homeStore from '../../store/home/index';
 export default {
   name: 'home',
-  data: function () {
+  data: function() {
     return {
       isCollapsed: false
     };
   },
-  created () {
+  created() {
     console.log('home Index.vue created', this.$store);
     this.$store.registerModule('homeStore', homeStore);
     let urlTemp = 'http://www.baidu.com';
@@ -84,18 +59,27 @@ export default {
     );
   },
   computed: {
-    rotateIcon () {
-      return ['menu-icon', this.isCollapsed ? 'rotate-icon' : ''];
-    },
-    menuitemClasses () {
-      return ['menu-item', this.isCollapsed ? 'collapsed-menu' : ''];
+    // rotateIcon() {
+    //   return ['menu-icon', this.isCollapsed ? 'rotate-icon' : ''];
+    // },
+    // menuitemClasses() {
+    //   return ['menu-item', this.isCollapsed ? 'collapsed-menu' : ''];
+    // },
+    activeMenuItem() {
+      let result = '1-1';
+      if (window.location.href.indexOf('/home/long') !== -1) {
+        result = '1-2';
+      } else if (window.location.href.indexOf('/home/wang') !== -1) {
+        result = '1-3';
+      }
+      return result;
     }
   },
   methods: {
     // collapsedSider () {
     //   this.$refs.side1.toggleCollapse()
     // },
-    handleSelect (name) {
+    handleSelect(name) {
       console.log('home Index.vue methods handleSelect', name, this.$router);
       switch (name) {
         case '1-1':
@@ -127,7 +111,15 @@ export default {
   overflow: hidden;
   .container {
     height: 100vh;
-    .layout-logo {
+    img.layout-logo {
+      width: 60px;
+      height: 60px;
+      border-radius: 3px;
+      position: relative;
+      top: 2px;
+      left: 20px;
+    }
+    div.layout-logo {
       width: 100px;
       height: 30px;
       background: #5b6270;
@@ -137,17 +129,8 @@ export default {
       top: 15px;
       left: 20px;
     }
-    .layout-nav {
-      width: 420px;
-      margin: 0 auto;
-      margin-right: 20px;
-    }
   }
 }
-// .layout-header-bar {
-//   background: #fff;
-//   box-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
-// }
 .layout-logo-left {
   width: 90%;
   height: 30px;
