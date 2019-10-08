@@ -2,7 +2,7 @@ import Vue from 'vue';
 import Router from 'vue-router';
 import HelloWorld from '@/components/HelloWorld';
 import Home from '@/pages/home';
-import Li from '@/pages/home/Mr.li';
+import MgVehicle from '@/pages/home/MgVehicle';
 import Long from '@/pages/home/Mr.long';
 import Wang from '@/pages/home/Mr.wang';
 
@@ -25,10 +25,10 @@ export default new Router({
       component: Home,
       children: [
         {
-          // 当 /home/li 匹配成功，
-          // Li 会被渲染在 home/Index.vue 的 <router-view> 中
-          path: 'li',
-          component: Li
+          // 当 /home/vehicle 匹配成功，
+          // vehicle 会被渲染在 home/Index.vue 的 <router-view> 中
+          path: 'vehicle',
+          component: MgVehicle
         },
         {
           path: 'long',

@@ -1,37 +1,41 @@
 <template>
   <div class="layout">
     <Layout class="container">
-      <Header>
-        <!-- <img class="layout-logo" src="../../assets/logo.jpg" /> -->
-        <div class="layout-logo"></div>
-      </Header>
+      <Sider ref="side1" collapsible :collapsed-width="78" v-model="isCollapsed">
+        <Header :class="headerClasses">
+          <!-- <img class="layout-logo" src="../../assets/logo.jpg" /> -->
+          <div class="layout-logo"></div>
+        </Header>
+        <Menu
+          :active-name="activeMenuItem"
+          theme="dark"
+          width="auto"
+          @on-select="handleSelect"
+          :class="menuitemClasses"
+        >
+          <MenuItem name="mg-vehicle">
+            <Icon type="ios-navigate"></Icon>
+            <span>车辆管理</span>
+          </MenuItem>
+          <MenuItem name="1-2">
+            <Icon type="ios-search"></Icon>
+            <span>Option 2</span>
+          </MenuItem>
+          <MenuItem name="1-3">
+            <Icon type="ios-settings"></Icon>
+            <span>Option 3</span>
+          </MenuItem>
+        </Menu>
+      </Sider>
       <Layout>
-        <Sider ref="side1" hide-trigger collapsible :collapsed-width="78" v-model="isCollapsed">
-          <Menu
-            :active-name="activeMenuItem"
-            theme="dark"
-            width="auto"
-            @on-select="handleSelect"
-          >
-            <MenuItem name="1-1">
-              <Icon type="ios-navigate"></Icon>
-              <span>Option 1</span>
-            </MenuItem>
-            <MenuItem name="1-2">
-              <Icon type="ios-search"></Icon>
-              <span>Option 2</span>
-            </MenuItem>
-            <MenuItem name="1-3">
-              <Icon type="ios-settings"></Icon>
-              <span>Option 3</span>
-            </MenuItem>
-          </Menu>
-        </Sider>
-        <Layout>
-          <Content :style="{margin: '20px', background: '#fff', minHeight: '260px'}">
-            <router-view />
-          </Content>
-        </Layout>
+        <Header :style="{padding: ['0 20px']}" class="layout-header-bar">
+          <Breadcrumb>
+            <BreadcrumbItem to="/home/vehicle">车辆管理</BreadcrumbItem>
+          </Breadcrumb>
+        </Header>
+        <Content :style="{margin: '20px', background: '#fff', minHeight: '260px'}">
+          <router-view />
+        </Content>
       </Layout>
     </Layout>
   </div>
@@ -59,14 +63,14 @@ export default {
     );
   },
   computed: {
-    // rotateIcon() {
-    //   return ['menu-icon', this.isCollapsed ? 'rotate-icon' : ''];
-    // },
-    // menuitemClasses() {
-    //   return ['menu-item', this.isCollapsed ? 'collapsed-menu' : ''];
-    // },
+    headerClasses() {
+      return ['header', this.isCollapsed ? 'collapsed-header' : ''];
+    },
+    menuitemClasses() {
+      return ['menu-item', this.isCollapsed ? 'collapsed-menu' : ''];
+    },
     activeMenuItem() {
-      let result = '1-1';
+      let result = 'mg-vehicle';
       if (window.location.href.indexOf('/home/long') !== -1) {
         result = '1-2';
       } else if (window.location.href.indexOf('/home/wang') !== -1) {
@@ -76,15 +80,15 @@ export default {
     }
   },
   methods: {
-    // collapsedSider () {
-    //   this.$refs.side1.toggleCollapse()
-    // },
+    collapsedSider() {
+      this.$refs.side1.toggleCollapse();
+    },
     handleSelect(name) {
       console.log('home Index.vue methods handleSelect', name, this.$router);
       switch (name) {
-        case '1-1':
-          if (window.location.href.indexOf('/home/li') === -1) {
-            this.$router.push('/home/li');
+        case 'mg-vehicle':
+          if (window.location.href.indexOf('/home/vehicle') === -1) {
+            this.$router.push('/home/vehicle');
           }
           break;
         case '1-2':
@@ -120,7 +124,7 @@ export default {
       left: 20px;
     }
     div.layout-logo {
-      width: 100px;
+      width: 155px;
       height: 30px;
       background: #5b6270;
       border-radius: 3px;
@@ -128,6 +132,19 @@ export default {
       position: relative;
       top: 15px;
       left: 20px;
+      transition: width 0.3s ease;
+    }
+    div.header {
+      padding: 0;
+    }
+    div.collapsed-header {
+      & > div {
+        width: 40px;
+      }
+    }
+    .layout-header-bar {
+      background-color: #fff;
+      box-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
     }
   }
 }
@@ -140,9 +157,6 @@ export default {
 }
 .menu-icon {
   transition: all 0.3s;
-}
-.rotate-icon {
-  transform: rotate(-90deg);
 }
 .menu-item span {
   display: inline-block;

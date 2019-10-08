@@ -18,7 +18,7 @@
 </template>
 <script>
 export default {
-  name: '',
+  name: 'MyVehicle',
   data: function() {
     return {
       columns12: [
