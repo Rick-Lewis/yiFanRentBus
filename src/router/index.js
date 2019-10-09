@@ -1,8 +1,11 @@
 import Vue from 'vue';
 import Router from 'vue-router';
 import HelloWorld from '@/components/HelloWorld';
+import Login from '@/pages/login';
 import Home from '@/pages/home';
 import MgVehicle from '@/pages/home/MgVehicle';
+import MgBrand from '@/pages/home/MgVehicle/MgBrand';
+import MgVehicleModel from '@/pages/home/MgVehicle/MgVehicleModel';
 import Long from '@/pages/home/Mr.long';
 import Wang from '@/pages/home/Mr.wang';
 
@@ -13,6 +16,11 @@ export default new Router({
     {
       path: '/',
       redirect: '/home/'
+    },
+    {
+      path: '/login',
+      name: 'Login',
+      component: Login
     },
     {
       path: '/welcome',
@@ -29,6 +37,14 @@ export default new Router({
           // vehicle 会被渲染在 home/Index.vue 的 <router-view> 中
           path: 'vehicle',
           component: MgVehicle
+        },
+        {
+          path: 'brand',
+          component: MgBrand
+        },
+        {
+          path: 'vehicleModel',
+          component: MgVehicleModel
         },
         {
           path: 'long',

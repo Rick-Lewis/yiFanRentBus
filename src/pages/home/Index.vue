@@ -8,29 +8,44 @@
         </Header>
         <Menu
           :active-name="activeMenuItem"
+          :open-names="[activeMenu]"
           theme="dark"
           width="auto"
           @on-select="handleSelect"
           :class="menuitemClasses"
         >
-          <MenuItem name="mg-vehicle">
-            <Icon type="ios-navigate"></Icon>
-            <span>车辆管理</span>
-          </MenuItem>
-          <MenuItem name="1-2">
-            <Icon type="ios-search"></Icon>
-            <span>Option 2</span>
-          </MenuItem>
-          <MenuItem name="1-3">
-            <Icon type="ios-settings"></Icon>
-            <span>Option 3</span>
-          </MenuItem>
+          <Submenu name="vehicle">
+            <template slot="title">
+              <Icon type="ios-navigate"></Icon>车辆管理
+            </template>
+            <MenuItem name="mg-brand">
+              <Icon type="ios-navigate"></Icon>
+              <span>品牌管理</span>
+            </MenuItem>
+            <MenuItem name="mg-vehicle-model">
+              <Icon type="ios-navigate"></Icon>
+              <span>车型管理</span>
+            </MenuItem>
+            <MenuItem name="mg-vehicle">
+              <Icon type="ios-navigate"></Icon>
+              <span>车辆管理</span>
+            </MenuItem>
+          </Submenu>
+          <Submenu name="order">
+            <template slot="title">
+              <Icon type="ios-search"></Icon>订单管理
+            </template>
+            <MenuItem name="mg-order">
+              <Icon type="ios-search"></Icon>
+              <span>订单管理</span>
+            </MenuItem>
+          </Submenu>
         </Menu>
       </Sider>
       <Layout>
         <Header :style="{padding: ['0 20px']}" class="layout-header-bar">
           <Breadcrumb>
-            <BreadcrumbItem to="/home/vehicle">车辆管理</BreadcrumbItem>
+            <BreadcrumbItem v-for="(item, index) in breadcrumbList" v-bind:key="index">{{item.text}}</BreadcrumbItem>
           </Breadcrumb>
         </Header>
         <Content :style="{margin: '20px', background: '#fff', minHeight: '260px'}">
@@ -46,7 +61,40 @@ export default {
   name: 'home',
   data: function() {
     return {
-      isCollapsed: false
+      isCollapsed: false,
+      BREADCRUMB: {
+        'mg-brand': [
+          {
+            path: '',
+            text: '车辆管理'
+          },
+          {
+            path: '/home/brand',
+            text: '品牌管理'
+          }
+        ],
+        'mg-vehicle-model': [
+          {
+            path: '',
+            text: '车辆管理'
+          },
+          {
+            path: '/home/vehicleModel',
+            text: '车型管理'
+          }
+        ],
+        'mg-vehicle': [
+          {
+            path: '',
+            text: '车辆管理'
+          },
+          {
+            path: '/home/vehicle',
+            text: '车辆管理'
+          }
+        ]
+      },
+      breadcrumbList: []
     };
   },
   created() {
@@ -61,6 +109,7 @@ export default {
         console.log('home Index.vue created axios /login success', err);
       }
     );
+    this.breadcrumbList = this.BREADCRUMB[this.activeMenuItem];
   },
   computed: {
     headerClasses() {
@@ -69,15 +118,33 @@ export default {
     menuitemClasses() {
       return ['menu-item', this.isCollapsed ? 'collapsed-menu' : ''];
     },
+    activeMenu() {
+      let result = 'vehicle';
+      if (
+        this.matchUrl(window.location.href, '/home/vehicle') ||
+        this.matchUrl(window.location.href, '/home/vehicleModel')
+      ) {
+        result = 'vehicle';
+      }
+      return result;
+    },
     activeMenuItem() {
-      let result = 'mg-vehicle';
-      if (window.location.href.indexOf('/home/long') !== -1) {
-        result = '1-2';
-      } else if (window.location.href.indexOf('/home/wang') !== -1) {
-        result = '1-3';
+      let result = 'mg-brand';
+      if (this.matchUrl(window.location.href, '/home/vehicle')) {
+        result = 'mg-vehicle';
+      } else if (this.matchUrl(window.location.href, '/home/vehicleModel')) {
+        result = 'mg-vehicle-model';
       }
       return result;
     }
+    // breadcrumbList() {
+    //   console.log(
+    //     'home index.vue computed breadcrumbList',
+    //     this.BREADCRUMB,
+    //     this.activeMenuItem
+    //   );
+    //   return this.BREADCRUMB[this.activeMenuItem];
+    // }
   },
   methods: {
     collapsedSider() {
@@ -86,22 +153,28 @@ export default {
     handleSelect(name) {
       console.log('home Index.vue methods handleSelect', name, this.$router);
       switch (name) {
+        case 'mg-brand':
+          if (!this.matchUrl(window.location.href, '/home/brand')) {
+            this.$router.push('/home/brand');
+          }
+          break;
+        case 'mg-vehicle-model':
+          if (!this.matchUrl(window.location.href, '/home/vehicleModel')) {
+            this.$router.push('/home/vehicleModel');
+          }
+          break;
         case 'mg-vehicle':
-          if (window.location.href.indexOf('/home/vehicle') === -1) {
+          if (!this.matchUrl(window.location.href, '/home/vehicle')) {
             this.$router.push('/home/vehicle');
           }
           break;
-        case '1-2':
-          if (window.location.href.indexOf('/home/long') === -1) {
-            this.$router.push('/home/long');
-          }
-          break;
-        case '1-3':
-          if (window.location.href.indexOf('/home/wang') === -1) {
-            this.$router.push('/home/wang');
-          }
-          break;
       }
+      this.breadcrumbList = this.BREADCRUMB[name];
+    },
+    matchUrl(url, targetStr) {
+      let temp = url.split('/');
+      let strTemp = '/' + temp.slice(temp.length - 2, temp.length).join('/');
+      return strTemp === targetStr;
     }
   },
   components: {}

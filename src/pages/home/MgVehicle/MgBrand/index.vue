@@ -1,5 +1,5 @@
 <template>
-  <div class="vehicle-model-container">车型管理</div>
+  <div class="brand-container">品牌管理</div>
 </template>
 
 <script>
