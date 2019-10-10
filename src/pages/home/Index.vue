@@ -48,7 +48,7 @@
             <BreadcrumbItem v-for="(item, index) in breadcrumbList" v-bind:key="index">{{item.text}}</BreadcrumbItem>
           </Breadcrumb>
         </Header>
-        <Content :style="{margin: '20px', background: '#fff', minHeight: '260px'}">
+        <Content :style="{margin: '20px', minHeight: '260px'}">
           <router-view />
         </Content>
       </Layout>
