@@ -6,12 +6,13 @@
           <Input v-model="formItem.brandName" placeholder="请输入品牌名称" style="width: 200px" />
         </FormItem>
         <FormItem>
-          <Button type="primary">查询</Button>
+          <Button type="primary" @click="handleSerch">查询</Button>
           <Button style="margin-left: 8px" @click="handleReset">重置</Button>
         </FormItem>
       </Form>
     </div>
     <div class="content-container">
+      <Button type="primary" style="margin-bottom: 10px;">+新增</Button>
       <Table border :columns="columns12" :data="data6" stripe>
         <template slot-scope="{ row, index }" slot="action">
           <Button type="primary" size="small" style="margin-right: 5px" @click="edit(index)">编辑</Button>
