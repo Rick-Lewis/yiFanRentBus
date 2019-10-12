@@ -30,19 +30,15 @@
       </Form>
     </div>
     <div class="content-container">
-      <Switch>
-            <span slot="open">开</span>
-            <span slot="close">关</span>
-          </Switch>
       <Button type="primary" style="margin-bottom: 10px;">+新增</Button>
       <Table border :columns="columns12" :data="data6" stripe>
-        <template slot="vehicleStatus">
-          <Switch>
+        <template v-slot:vehicleStatus="{ row }">
+          <Switch :value="row.vehicleStatus">
             <span slot="open">开</span>
             <span slot="close">关</span>
           </Switch>
         </template>
-        <template slot-scope="{ row, index }" slot="action">
+        <template v-slot:action="{ row, index }">
           <Button type="primary" size="small" style="margin-right: 5px" @click="edit(index)">编辑</Button>
           <Button type="error" size="small" @click="remove(index)">删除</Button>
         </template>
@@ -124,28 +120,28 @@ export default {
           vehicleType: '中型SUV',
           vehicleNum: 18,
           price: '¥189.00',
-          vehicleStatus: 0
+          vehicleStatus: true
         },
         {
           fromBrand: '2019款奥迪Q5',
           vehicleType: '中型SUV',
           vehicleNum: 18,
           price: '¥189.00',
-          vehicleStatus: 0
+          vehicleStatus: false
         },
         {
           fromBrand: '2019款奥迪Q5',
           vehicleType: '中型SUV',
           vehicleNum: 18,
           price: '¥189.00',
-          vehicleStatus: 0
+          vehicleStatus: false
         },
         {
           fromBrand: '2019款奥迪Q5',
           vehicleType: '中型SUV',
           vehicleNum: 18,
           price: '¥189.00',
-          vehicleStatus: 0
+          vehicleStatus: false
         }
       ]
     };

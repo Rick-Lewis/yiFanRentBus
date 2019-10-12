@@ -3,15 +3,15 @@
 import Vue from 'vue';
 import App from './App';
 import router from './router';
-import iView from 'iview';
-import 'iview/dist/styles/iview.css';
+import ViewUI from 'view-design';
+import 'view-design/dist/styles/iview.css';
 import { createStore } from './store';
 import axios from 'axios';
 import VueAxios from 'vue-axios';
 import global_ from './Global';
 
 Vue.config.productionTip = false;
-Vue.use(iView);
+Vue.use(ViewUI);
 Vue.use(VueAxios, axios);
 
 // 创建 store 实例
