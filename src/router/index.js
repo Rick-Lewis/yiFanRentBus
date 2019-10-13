@@ -6,6 +6,7 @@ import Home from '@/pages/home';
 import MgVehicle from '@/pages/home/MgVehicle';
 import MgBrand from '@/pages/home/MgVehicle/MgBrand';
 import MgVehicleModel from '@/pages/home/MgVehicle/MgVehicleModel';
+import ModelAddition from '@/pages/home/MgVehicle/MgVehicleModel/ModelAddition';
 import Long from '@/pages/home/Mr.long';
 import Wang from '@/pages/home/Mr.wang';
 
@@ -45,6 +46,10 @@ export default new Router({
         {
           path: 'vehicleModel',
           component: MgVehicleModel
+        },
+        {
+          path: 'modelAddition',
+          component: ModelAddition
         },
         {
           path: 'long',

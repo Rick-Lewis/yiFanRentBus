@@ -19,19 +19,23 @@
           <Radio v-for="(item, index) in vehicleStatusList" v-bind:key="index" v-bind:label="item"></Radio>
         </RadioGroup>
       </div>
-      <Form :model="formItem" :label-width="80" inline style="padding-top: 10px;">
-        <FormItem label="车型名称：">
+      <Form :model="formItem" inline style="padding-top: 10px;">
+        <FormItem>
+          <span>车型名称：</span>
           <Input v-model="formItem.vehicleModelName" placeholder="请输入车型名称" style="width: 200px" />
         </FormItem>
         <FormItem>
-          <Button type="primary" @click="handleSerch">查询</Button>
+          <Button type="primary" @click="handleSearch">查询</Button>
           <Button style="margin-left: 8px" @click="handleReset">重置</Button>
         </FormItem>
       </Form>
     </div>
     <div class="content-container">
-      <Button type="primary" style="margin-bottom: 10px;">+新增</Button>
+      <Button type="primary" style="margin-bottom: 10px;" @click="add">+新增</Button>
       <Table border :columns="columns12" :data="data6" stripe>
+        <template v-slot:vehicleNum="{ row }">
+          <Progress :percent="row.vehicleNum" />
+        </template>
         <template v-slot:vehicleStatus="{ row }">
           <Switch :value="row.vehicleStatus">
             <span slot="open">开</span>
@@ -95,7 +99,7 @@ export default {
         },
         {
           title: '车辆数',
-          key: 'vehicleNum'
+          slot: 'vehicleNum'
         },
         {
           title: '今日价格',
@@ -118,28 +122,28 @@ export default {
         {
           fromBrand: '2019款奥迪Q5',
           vehicleType: '中型SUV',
-          vehicleNum: 18,
+          vehicleNum: 75,
           price: '¥189.00',
           vehicleStatus: true
         },
         {
           fromBrand: '2019款奥迪Q5',
           vehicleType: '中型SUV',
-          vehicleNum: 18,
+          vehicleNum: 50,
           price: '¥189.00',
           vehicleStatus: false
         },
         {
           fromBrand: '2019款奥迪Q5',
           vehicleType: '中型SUV',
-          vehicleNum: 18,
+          vehicleNum: 25,
           price: '¥189.00',
           vehicleStatus: false
         },
         {
           fromBrand: '2019款奥迪Q5',
           vehicleType: '中型SUV',
-          vehicleNum: 18,
+          vehicleNum: 100,
           price: '¥189.00',
           vehicleStatus: false
         }
@@ -147,9 +151,11 @@ export default {
     };
   },
   methods: {
-    handleSerch() {
-      console.log('MgVehicleModel index.vue handleSerch');
+    // 查询
+    handleSearch() {
+      console.log('MgVehicleModel index.vue handleSearch');
     },
+    // 重置
     handleReset() {
       for (let item in this.formItem) {
         this.formItem[item] = '';
@@ -165,6 +171,10 @@ export default {
         title: 'User Info',
         content: `Name：${this.data6[index].name}<br>Age：${this.data6[index].age}<br>Address：${this.data6[index].address}`
       });
+    },
+    // 新增
+    add() {
+      this.$router.push('/home/modelAddition');
     }
   }
 };

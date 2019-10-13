@@ -1,12 +1,12 @@
 <template>
   <div class="brand-container">
     <div class="filtrate-container">
-      <Form :model="formItem" :label-width="80" inline>
+      <Form :model="formItem" :label-width="85" inline>
         <FormItem label="品牌名称：">
           <Input v-model="formItem.brandName" placeholder="请输入品牌名称" style="width: 200px" />
         </FormItem>
         <FormItem>
-          <Button type="primary" @click="handleSerch">查询</Button>
+          <Button type="primary" @click="handleSearch">查询</Button>
           <Button style="margin-left: 8px" @click="handleReset">重置</Button>
         </FormItem>
       </Form>
@@ -84,8 +84,8 @@ export default {
     };
   },
   methods: {
-    handleSerch() {
-      console.log('MgBrand index.vue handleSerch');
+    handleSearch() {
+      console.log('MgBrand index.vue handleSearch');
     },
     handleReset() {
       for (let item in this.formItem) {

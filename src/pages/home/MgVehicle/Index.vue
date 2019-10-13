@@ -9,7 +9,7 @@
         <Button type="error" size="small" @click="remove(index)">Delete</Button>
       </template>
     </Table>
-    <div style="margin: 10px;overflow: hidden">
+    <div style="margin: 10px;overflow: hidden;">
       <div style="float: right;">
         <Page :total="100" :current="1" @on-change="changePage"></Page>
       </div>
