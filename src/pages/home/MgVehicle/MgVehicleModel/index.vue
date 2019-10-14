@@ -32,7 +32,10 @@
     </div>
     <div class="content-container">
       <Button type="primary" style="margin-bottom: 10px;" @click="add">+新增</Button>
-      <Table border :columns="columns12" :data="data6" stripe>
+      <Table border :columns="columns12" :data="data6" stripe @on-row-click="handleModelDetail">
+        <template v-slot:fromBrand="{ row }">
+          <span>{{row.fromBrand}}</span>
+        </template>
         <template v-slot:vehicleNum="{ row }">
           <Progress :percent="row.vehicleNum" />
         </template>
@@ -91,7 +94,7 @@ export default {
       columns12: [
         {
           title: '所属品牌',
-          key: 'fromBrand'
+          slot: 'fromBrand'
         },
         {
           title: '车辆类型',
@@ -175,6 +178,10 @@ export default {
     // 新增
     add() {
       this.$router.push('/home/modelAddition');
+    },
+    // 车型详情
+    handleModelDetail() {
+      this.$router.push('/home/modelDetail');
     }
   }
 };

@@ -7,6 +7,7 @@ import MgVehicle from '@/pages/home/MgVehicle/MgVehicle';
 import MgBrand from '@/pages/home/MgVehicle/MgBrand';
 import MgVehicleModel from '@/pages/home/MgVehicle/MgVehicleModel';
 import ModelAddition from '@/pages/home/MgVehicle/MgVehicleModel/ModelAddition';
+import ModelDetail from '@/pages/home/MgVehicle/MgVehicleModel/ModelDetail';
 import MgOrder from '@/pages/home/MgOrder';
 import MgPrice from '@/pages/home/MgPrice';
 
@@ -50,6 +51,10 @@ export default new Router({
         {
           path: 'modelAddition',
           component: ModelAddition
+        },
+        {
+          path: 'modelDetail',
+          component: ModelDetail
         },
         {
           path: 'mgOrder',
