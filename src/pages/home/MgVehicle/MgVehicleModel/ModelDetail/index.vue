@@ -1,9 +1,9 @@
 <template>
-  <div>Mr.long</div>
+  <div class="model-detail-container"></div>
 </template>
 <script>
 export default {
-  name: '',
+  name: 'ModelDetail',
   data: function() {
     return {};
   },

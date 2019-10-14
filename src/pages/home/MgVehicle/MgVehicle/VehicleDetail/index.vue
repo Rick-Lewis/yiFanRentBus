@@ -1,9 +1,9 @@
 <template>
-  <div>Mr.wang</div>
+  <div class="vehicle-detail-container"></div>
 </template>
 <script>
 export default {
-  name: '',
+  name: 'VehicleDetail',
   data: function() {
     return {};
   },

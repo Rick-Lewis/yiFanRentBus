@@ -3,12 +3,12 @@ import Router from 'vue-router';
 import HelloWorld from '@/components/HelloWorld';
 import Login from '@/pages/login';
 import Home from '@/pages/home';
-import MgVehicle from '@/pages/home/MgVehicle';
+import MgVehicle from '@/pages/home/MgVehicle/MgVehicle';
 import MgBrand from '@/pages/home/MgVehicle/MgBrand';
 import MgVehicleModel from '@/pages/home/MgVehicle/MgVehicleModel';
 import ModelAddition from '@/pages/home/MgVehicle/MgVehicleModel/ModelAddition';
-import Long from '@/pages/home/Mr.long';
-import Wang from '@/pages/home/Mr.wang';
+import MgOrder from '@/pages/home/MgOrder';
+import MgPrice from '@/pages/home/MgPrice';
 
 Vue.use(Router);
 
@@ -52,12 +52,12 @@ export default new Router({
           component: ModelAddition
         },
         {
-          path: 'long',
-          component: Long
+          path: 'mgOrder',
+          component: MgOrder
         },
         {
-          path: 'wang',
-          component: Wang
+          path: 'mgPrice',
+          component: MgPrice
         }
       ]
     }
