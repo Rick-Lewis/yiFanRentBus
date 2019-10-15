@@ -110,9 +110,13 @@ export default {
 <style lang='scss' scoped>
 .brand-container {
   .filtrate-container {
-    padding-top: 24px;
+    background-color: #fff;
+    padding: 20px 20px 0 20px;
   }
   .content-container {
+    background-color: #fff;
+    margin-top: 20px;
+    padding: 20px;
     .page-container {
       text-align: right;
       margin-top: 20px;

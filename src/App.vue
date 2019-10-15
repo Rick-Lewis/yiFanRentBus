@@ -17,6 +17,7 @@ export default {
   background-color: #fff;
   border-radius: 3px;
   margin-right: 20px;
+  line-height: 1.5;
   & > .ivu-radio {
     display: none;
   }

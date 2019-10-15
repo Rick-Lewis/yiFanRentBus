@@ -19,7 +19,7 @@
           <Radio v-for="(item, index) in vehicleStatusList" v-bind:key="index" v-bind:label="item"></Radio>
         </RadioGroup>
       </div>
-      <Form :model="formItem" inline style="padding-top: 10px;">
+      <Form :model="formItem" inline class="form-container">
         <FormItem>
           <span>车型名称：</span>
           <Input v-model="formItem.vehicleModelName" placeholder="请输入车型名称" style="width: 200px" />
@@ -190,6 +190,8 @@ export default {
 <style lang='scss' scoped>
 .vehicle-model-container {
   .filtrate-container {
+    background-color: #fff;
+    padding: 20px 20px 0 20px;
     .from-brand {
       padding: 10px 8px;
     }
@@ -199,8 +201,14 @@ export default {
     .vehicle-status {
       padding: 10px 8px;
     }
+    .form-container{
+      padding: 10px 8px 0 8px;
+    }
   }
   .content-container {
+    background-color: #fff;
+    margin-top: 20px;
+    padding: 20px;
     .page-container {
       text-align: right;
       margin-top: 20px;
