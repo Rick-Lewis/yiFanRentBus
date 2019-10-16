@@ -168,6 +168,10 @@ export default {
       vehicleColorList: ['有', '无']
     };
   },
+  created() {
+    console.log('VehicleAddition Index.vue created', this.$store);
+    this.$store.dispatch('homeStore/initBreadcrumbList', window.location.href);
+  },
   computed: {},
   methods: {
     handleView(name) {

@@ -191,6 +191,10 @@ export default {
       ]
     };
   },
+  created() {
+    console.log('ModelDetail Index.vue created', this.$store);
+    this.$store.dispatch('homeStore/initBreadcrumbList', window.location.href);
+  },
   computed: {},
   methods: {
     handlePlateDetail(index) {

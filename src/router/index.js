@@ -5,6 +5,7 @@ import Login from '@/pages/login';
 import Home from '@/pages/home';
 import MgVehicle from '@/pages/home/MgVehicle/MgVehicle';
 import VehicleAddition from '@/pages/home/MgVehicle/MgVehicle/VehicleAddition';
+import VehicleDetail from '@/pages/home/MgVehicle/MgVehicle/VehicleDetail';
 import MgBrand from '@/pages/home/MgVehicle/MgBrand';
 import MgVehicleModel from '@/pages/home/MgVehicle/MgVehicleModel';
 import ModelAddition from '@/pages/home/MgVehicle/MgVehicleModel/ModelAddition';
@@ -18,7 +19,7 @@ export default new Router({
   routes: [
     {
       path: '/',
-      redirect: '/home/'
+      redirect: '/home/brand'
     },
     {
       path: '/login',
@@ -36,6 +37,10 @@ export default new Router({
       component: Home,
       children: [
         {
+          path: 'brand',
+          component: MgBrand
+        },
+        {
           // 当 /home/vehicle 匹配成功，
           // vehicle 会被渲染在 home/Index.vue 的 <router-view> 中
           path: 'vehicle',
@@ -46,8 +51,8 @@ export default new Router({
           component: VehicleAddition
         },
         {
-          path: 'brand',
-          component: MgBrand
+          path: 'vehicleDetail',
+          component: VehicleDetail
         },
         {
           path: 'vehicleModel',

@@ -61,40 +61,40 @@ export default {
   name: 'home',
   data: function() {
     return {
-      isCollapsed: false,
-      BREADCRUMB: {
-        'mg-brand': [
-          {
-            path: '',
-            text: '车辆管理'
-          },
-          {
-            path: '/home/brand',
-            text: '品牌管理'
-          }
-        ],
-        'mg-vehicle-model': [
-          {
-            path: '',
-            text: '车辆管理'
-          },
-          {
-            path: '/home/vehicleModel',
-            text: '车型管理'
-          }
-        ],
-        'mg-vehicle': [
-          {
-            path: '',
-            text: '车辆管理'
-          },
-          {
-            path: '/home/vehicle',
-            text: '车辆管理'
-          }
-        ]
-      },
-      breadcrumbList: []
+      isCollapsed: false
+      // BREADCRUMB: {
+      //   'mg-brand': [
+      //     {
+      //       path: '',
+      //       text: '车辆管理'
+      //     },
+      //     {
+      //       path: '/home/brand',
+      //       text: '品牌管理'
+      //     }
+      //   ],
+      //   'mg-vehicle-model': [
+      //     {
+      //       path: '',
+      //       text: '车辆管理'
+      //     },
+      //     {
+      //       path: '/home/vehicleModel',
+      //       text: '车型管理'
+      //     }
+      //   ],
+      //   'mg-vehicle': [
+      //     {
+      //       path: '',
+      //       text: '车辆管理'
+      //     },
+      //     {
+      //       path: '/home/vehicle',
+      //       text: '车辆管理'
+      //     }
+      //   ]
+      // },
+      // breadcrumbList: []
     };
   },
   created() {
@@ -109,7 +109,13 @@ export default {
         console.log('home Index.vue created axios /login success', err);
       }
     );
-    this.breadcrumbList = this.BREADCRUMB[this.activeMenuItem];
+    this.$store.dispatch('homeStore/initBreadcrumbList', window.location.href);
+  },
+  // 重要信息：当多次访问路由时，
+  // 避免在客户端重复注册模块。
+  destroyed() {
+    console.log('home Index.vue destroyed');
+    this.$store.unregisterModule('homeStore');
   },
   computed: {
     headerClasses() {
@@ -130,21 +136,35 @@ export default {
     },
     activeMenuItem() {
       let result = 'mg-brand';
-      if (this.matchUrl(window.location.href, '/home/vehicle')) {
+      if (
+        this.matchUrl(window.location.href, '/home/vehicle') ||
+        this.matchUrl(window.location.href, '/home/vehicleAddition') ||
+        this.matchUrl(window.location.href, '/home/vehicleDetail')
+      ) {
         result = 'mg-vehicle';
-      } else if (this.matchUrl(window.location.href, '/home/vehicleModel')) {
+      } else if (
+        this.matchUrl(window.location.href, '/home/vehicleModel') ||
+        this.matchUrl(window.location.href, '/home/modelAddition') ||
+        this.matchUrl(window.location.href, '/home/modelDetail')
+      ) {
         result = 'mg-vehicle-model';
       }
       return result;
+    },
+    breadcrumbList: {
+      // getter
+      get: function() {
+        console.log(
+          'home index.vue computed breadcrumbList',
+          this.$store.state.homeStore.breadcrumbList
+        );
+        return this.$store.state.homeStore.breadcrumbList;
+      }
+      // setter
+      // set: function(newValue) {
+      //   this.breadcrumbList = newValue;
+      // }
     }
-    // breadcrumbList() {
-    //   console.log(
-    //     'home index.vue computed breadcrumbList',
-    //     this.BREADCRUMB,
-    //     this.activeMenuItem
-    //   );
-    //   return this.BREADCRUMB[this.activeMenuItem];
-    // }
   },
   methods: {
     collapsedSider() {
@@ -169,7 +189,10 @@ export default {
           }
           break;
       }
-      this.breadcrumbList = this.BREADCRUMB[name];
+      this.$store.dispatch(
+        'homeStore/initBreadcrumbList',
+        window.location.href
+      );
     },
     matchUrl(url, targetStr) {
       let temp = url.split('/');

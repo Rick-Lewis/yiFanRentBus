@@ -60,6 +60,7 @@
 </template>
 
 <script>
+// import homeStore from '../../../../store/home/index';
 export default {
   name: 'MgVehicleModel',
   data() {

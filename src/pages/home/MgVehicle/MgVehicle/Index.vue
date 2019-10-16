@@ -36,10 +36,10 @@
           <div :class="statusColor[row.status]">{{row.status}}</div>
         </template>
         <template slot-scope="{ row, index }" slot="action">
-          <Button type="primary" size="small" style="margin-right: 5px" @click="show(index)">编辑</Button>
+          <Button type="primary" size="small" style="margin-right: 5px" @click="edit(index)">编辑</Button>
           <Button type="error" size="small" @click="remove(index)">删除</Button>
           <Button type="primary" size="small" @click="remove(index)">检查</Button>
-          <Button type="primary" size="small" @click="remove(index)">详情</Button>
+          <Button type="primary" size="small" @click="show(index)">详情</Button>
         </template>
       </Table>
       <div style="margin: 10px;overflow: hidden;">
@@ -153,18 +153,25 @@ export default {
         this.formItem[item] = '';
       }
     },
-    show(index) {
+    // 编辑
+    edit(index) {
       this.$Modal.info({
         title: 'User Info',
         content: `Name：${this.data6[index].name}<br>Age：${this.data6[index].age}<br>Address：${this.data6[index].address}`
       });
     },
+    // 删除
     remove(index) {
       this.data6.splice(index, 1);
     },
+    // 详情
+    show(index) {
+      this.$router.push('/home/vehicleDetail');
+    },
+    // 翻页
     changePage() {
       // The simulated data is changed directly here, and the actual usage scenario should fetch the data from the server
-      console.log('home/Mr.li/Index.vue methods changePage');
+      console.log('MyVehicle Index.vue methods changePage');
     },
     // 新增
     add() {
