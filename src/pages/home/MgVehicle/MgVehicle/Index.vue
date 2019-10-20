@@ -18,7 +18,7 @@
         </FormItem>
         <FormItem>
           <span>发动机号：</span>
-          <Input v-model="formItem.EngineNo" placeholder="请输入发动机号" style="width: 200px" />
+          <Input v-model="formItem.engineNo" placeholder="请输入发动机号" style="width: 200px" />
         </FormItem>
         <FormItem>
           <Button type="primary" @click="handleSearch">查询</Button>
@@ -66,7 +66,7 @@ export default {
       formItem: {
         licensePlateNum: '',
         licensePlateCode: '',
-        EngineNo: ''
+        engineNo: ''
       },
       columns12: [
         {

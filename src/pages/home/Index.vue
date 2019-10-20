@@ -188,6 +188,11 @@ export default {
             this.$router.push('/home/vehicle');
           }
           break;
+        case 'mg-order':
+          if (!this.matchUrl(window.location.href, '/home/mgOrder')) {
+            this.$router.push('/home/mgOrder');
+          }
+          break;
       }
       this.$store.dispatch(
         'homeStore/initBreadcrumbList',
