@@ -1,7 +1,7 @@
 <template>
   <div class="layout">
     <Layout class="container">
-      <Sider ref="side1" collapsible :collapsed-width="78" v-model="isCollapsed">
+      <Sider ref="side1" :collapsed-width="78" v-model="isCollapsed">
         <Header :class="headerClasses">
           <!-- <img class="layout-logo" src="../../assets/logo.jpg" /> -->
           <div class="layout-logo"></div>
@@ -43,10 +43,22 @@
         </Menu>
       </Sider>
       <Layout>
-        <Header :style="{padding: ['0 20px']}" class="layout-header-bar">
+        <Header class="layout-header-bar">
           <Breadcrumb>
             <BreadcrumbItem v-for="(item, index) in breadcrumbList" v-bind:key="index">{{item.text}}</BreadcrumbItem>
           </Breadcrumb>
+          <div>
+            <Avatar icon="ios-person" />
+            <Dropdown @on-click="handleDropdown" placement="top">
+              <span style="padding-left: 10px">
+                Rick
+                <Icon type="ios-arrow-down"></Icon>
+              </span>
+              <DropdownMenu slot="list">
+                <DropdownItem name="logout">退出</DropdownItem>
+              </DropdownMenu>
+            </Dropdown>
+          </div>
         </Header>
         <Content :style="{margin: '20px', minHeight: '260px'}">
           <router-view />
@@ -62,39 +74,6 @@ export default {
   data: function() {
     return {
       isCollapsed: false
-      // BREADCRUMB: {
-      //   'mg-brand': [
-      //     {
-      //       path: '',
-      //       text: '车辆管理'
-      //     },
-      //     {
-      //       path: '/home/brand',
-      //       text: '品牌管理'
-      //     }
-      //   ],
-      //   'mg-vehicle-model': [
-      //     {
-      //       path: '',
-      //       text: '车辆管理'
-      //     },
-      //     {
-      //       path: '/home/vehicleModel',
-      //       text: '车型管理'
-      //     }
-      //   ],
-      //   'mg-vehicle': [
-      //     {
-      //       path: '',
-      //       text: '车辆管理'
-      //     },
-      //     {
-      //       path: '/home/vehicle',
-      //       text: '车辆管理'
-      //     }
-      //   ]
-      // },
-      // breadcrumbList: []
     };
   },
   created() {
@@ -131,6 +110,11 @@ export default {
         this.matchUrl(window.location.href, '/home/vehicleModel')
       ) {
         result = 'vehicle';
+      } else if (
+        this.matchUrl(window.location.href, '/home/mgOrder') ||
+        this.matchUrl(window.location.href, '/home/orderDetail')
+      ) {
+        result = 'order';
       }
       return result;
     },
@@ -148,6 +132,11 @@ export default {
         this.matchUrl(window.location.href, '/home/modelDetail')
       ) {
         result = 'mg-vehicle-model';
+      } else if (
+        this.matchUrl(window.location.href, '/home/mgOrder') ||
+        this.matchUrl(window.location.href, '/home/orderDetail')
+      ) {
+        result = 'mg-order';
       }
       return result;
     },
@@ -203,6 +192,49 @@ export default {
       let temp = url.split('/');
       let strTemp = '/' + temp.slice(temp.length - 2, temp.length).join('/');
       return strTemp === targetStr;
+    },
+    handleDropdown(name) {
+      console.log('home Index.vue handleDropdown name', name);
+      this.$Modal.confirm({
+        title: '提示',
+        content: '确定退出吗',
+        cancelText: '取消',
+        okText: '确定',
+        onOk: () => {
+          console.log('home Index.vue handleDropdown onOk');
+          this.axios({
+            url: this.global_.path.baseUrl + '/rentalcars/logout',
+            method: 'post',
+            headers: { 'Content-Type': 'application/json' }
+          }).then(
+            res => {
+              console.log(
+                'home Index.vue handleDropdown axios /logout success',
+                res
+              );
+              if (res.data.code === 0) {
+                this.$router.push('/login');
+              } else {
+                this.$Message.error({
+                  content: '退出失败'
+                });
+              }
+            },
+            err => {
+              console.log(
+                'home Index.vue handleDropdown axios /logout failure',
+                err
+              );
+              this.$Message.error({
+                content: '退出失败'
+              });
+            }
+          );
+        },
+        onCancel: () => {
+          console.log('home Index.vue handleDropdown onCancel');
+        }
+      });
     }
   },
   components: {}
@@ -246,6 +278,10 @@ export default {
     .layout-header-bar {
       background-color: #fff;
       box-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0px 20px;
     }
   }
 }

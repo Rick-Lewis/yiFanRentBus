@@ -47,25 +47,67 @@
       </Form>
     </div>
     <div class="content-container">
-      <div class="item-container">
+      <div class="item-container" v-for="(item, index) in [1,2,3,4,5]" v-bind:key="index">
         <div class="item-header">
           <span>下单时间：2019-10-01 08:30:09</span>
-          <span>订单编号：011909271202340076</span>
-          <span>司机：王大伟</span>
+          <span style="padding-left: 15px;">订单编号：011909271202340076</span>
+          <span style="padding-left: 15px;">司机：王大伟</span>
         </div>
         <div class="item-content">
-          <div class="col-item">
-            <img src="../../../../../assets/logo.jpg" style="width: 150px; height: 88px;" />
-            <div>粤B12345</div>
-            <div>2019款奥迪Q5L</div>
-            <div>￥238/日均</div>
+          <div class="col-item info">
+            <div>
+              <img src="../../../../assets/logo.jpg" style="width: 130px; height: 88px;" />
+            </div>
+            <div>
+              <div>粤B12345</div>
+              <div>2019款奥迪Q5L</div>
+              <div>￥238/日均</div>
+            </div>
           </div>
-          <div class="col-item"></div>
-          <div class="col-item"></div>
-          <div class="col-item"></div>
-          <div class="col-item"></div>
-          <div class="col-item"></div>
-          <div class="col-item"></div>
+          <div class="string"></div>
+          <div class="col-item">
+            <div>13006617634</div>
+            <div>微信：十八</div>
+          </div>
+          <div class="string"></div>
+          <div class="col-item duration">
+            <div class="start">
+              <div>10-01</div>
+              <div>08:00</div>
+            </div>
+            <div class="time">
+              <div>7</div>
+            </div>
+            <div class="end">
+              <div>10-07</div>
+              <div>08:00</div>
+            </div>
+          </div>
+          <div class="string"></div>
+          <div class="col-item address">
+            <div class="fetch">
+              <span>古丈县政府店</span>
+              <div>取</div>
+            </div>
+            <div class="return">
+              <span>古丈县政府店</span>
+              <div>还</div>
+            </div>
+          </div>
+          <div class="string"></div>
+          <div class="col-item">
+            <div>共计：¥1666</div>
+          </div>
+          <div class="string"></div>
+          <div class="col-item">
+            <div>
+              <Tag color="warning">进行中</Tag>
+            </div>
+          </div>
+          <div class="string"></div>
+          <div class="col-item">
+            <a @click="handleToDetail">订单详情</a>
+          </div>
         </div>
       </div>
     </div>
@@ -111,6 +153,9 @@ export default {
       for (let item in this.formItem) {
         this.formItem[item] = '';
       }
+    },
+    handleToDetail() {
+      this.$router.push('/home/orderDetail');
     }
   },
   components: {}
@@ -129,12 +174,122 @@ export default {
     }
     .time {
       padding: 10px 8px;
-      .custom-time{
+      .custom-time {
         display: inline-block;
       }
     }
     .form-container {
       padding: 10px 8px 0 8px;
+    }
+  }
+  .content-container {
+    margin-top: 15px;
+    .item-container {
+      margin-bottom: 10px;
+      background-color: #fff;
+      .item-header {
+        border-bottom: 1px solid #e4e4e4;
+        padding: 5px 28px 5px 28px;
+      }
+      .item-content {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 5px 28px 5px 28px;
+        .info {
+          display: flex;
+          align-items: center;
+        }
+        .duration {
+          display: flex;
+          align-items: center;
+          .start {
+            margin-right: 10px;
+          }
+          .time {
+            div {
+              border-bottom: 1px solid #e4e4e4;
+              width: 50px;
+              text-align: center;
+              margin-bottom: 10px;
+            }
+          }
+          .end {
+            margin-left: 10px;
+          }
+        }
+        .address {
+          .fetch {
+            display: flex;
+            position: relative;
+            align-items: center;
+            &::before {
+              content: '';
+              width: 7px;
+              height: 7px;
+              border-radius: 3.5px;
+              background-color: rgba(105, 189, 131, 1);
+              position: absolute;
+              top: 0;
+              bottom: 0;
+              margin: auto 0;
+            }
+            span {
+              padding-left: 10px;
+            }
+            div {
+              width: 16px;
+              height: 16px;
+              background-color: #fff;
+              border-radius: 50%;
+              border: 2px solid rgba(105, 189, 131, 1);
+              line-height: 12px;
+              text-align: center;
+              color: rgba(105, 189, 131, 1);
+              font-size: 9px;
+              margin-left: 5px;
+            }
+          }
+          .return {
+            display: flex;
+            position: relative;
+            align-items: center;
+            &::before {
+              content: '';
+              width: 7px;
+              height: 7px;
+              border-radius: 3.5px;
+              background-color: rgba(105, 189, 131, 1);
+              position: absolute;
+              top: 0;
+              bottom: 0;
+              margin: auto 0;
+            }
+            span {
+              padding-left: 10px;
+            }
+            div {
+              width: 16px;
+              height: 16px;
+              background-color: #fff;
+              border-radius: 50%;
+              border: 2px solid rgba(104, 104, 104, 1);
+              line-height: 12px;
+              text-align: center;
+              color: rgba(104, 104, 104, 1);
+              font-size: 9px;
+              margin-left: 5px;
+            }
+          }
+        }
+        .string {
+          width: 1px;
+          height: 20px;
+          background-color: #e4e4e4;
+        }
+      }
+    }
+    .item-container:not(:last-child) {
     }
   }
 }

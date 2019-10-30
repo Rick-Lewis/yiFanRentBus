@@ -1,7 +1,7 @@
 /** @Author: xu.long
  * @Date: 2019-09-20 09:30:54
  * @Last Modified by: xu.long
- * @Last Modified time: 2019-10-16 22:39:09
+ * @Last Modified time: 2019-10-30 22:04:27
  */
 const BREADCRUMB = {
   '/home/brand': [
@@ -88,6 +88,30 @@ const BREADCRUMB = {
     {
       path: '/home/vehicleDetail',
       text: '车辆详情'
+    }
+  ],
+  '/home/mgOrder': [
+    {
+      path: '',
+      text: '订单管理'
+    },
+    {
+      path: '/home/mgOrder',
+      text: '订单管理'
+    }
+  ],
+  '/home/orderDetail': [
+    {
+      path: '',
+      text: '订单管理'
+    },
+    {
+      path: '/home/mgOrder',
+      text: '订单管理'
+    },
+    {
+      path: '/home/orderDetail',
+      text: '订单详情'
     }
   ]
 };

@@ -10,7 +10,7 @@
         <div class="form-container">
           <div class="header">欢迎使用</div>
           <div class="main">
-            <Input v-model="account" type="text" placeholder="账号" style="width: 300px" />
+            <Input v-model="username" type="text" placeholder="账号" style="width: 300px" />
             <Input
               v-model="password"
               type="password"
@@ -37,7 +37,7 @@ export default {
   name: 'login',
   data: function() {
     return {
-      account: '',
+      username: '',
       password: '',
       isRemember: ''
     };
@@ -45,8 +45,42 @@ export default {
   methods: {
     // 登录回调
     handleLogin: function() {
-      console.log('login index.vue handleLogin');
-      this.$router.push('/home/vehicle');
+      console.log('login index.vue handleLogin', this);
+      if (this.username && this.password) {
+        this.axios({
+          url: this.global_.path.baseUrl + '/rentalcars/login',
+          method: 'post',
+          data: {
+            username: this.username,
+            password: this.password
+          },
+          headers: { 'Content-Type': 'application/json' }
+        }).then(
+          res => {
+            console.log(
+              'login Index.vue handleLogin axios /login success',
+              res
+            );
+            if (res.data.code === 0) {
+              this.$router.push('/home/vehicle');
+            } else {
+              this.$Message.error({
+                content: '账号或密码错误'
+              });
+            }
+          },
+          err => {
+            console.log('login Index.vue handleLogin axios /login failure', err);
+            this.$Message.error({
+              content: '账号或密码错误'
+            });
+          }
+        );
+      } else {
+        this.$Message.warning({
+          content: '账号或密码不能为空'
+        });
+      }
     }
   },
   components: {}
