@@ -113,10 +113,6 @@
     </div>
   </div>
 </template>
-      </div>
-    </div>
-  </div>
-</template>
 <script>
 export default {
   name: 'MgOrder',
@@ -163,6 +159,8 @@ export default {
 </script>
 <style lang='scss' scoped>
 .order-container {
+  margin: 20px;
+  min-height: 260px;
   .filtrate-container {
     background-color: #fff;
     padding: 20px 20px 0 20px;
@@ -288,8 +286,6 @@ export default {
           background-color: #e4e4e4;
         }
       }
-    }
-    .item-container:not(:last-child) {
     }
   }
 }

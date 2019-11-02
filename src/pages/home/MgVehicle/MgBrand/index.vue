@@ -109,6 +109,8 @@ export default {
 
 <style lang='scss' scoped>
 .brand-container {
+  margin: 20px;
+  min-height: 260px;
   .filtrate-container {
     background-color: #fff;
     padding: 20px 20px 0 20px;

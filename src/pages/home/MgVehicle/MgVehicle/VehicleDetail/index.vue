@@ -283,6 +283,8 @@ export default {
 .vehicle-detail-container {
   background-color: #fff;
   padding: 20px;
+  margin: 20px;
+  min-height: 260px;
   .header {
     font-size: 18px;
     font-weight: bold;

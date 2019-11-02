@@ -16,6 +16,7 @@
             <div>￥238/日均</div>
           </div>
         </div>
+        <div class="string"></div>
         <div class="center">
           <div class="top">实际取还时间：</div>
           <div class="bottom">
@@ -32,35 +33,98 @@
             </div>
           </div>
         </div>
+        <div class="string"></div>
         <div class="right">
-          <div class="top">实际取还地点：</div>
-          <div class="bottom">
-            <div class="fetch">
-              <span>古丈县政府店</span>
-              <div>取</div>
+          <div>
+            <div class="top">实际取还地点：</div>
+            <div class="bottom">
+              <div class="fetch">
+                <span>古丈县政府店</span>
+                <div>取</div>
+              </div>
+              <div class="return">
+                <span>古丈县政府店</span>
+                <div>还</div>
+              </div>
             </div>
-            <div class="return">
-              <span>古丈县政府店</span>
-              <div>还</div>
+          </div>
+          <div>
+            <div style="margin-right: 60px;">
+              <div>状态</div>
+              <div>已完成</div>
+            </div>
+            <div>
+              <div>实付金额</div>
+              <div>568.08元</div>
             </div>
           </div>
         </div>
       </div>
     </div>
-    <div class="reserve-info-container">
-      <div class="header">预定信息</div>
-    </div>
-    <div class="user-info-container">
-      <div class="header">用户信息</div>
-    </div>
-    <div class="order-info-container">
-      <div class="header">订单操作</div>
-    </div>
-    <div class="cost-info-container">
-      <div class="header">费用明细</div>
-    </div>
-    <div class="evaluate-info-container">
-      <div class="header">用户评价</div>
+    <div class="other-container">
+      <div class="reserve-info-container">
+        <div class="header">预定信息</div>
+        <div class="content">
+          <div class="fetch">
+            <div>
+              取车时间：
+              2019-09-01 09:32:09
+            </div>
+            <div style="margin-top: 15px;">
+              取车门店：
+              古丈县政府店
+            </div>
+          </div>
+          <div class="return">
+            <div>
+              还车时间：
+              2019-09-01 09:32:09
+            </div>
+            <div style="margin-top: 15px;">
+              还车门店：
+              古丈县政府店
+            </div>
+          </div>
+          <div class="duration">
+            <div>
+              预计租车时长：
+              7.5 天
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="user-info-container">
+        <div class="header">用户信息</div>
+        <div class="content">
+          <div>
+            昵称：
+            十八
+          </div>
+          <div>
+            手机号：
+            1810 0000 000
+          </div>
+          <div style="opacity: 0;"></div>
+        </div>
+      </div>
+      <div class="order-info-container">
+        <div class="header">订单操作</div>
+        <div class="content">
+          <Table border :columns="optColumns" :data="optData" stripe></Table>
+        </div>
+      </div>
+      <div class="cost-info-container">
+        <div class="header">费用明细</div>
+        <div class="content">
+          <Table border :columns="costColumns" :data="costData" stripe></Table>
+        </div>
+      </div>
+      <div class="evaluate-info-container">
+        <div class="header">用户评价</div>
+        <div class="content">
+          <Table border :columns="evalColumns" :data="evalData" stripe></Table>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -69,10 +133,260 @@
 export default {
   name: 'OrderDetail',
   data: function() {
-    return {};
+    return {
+      optColumns: [
+        {
+          title: '操作类型',
+          key: 'type'
+        },
+        {
+          title: '操作时间',
+          key: 'time'
+        },
+        {
+          title: '备注',
+          key: 'remark'
+        }
+      ],
+      optData: [
+        {
+          type: '价格修改',
+          time: '2017-10-01 12:00:00',
+          remark: '将订单价格从【1200.00】调整为【1000.00】'
+        },
+        {
+          type: '价格修改',
+          time: '2017-10-01 12:00:00',
+          remark: '将订单价格从【1200.00】调整为【1000.00】'
+        },
+        {
+          type: '价格修改',
+          time: '2017-10-01 12:00:00',
+          remark: '将订单价格从【1200.00】调整为【1000.00】'
+        },
+        {
+          type: '价格修改',
+          time: '2017-10-01 12:00:00',
+          remark: '将订单价格从【1200.00】调整为【1000.00】'
+        }
+      ],
+      costColumns: [
+        {
+          title: '费用项目',
+          key: 'costItem'
+        },
+        {
+          title: '金额（元）',
+          key: 'sum'
+        },
+        {
+          title: '子订单编号',
+          key: 'oderNo'
+        }
+      ],
+      costData: [
+        {
+          costItem: '车辆租赁',
+          sum: '900.00',
+          oderNo: '19080987678909866'
+        },
+        {
+          costItem: '车辆租赁',
+          sum: '900.00',
+          oderNo: '19080987678909866'
+        }
+      ],
+      evalColumns: [
+        {
+          title: '星级',
+          key: 'level'
+        },
+        {
+          title: '评价内容',
+          key: 'content'
+        },
+        {
+          title: '评价时间',
+          key: 'time'
+        }
+      ],
+      evalData: [
+        {
+          level: '5星',
+          content: '车况很好，服务周到，已经安利给小伙伴了',
+          time: '2017-10-01 12:00:00'
+        },
+        {
+          level: '5星',
+          content: '车况很好，服务周到，已经安利给小伙伴了',
+          time: '2017-10-01 12:00:00'
+        }
+      ]
+    };
   }
 };
 </script>
 
 <style lang="scss" scoped>
+.order-detail-container {
+  margin-top: 5px;
+  min-height: 260px;
+  .basic-info-container {
+    padding: 16px;
+    background-color: #fff;
+    .header {
+      span:first-child {
+        font-size: 20px;
+      }
+    }
+    .content {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      .string {
+        width: 1px;
+        height: 40px;
+        background-color: #e4e4e4;
+      }
+      .left {
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+        flex: 2;
+      }
+      .center {
+        padding: 0 60px;
+        .bottom {
+          display: flex;
+          align-items: center;
+          .start {
+            margin-right: 10px;
+          }
+          .time {
+            div {
+              border-bottom: 1px solid #e4e4e4;
+              width: 50px;
+              text-align: center;
+              margin-bottom: 10px;
+            }
+          }
+          .end {
+            margin-left: 10px;
+          }
+        }
+      }
+      .right {
+        display: flex;
+        justify-content: space-around;
+        align-items: flex-end;
+        flex: 2;
+        & > div:first-child {
+          .bottom {
+            .fetch {
+              display: flex;
+              position: relative;
+              align-items: center;
+              &::before {
+                content: '';
+                width: 7px;
+                height: 7px;
+                border-radius: 3.5px;
+                background-color: rgba(105, 189, 131, 1);
+                position: absolute;
+                top: 0;
+                bottom: 0;
+                margin: auto 0;
+              }
+              span {
+                padding-left: 10px;
+              }
+              div {
+                width: 16px;
+                height: 16px;
+                background-color: #fff;
+                border-radius: 50%;
+                border: 2px solid rgba(105, 189, 131, 1);
+                line-height: 12px;
+                text-align: center;
+                color: rgba(105, 189, 131, 1);
+                font-size: 9px;
+                margin-left: 5px;
+              }
+            }
+            .return {
+              display: flex;
+              position: relative;
+              align-items: center;
+              &::before {
+                content: '';
+                width: 7px;
+                height: 7px;
+                border-radius: 3.5px;
+                background-color: rgba(105, 189, 131, 1);
+                position: absolute;
+                top: 0;
+                bottom: 0;
+                margin: auto 0;
+              }
+              span {
+                padding-left: 10px;
+              }
+              div {
+                width: 16px;
+                height: 16px;
+                background-color: #fff;
+                border-radius: 50%;
+                border: 2px solid rgba(104, 104, 104, 1);
+                line-height: 12px;
+                text-align: center;
+                color: rgba(104, 104, 104, 1);
+                font-size: 9px;
+                margin-left: 5px;
+              }
+            }
+          }
+        }
+        & > div:last-child {
+          display: flex;
+        }
+      }
+    }
+  }
+  .other-container {
+    margin: 10px 20px 20px 20px;
+    .header {
+      font-size: 18px;
+      font-weight: bold;
+      padding: 20px;
+      border-bottom: 1px solid #e4e4e4;
+    }
+    & > div {
+      background-color: #fff;
+    }
+    & > div:not(:first-child) {
+      margin-top: 10px;
+    }
+    .content {
+      padding: 20px;
+    }
+    .reserve-info-container {
+      .content {
+        display: flex;
+        justify-content: space-between;
+        & > div {
+          flex: 1;
+        }
+      }
+    }
+    .user-info-container {
+      .content {
+        display: flex;
+        justify-content: space-between;
+        & > div {
+          flex: 1;
+        }
+      }
+    }
+  }
+}
 </style>

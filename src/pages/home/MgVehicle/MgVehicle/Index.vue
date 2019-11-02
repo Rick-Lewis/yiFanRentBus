@@ -187,6 +187,8 @@ export default {
 </script>
 <style lang='scss' scoped>
 .vehicle-container {
+  margin: 20px;
+  min-height: 260px;
   .filtrate-container {
     background-color: #fff;
     padding: 20px 20px 0 20px;

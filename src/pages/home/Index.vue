@@ -60,7 +60,7 @@
             </Dropdown>
           </div>
         </Header>
-        <Content :style="{margin: '20px', minHeight: '260px'}">
+        <Content>
           <router-view />
         </Content>
       </Layout>
