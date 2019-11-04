@@ -3,13 +3,13 @@
     <div class="filtrate-container">
       <div class="from-brand">
         <span>所属品牌：</span>
-        <RadioGroup v-model="fromBrandCheck">
+        <RadioGroup v-model="fromBrandCheck" @on-change="handleRadioChange">
           <Radio v-for="(item, index) in fromBrandList" v-bind:key="index" v-bind:label="item.name"></Radio>
         </RadioGroup>
       </div>
       <div class="vehicle-type">
         <span>车辆类型：</span>
-        <RadioGroup v-model="vehicleTypeCheck">
+        <RadioGroup v-model="vehicleTypeCheck" @on-change="handleRadioChange">
           <Radio
             v-for="(item, index) in vehicleTypeList"
             v-bind:key="index"
@@ -19,7 +19,7 @@
       </div>
       <div class="vehicle-status">
         <span>车辆状态：</span>
-        <RadioGroup v-model="vehicleStatusCheck">
+        <RadioGroup v-model="vehicleStatusCheck" @on-change="handleRadioChange">
           <Radio v-for="(item, index) in vehicleStatusList" v-bind:key="index" v-bind:label="item"></Radio>
         </RadioGroup>
       </div>
@@ -44,7 +44,7 @@
           <Progress :percent="row.vehicleNum" />
         </template>
         <template v-slot:state="{ row }">
-          <Switch :value="row.state">
+          <Switch :value="row.state == '0' ? false : true" :disabled="true">
             <span slot="open">开</span>
             <span slot="close">关</span>
           </Switch>
@@ -75,6 +75,7 @@ export default {
       fromBrandList: [],
       vehicleTypeCheck: '全部',
       vehicleTypeList: [],
+      vehicleTypeValue: -1,
       vehicleStatusCheck: '全部',
       vehicleStatusList: ['全部', '已关停', '已开启'],
       formItem: {
@@ -223,15 +224,53 @@ export default {
       });
   },
   methods: {
+    handleRadioChange(e) {
+      console.log('MgVehicleModel index.vue handleRadioChange', e);
+    },
     // 查询
     handleSearch() {
-      console.log('MgVehicleModel index.vue handleSearch');
+      console.log('MgVehicleModel index.vue handleSearch', this.$data);
+      this.axios({
+        url:
+          this.global_.path.baseUrl +
+          '/rentalcars/vehicleModel/page?name=' +
+          this.formItem.vehicleModelName +
+          '&brand_id=',
+        method: 'get',
+        headers: { 'Content-Type': 'application/json' }
+      }).then(
+        res => {
+          console.log(
+            'MgVehicleModel Index.vue created axios /vehicleModel success',
+            res
+          );
+          if (res.data.code === 0) {
+            this.vehicleModelData.push(...res.data.data.data);
+          } else {
+            this.$Message.error({
+              content: '车型数据请求失败'
+            });
+          }
+        },
+        err => {
+          console.log(
+            'MgVehicleModel Index.vue created axios /vehicleModel success',
+            err
+          );
+          this.$Message.error({
+            content: '车型数据请求失败'
+          });
+        }
+      );
     },
     // 重置
     handleReset() {
       for (let item in this.formItem) {
         this.formItem[item] = '';
       }
+      this.vehicleStatusCheck = '全部';
+      this.vehicleTypeCheck = '全部';
+      this.fromBrandCheck = '全部';
     },
     // 删除行
     remove(index) {
