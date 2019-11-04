@@ -194,6 +194,18 @@ export default {
   created() {
     console.log('ModelDetail Index.vue created', this.$store);
     this.$store.dispatch('homeStore/initBreadcrumbList', window.location.href);
+    this.axios({
+      url: this.global_.path.baseUrl + '/rentalcars/vehicleBrand/page',
+      method: 'get',
+      headers: { 'Content-Type': 'application/json' }
+    }).then(
+      res => {
+        console.log('ModelDetail Index.vue created axios /vehicleBrand success', res);
+      },
+      err => {
+        console.log('ModelDetail Index.vue created axios /vehicleBrand success', err);
+      }
+    );
   },
   computed: {},
   methods: {

@@ -31,9 +31,9 @@
         <Button type="primary" @click="add">+新增</Button>
         <Button type="primary" @click="maintain">送维保</Button>
       </div>
-      <Table border :columns="columns12" :data="data6" stripe>
-        <template slot-scope="{ row }" slot="status">
-          <div :class="statusColor[row.status]">{{row.status}}</div>
+      <Table border :columns="vehicleColumns" :data="vehicleData" stripe>
+        <template v-slot:state="{ row }">
+          <div :class="statusColor[row.state]">{{row.state}}</div>
         </template>
         <template slot-scope="{ row, index }" slot="action">
           <Button type="primary" size="small" style="margin-right: 5px" @click="edit(index)">编辑</Button>
@@ -48,6 +48,7 @@
         </div>
       </div>
     </div>
+    <Spin size="large" fix v-if="spinShow"></Spin>
   </div>
 </template>
 <script>
@@ -68,7 +69,7 @@ export default {
         licensePlateCode: '',
         engineNo: ''
       },
-      columns12: [
+      vehicleColumns: [
         {
           type: 'selection',
           width: 60,
@@ -76,15 +77,15 @@ export default {
         },
         {
           title: '车牌号',
-          key: 'licensePlateNum'
+          key: 'plate_num'
         },
         {
           title: '车辆识别代码',
-          key: 'licensePlateCode'
+          key: 'vin'
         },
         {
           title: '发动机号',
-          key: 'EngineNo'
+          key: 'engine_no'
         },
         {
           title: '颜色',
@@ -92,11 +93,11 @@ export default {
         },
         {
           title: '车型',
-          key: 'vehicleModel'
+          key: 'model_id'
         },
         {
           title: '状态',
-          slot: 'status'
+          slot: 'state'
         },
         {
           title: '操作',
@@ -105,41 +106,42 @@ export default {
           align: 'center'
         }
       ],
-      data6: [
-        {
-          licensePlateNum: '粤B 12345',
-          licensePlateCode: 'LXVJ2GEC0KA0163363',
-          EngineNo: 'K018354',
-          color: '蓝色',
-          vehicleModel: '2019款奥迪Q5L',
-          status: '入库'
-        },
-        {
-          licensePlateNum: '粤B 12345',
-          licensePlateCode: 'LXVJ2GEC0KA0163363',
-          EngineNo: 'K018354',
-          color: '蓝色',
-          vehicleModel: '2019款奥迪Q5L',
-          status: '就绪'
-        },
-        {
-          licensePlateNum: '粤B 12345',
-          licensePlateCode: 'LXVJ2GEC0KA0163363',
-          EngineNo: 'K018354',
-          color: '蓝色',
-          vehicleModel: '2019款奥迪Q5L',
-          status: '租用'
-        },
-        {
-          licensePlateNum: '粤B 12345',
-          licensePlateCode: 'LXVJ2GEC0KA0163363',
-          EngineNo: 'K018354',
-          color: '蓝色',
-          vehicleModel: '2019款奥迪Q5L',
-          status: '维保'
-        }
-      ]
+      vehicleData: [],
+      spinShow: true
     };
+  },
+  created() {
+    console.log('MgVehicle Index.vue created');
+    this.axios({
+      url: this.global_.path.baseUrl + '/rentalcars/vehicleDetail/page',
+      method: 'get',
+      headers: { 'Content-Type': 'application/json' }
+    }).then(
+      res => {
+        console.log(
+          'MgVehicle Index.vue created axios /vehicleDetail success',
+          res
+        );
+        if (res.data.code === 0) {
+          this.vehicleData.push(...res.data.data.data);
+        } else {
+          this.$Message.error({
+            content: '车辆数据请求失败'
+          });
+        }
+        this.spinShow = false;
+      },
+      err => {
+        console.log(
+          'MgVehicle Index.vue created axios /vehicleDetail success',
+          err
+        );
+        this.$Message.error({
+          content: '车辆数据请求失败'
+        });
+        this.spinShow = false;
+      }
+    );
   },
   computed: {},
   methods: {
@@ -189,6 +191,7 @@ export default {
 .vehicle-container {
   margin: 20px;
   min-height: 260px;
+  position: relative;
   .filtrate-container {
     background-color: #fff;
     padding: 20px 20px 0 20px;

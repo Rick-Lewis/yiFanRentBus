@@ -4,13 +4,17 @@
       <div class="from-brand">
         <span>所属品牌：</span>
         <RadioGroup v-model="fromBrandCheck">
-          <Radio v-for="(item, index) in fromBrandList" v-bind:key="index" v-bind:label="item"></Radio>
+          <Radio v-for="(item, index) in fromBrandList" v-bind:key="index" v-bind:label="item.name"></Radio>
         </RadioGroup>
       </div>
       <div class="vehicle-type">
         <span>车辆类型：</span>
         <RadioGroup v-model="vehicleTypeCheck">
-          <Radio v-for="(item, index) in vehicleTypeList" v-bind:key="index" v-bind:label="item"></Radio>
+          <Radio
+            v-for="(item, index) in vehicleTypeList"
+            v-bind:key="index"
+            v-bind:label="item.name"
+          ></Radio>
         </RadioGroup>
       </div>
       <div class="vehicle-status">
@@ -32,15 +36,15 @@
     </div>
     <div class="content-container">
       <Button type="primary" style="margin-bottom: 10px;" @click="add">+新增</Button>
-      <Table border :columns="columns12" :data="data6" stripe @on-row-click="handleModelDetail">
-        <template v-slot:fromBrand="{ row }">
-          <span>{{row.fromBrand}}</span>
+      <Table border :columns="vehicleModelColumns" :data="vehicleModelData" stripe>
+        <template v-slot:brand_name="{ row }">
+          <span>{{row.brand_name}}</span>
         </template>
         <template v-slot:vehicleNum="{ row }">
           <Progress :percent="row.vehicleNum" />
         </template>
-        <template v-slot:vehicleStatus="{ row }">
-          <Switch :value="row.vehicleStatus">
+        <template v-slot:state="{ row }">
+          <Switch :value="row.state">
             <span slot="open">开</span>
             <span slot="close">关</span>
           </Switch>
@@ -48,14 +52,16 @@
         <template v-slot:action="{ row, index }">
           <Button type="primary" size="small" style="margin-right: 5px" @click="edit(index)">编辑</Button>
           <Button type="error" size="small" @click="remove(index)">删除</Button>
+          <Button type="primary" size="small" @click="show(index)">详情</Button>
         </template>
       </Table>
       <div class="page-container">
         <template>
-          <Page :total="100" />
+          <Page :total="100" size="small" show-elevator show-sizer />
         </template>
       </div>
     </div>
+    <Spin size="large" fix v-if="spinShow"></Spin>
   </div>
 </template>
 
@@ -65,41 +71,23 @@ export default {
   name: 'MgVehicleModel',
   data() {
     return {
-      fromBrandCheck: '丰田',
-      fromBrandList: [
-        '全部',
-        '大众',
-        '丰田',
-        '凯迪拉克',
-        '别克',
-        '宝马',
-        '奔驰',
-        '奥迪'
-      ],
-      vehicleTypeCheck: '舒适型轿车',
-      vehicleTypeList: [
-        '全部',
-        '紧凑型轿车',
-        '舒适型轿车',
-        '商务轿车',
-        '豪华轿车',
-        '紧凑型SUV',
-        '中型5座SUV',
-        '中型座SUV'
-      ],
+      fromBrandCheck: '全部',
+      fromBrandList: [],
+      vehicleTypeCheck: '全部',
+      vehicleTypeList: [],
       vehicleStatusCheck: '全部',
       vehicleStatusList: ['全部', '已关停', '已开启'],
       formItem: {
         vehicleModelName: ''
       },
-      columns12: [
+      vehicleModelColumns: [
         {
           title: '所属品牌',
-          slot: 'fromBrand'
+          slot: 'brand_name'
         },
         {
           title: '车辆类型',
-          key: 'vehicleType'
+          key: 'category_name'
         },
         {
           title: '车辆数',
@@ -107,52 +95,132 @@ export default {
         },
         {
           title: '今日价格',
-          key: 'price'
+          key: 'standard_price'
         },
         {
           title: '车辆状态',
-          slot: 'vehicleStatus',
+          slot: 'state',
           width: 150,
           align: 'center'
         },
         {
           title: '操作',
           slot: 'action',
-          width: 150,
+          width: 200,
           align: 'center'
         }
       ],
-      data6: [
-        {
-          fromBrand: '2019款奥迪Q5',
-          vehicleType: '中型SUV',
-          vehicleNum: 75,
-          price: '¥189.00',
-          vehicleStatus: true
-        },
-        {
-          fromBrand: '2019款奥迪Q5',
-          vehicleType: '中型SUV',
-          vehicleNum: 50,
-          price: '¥189.00',
-          vehicleStatus: false
-        },
-        {
-          fromBrand: '2019款奥迪Q5',
-          vehicleType: '中型SUV',
-          vehicleNum: 25,
-          price: '¥189.00',
-          vehicleStatus: false
-        },
-        {
-          fromBrand: '2019款奥迪Q5',
-          vehicleType: '中型SUV',
-          vehicleNum: 100,
-          price: '¥189.00',
-          vehicleStatus: false
-        }
-      ]
+      vehicleModelData: [],
+      spinShow: true
     };
+  },
+  created() {
+    console.log('MgVehicleModel index.vue created');
+    let p1 = this.axios({
+      url: this.global_.path.baseUrl + '/rentalcars/vehicleCategory/page',
+      method: 'get',
+      headers: { 'Content-Type': 'application/json' }
+    }).then(
+      res => {
+        console.log(
+          'MgVehicleModel Index.vue created axios /vehicleCategory success',
+          res
+        );
+        if (res.data.code === 0) {
+          this.vehicleTypeList.push(
+            { id: -1, name: '全部' },
+            ...res.data.data.data
+          );
+        } else {
+          this.$Message.error({
+            content: '车辆类型请求失败'
+          });
+        }
+      },
+      err => {
+        console.log(
+          'MgVehicleModel Index.vue created axios /vehicleCategory success',
+          err
+        );
+        this.$Message.error({
+          content: '车辆类型请求失败'
+        });
+      }
+    );
+    let p2 = this.axios({
+      url: this.global_.path.baseUrl + '/rentalcars/vehicleBrand/page',
+      method: 'get',
+      headers: { 'Content-Type': 'application/json' }
+    }).then(
+      res => {
+        console.log(
+          'MgVehicleModel Index.vue created axios /vehicleBrand success',
+          res
+        );
+        if (res.data.code === 0) {
+          this.fromBrandList.push(
+            { id: -1, name: '全部' },
+            ...res.data.data.dataSource
+          );
+        } else {
+          this.$Message.error({
+            content: '品牌数据请求失败'
+          });
+        }
+      },
+      err => {
+        console.log(
+          'MgVehicleModel Index.vue created axios /vehicleBrand success',
+          err
+        );
+        this.$Message.error({
+          content: '品牌数据请求失败'
+        });
+      }
+    );
+    let p3 = this.axios({
+      url: this.global_.path.baseUrl + '/rentalcars/vehicleModel/page',
+      method: 'get',
+      headers: { 'Content-Type': 'application/json' }
+    }).then(
+      res => {
+        console.log(
+          'MgVehicleModel Index.vue created axios /vehicleModel success',
+          res
+        );
+        if (res.data.code === 0) {
+          this.vehicleModelData.push(...res.data.data.data);
+        } else {
+          this.$Message.error({
+            content: '车型数据请求失败'
+          });
+        }
+      },
+      err => {
+        console.log(
+          'MgVehicleModel Index.vue created axios /vehicleModel success',
+          err
+        );
+        this.$Message.error({
+          content: '车型数据请求失败'
+        });
+      }
+    );
+    Promise.all([p1, p2, p3])
+      .then(res => {
+        console.log(
+          'MgVehicleModel Index.vue created Promise.all success',
+          res
+        );
+        this.spinShow = false;
+      })
+      .catch(err => {
+        console.log(
+          'MgVehicleModel Index.vue created Promise.all failure',
+          err
+        );
+        this.spinShow = false;
+      });
   },
   methods: {
     // 查询
@@ -181,7 +249,7 @@ export default {
       this.$router.push('/home/modelAddition');
     },
     // 车型详情
-    handleModelDetail() {
+    show() {
       this.$router.push('/home/modelDetail');
     }
   }
@@ -192,6 +260,7 @@ export default {
 .vehicle-model-container {
   margin: 20px;
   min-height: 260px;
+  position: relative;
   .filtrate-container {
     background-color: #fff;
     padding: 20px 20px 0 20px;
@@ -204,7 +273,7 @@ export default {
     .vehicle-status {
       padding: 10px 8px;
     }
-    .form-container{
+    .form-container {
       padding: 10px 8px 0 8px;
     }
   }

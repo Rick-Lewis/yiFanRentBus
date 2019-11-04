@@ -28,17 +28,17 @@
           <Upload
             ref="upload"
             :show-upload-list="false"
-            :default-file-list="defaultList"
             :on-success="handleSuccess"
             :on-error="handleError"
             :format="['jpg','jpeg','png']"
             :max-size="2048"
+            name="image"
             :on-format-error="handleFormatError"
             :on-exceeded-size="handleMaxSize"
             :before-upload="handleBeforeUpload"
             multiple
             type="drag"
-            action="//jsonplaceholder.typicode.com/posts/"
+            :action="uploadUrl"
             style="display: inline-block;width:58px;"
           >
             <div style="width: 58px;height:58px;line-height: 58px;">
@@ -168,21 +168,22 @@ export default {
       priceInfoForm: {
         price: ''
       },
-      defaultList: [
-        {
-          name: 'a42bdcc1178e62b4694c830f028db5c0',
-          url:
-            'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png'
-        },
-        {
-          name: 'bc7521e033abdd1e92222d733590f104',
-          url:
-            'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png'
-        }
-      ],
+      // defaultList: [
+      //   {
+      //     name: 'a42bdcc1178e62b4694c830f028db5c0',
+      //     url:
+      //       'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png'
+      //   },
+      //   {
+      //     name: 'bc7521e033abdd1e92222d733590f104',
+      //     url:
+      //       'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png'
+      //   }
+      // ],
       imgName: '',
       visible: false,
       uploadList: [],
+      uploadUrl: this.global_.path.baseUrl + '/rentalcars/upload/image/vehicle_model',
       cityList: [
         {
           value: 'New York',
@@ -274,8 +275,8 @@ export default {
         desc: ''
       });
     },
-    handleBeforeUpload() {
-      console.log('ModelAddition index.vue methods handleBeforeUpload');
+    handleBeforeUpload(file) {
+      console.log('ModelAddition index.vue methods handleBeforeUpload', file);
       const check = this.uploadList.length < 5;
       if (!check) {
         this.$Notice.warning({
@@ -374,8 +375,8 @@ export default {
       padding-left: 55px;
     }
   }
-  .btn-container{
-      padding-left: 55px;
+  .btn-container {
+    padding-left: 55px;
   }
 }
 </style>

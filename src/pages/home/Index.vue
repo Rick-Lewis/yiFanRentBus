@@ -79,7 +79,7 @@ export default {
   created() {
     console.log('home Index.vue created', this.$store);
     this.$store.registerModule('homeStore', homeStore);
-    let urlTemp = 'http://www.baidu.com';
+    let urlTemp = '';
     this.axios.get(urlTemp).then(
       res => {
         console.log('home Index.vue created axios /login success', res);
