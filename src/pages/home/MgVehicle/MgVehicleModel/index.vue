@@ -3,13 +3,13 @@
     <div class="filtrate-container">
       <div class="from-brand">
         <span>所属品牌：</span>
-        <RadioGroup v-model="fromBrandCheck" @on-change="handleRadioChange">
+        <RadioGroup v-model="fromBrandCheck">
           <Radio v-for="(item, index) in fromBrandList" v-bind:key="index" v-bind:label="item.name"></Radio>
         </RadioGroup>
       </div>
       <div class="vehicle-type">
         <span>车辆类型：</span>
-        <RadioGroup v-model="vehicleTypeCheck" @on-change="handleRadioChange">
+        <RadioGroup v-model="vehicleTypeCheck">
           <Radio
             v-for="(item, index) in vehicleTypeList"
             v-bind:key="index"
@@ -19,8 +19,12 @@
       </div>
       <div class="vehicle-status">
         <span>车辆状态：</span>
-        <RadioGroup v-model="vehicleStatusCheck" @on-change="handleRadioChange">
-          <Radio v-for="(item, index) in vehicleStatusList" v-bind:key="index" v-bind:label="item"></Radio>
+        <RadioGroup v-model="vehicleStatusCheck">
+          <Radio
+            v-for="(item, index) in vehicleStatusList"
+            v-bind:key="index"
+            v-bind:label="item.name"
+          ></Radio>
         </RadioGroup>
       </div>
       <Form :model="formItem" inline class="form-container">
@@ -57,7 +61,14 @@
       </Table>
       <div class="page-container">
         <template>
-          <Page :total="100" size="small" show-elevator show-sizer />
+          <Page
+            :total="total"
+            size="small"
+            show-elevator
+            show-sizer
+            @on-change="handlePageChange"
+            @on-page-size-change="handlePageSizeChange"
+          />
         </template>
       </div>
     </div>
@@ -75,9 +86,12 @@ export default {
       fromBrandList: [],
       vehicleTypeCheck: '全部',
       vehicleTypeList: [],
-      vehicleTypeValue: -1,
       vehicleStatusCheck: '全部',
-      vehicleStatusList: ['全部', '已关停', '已开启'],
+      vehicleStatusList: [
+        { name: '全部', state: -1 },
+        { name: '已关停', state: 0 },
+        { name: '已开启', state: 1 }
+      ],
       formItem: {
         vehicleModelName: ''
       },
@@ -112,6 +126,9 @@ export default {
         }
       ],
       vehicleModelData: [],
+      total: 0, // 数据总条数
+      currentPage: 1, // 当前页码
+      currentPageSize: 10, // 当前每页条数
       spinShow: true
     };
   },
@@ -191,6 +208,7 @@ export default {
         );
         if (res.data.code === 0) {
           this.vehicleModelData.push(...res.data.data.data);
+          this.total = res.data.data.total;
         } else {
           this.$Message.error({
             content: '车型数据请求失败'
@@ -224,18 +242,51 @@ export default {
       });
   },
   methods: {
-    handleRadioChange(e) {
-      console.log('MgVehicleModel index.vue handleRadioChange', e);
+    handleSelected(e, type) {
+      console.log('MgVehicleModel index.vue handleRadioChange', e, type);
+      let indexTemp = -1;
+      switch (type) {
+        case 'brand':
+          indexTemp = this.fromBrandList.findIndex(item => item.name === e);
+          break;
+        case 'type':
+          indexTemp = this.vehicleTypeList.findIndex(item => item.name === e);
+          break;
+        case 'status':
+          indexTemp = this.vehicleStatusList.findIndex(item => item.name === e);
+          break;
+      }
+      return indexTemp;
     },
     // 查询
     handleSearch() {
-      console.log('MgVehicleModel index.vue handleSearch', this.$data);
+      let brandId = this.fromBrandList[this.handleSelected(this.fromBrandCheck, 'brand')].id;
+      let categoryId = this.vehicleTypeList[this.handleSelected(this.vehicleTypeCheck, 'type')].id;
+      let state = this.vehicleStatusList[this.handleSelected(this.vehicleStatusCheck, 'status')].state;
+      let strTemp = '';
+      if (brandId !== -1) {
+        strTemp = strTemp + '&brand_id=' + brandId;
+      }
+      if (categoryId !== -1) {
+        strTemp = strTemp + '&category_id=' + categoryId;
+      }
+      if (state !== -1) {
+        strTemp = strTemp + '&state=' + state;
+      }
+      console.log(
+        'MgVehicleModel index.vue handleSearch',
+        this.$data,
+        brandId,
+        categoryId,
+        state,
+        strTemp
+      );
       this.axios({
         url:
           this.global_.path.baseUrl +
           '/rentalcars/vehicleModel/page?name=' +
           this.formItem.vehicleModelName +
-          '&brand_id=',
+          strTemp,
         method: 'get',
         headers: { 'Content-Type': 'application/json' }
       }).then(
@@ -245,7 +296,9 @@ export default {
             res
           );
           if (res.data.code === 0) {
+            this.vehicleModelData.length = 0;
             this.vehicleModelData.push(...res.data.data.data);
+            this.total = res.data.data.total;
           } else {
             this.$Message.error({
               content: '车型数据请求失败'
@@ -274,7 +327,50 @@ export default {
     },
     // 删除行
     remove(index) {
-      this.data6.splice(index, 1);
+      this.$Modal.confirm({
+        title: '确定删除整行？',
+        content: '',
+        onOk: () => {
+          this.spinShow = true;
+          this.axios({
+            url:
+              this.global_.path.baseUrl +
+              '/rentalcars/vehicleCategory/delete?ids=' +
+              this.vehicleModelData[index].id,
+            method: 'delete',
+            headers: { 'Content-Type': 'application/json' }
+          }).then(
+            res => {
+              console.log(
+                'MgVehicleModel Index.vue created axios /vehicleCategory/delete success',
+                res
+              );
+              if (res.data.code === 0) {
+                this.$Message.info('操作成功');
+                this.vehicleModelData.splice(index, 1);
+              } else {
+                this.$Message.error({
+                  content: '操作失败'
+                });
+              }
+              this.spinShow = false;
+            },
+            err => {
+              console.log(
+                'MgVehicleModel Index.vue created axios /vehicleCategory/delete failure',
+                err
+              );
+              this.$Message.error({
+                content: '操作失败'
+              });
+              this.spinShow = false;
+            }
+          );
+        },
+        onCancel: () => {
+          console.log('MgVehicleModel index.vue confirm onCancel');
+        }
+      });
     },
     // 编辑行
     edit(index) {
@@ -288,8 +384,18 @@ export default {
       this.$router.push('/home/modelAddition');
     },
     // 车型详情
-    show() {
-      this.$router.push('/home/modelDetail');
+    show(index) {
+      this.$router.push('/home/modelDetail?id=' + this.vehicleModelData[index].id);
+    },
+    // 页码改变
+    handlePageChange(e) {
+      console.log('MgVehicleModel Index.vue handlePageChange', e);
+      this.currentPageSize = e;
+    },
+    // 每页条数改变
+    handlePageSizeChange(e) {
+      console.log('MgVehicleModel Index.vue handlePageSizeChange', e);
+      this.currentPageSize = e;
     }
   }
 };

@@ -55,23 +55,26 @@
         </FormItem>
         <FormItem>
           <span>车型品牌：</span>
-          <Select
-            label-in-value
-            v-model="modelBrand"
-            @on-change="handleModelBrandChange"
-            style="width:200px"
-          >
-            <Option v-for="item in cityList" :value="item.value" :key="item.value">{{ item.label }}</Option>
-          </Select>
-        </FormItem>
-        <FormItem>
-          <span>车辆类型：</span>
-          <RadioGroup v-model="vehicleTypeCheck">
-            <Radio v-for="(item, index) in vehicleTypeList" v-bind:key="index" v-bind:label="item"></Radio>
+          <RadioGroup v-model="fromBrandCheck">
+            <Radio
+              v-for="(item, index) in fromBrandList"
+              v-bind:key="index"
+              v-bind:label="item.name"
+            ></Radio>
           </RadioGroup>
         </FormItem>
         <FormItem>
           <span>车辆类型：</span>
+          <RadioGroup v-model="vehicleTypeCheck">
+            <Radio
+              v-for="(item, index) in vehicleTypeList"
+              v-bind:key="index"
+              v-bind:label="item.name"
+            ></Radio>
+          </RadioGroup>
+        </FormItem>
+        <FormItem>
+          <span>能源类型：</span>
           <RadioGroup v-model="energyTypesCheck">
             <Radio v-for="(item, index) in energyTypesList" v-bind:key="index" v-bind:label="item"></Radio>
           </RadioGroup>
@@ -82,7 +85,7 @@
             <Radio
               v-for="(item, index) in vehicleStatusList"
               v-bind:key="index"
-              v-bind:label="item"
+              v-bind:label="item.name"
             ></Radio>
           </RadioGroup>
         </FormItem>
@@ -151,6 +154,7 @@
       <Button type="primary" @click="handleSubmit">提交</Button>
       <Button style="margin-left: 8px" @click="handleCancel">取消</Button>
     </div>
+    <Spin size="large" fix v-if="spinShow"></Spin>
   </div>
 </template>
 
@@ -183,56 +187,106 @@ export default {
       imgName: '',
       visible: false,
       uploadList: [],
-      uploadUrl: this.global_.path.baseUrl + '/rentalcars/upload/image/vehicle_model',
-      cityList: [
-        {
-          value: 'New York',
-          label: 'New York'
-        },
-        {
-          value: 'London',
-          label: 'London'
-        },
-        {
-          value: 'Sydney',
-          label: 'Sydney'
-        },
-        {
-          value: 'Ottawa',
-          label: 'Ottawa'
-        },
-        {
-          value: 'Paris',
-          label: 'Paris'
-        },
-        {
-          value: 'Canberra',
-          label: 'Canberra'
-        }
-      ],
+      uploadUrl:
+        this.global_.path.baseUrl + '/rentalcars/upload/image/vehicle_model',
+      fromBrandCheck: '全部',
+      fromBrandList: [],
       modelBrand: '',
-      vehicleTypeCheck: '舒适型轿车',
-      vehicleTypeList: [
-        '全部',
-        '紧凑型轿车',
-        '舒适型轿车',
-        '商务轿车',
-        '豪华轿车',
-        '紧凑型SUV',
-        '中型5座SUV',
-        '中型座SUV'
-      ],
-      energyTypesCheck: '',
-      energyTypesList: ['汽油', '电动', '油电混合', '柴油'],
+      vehicleTypeCheck: '全部',
+      vehicleTypeList: [],
+      energyTypesCheck: '其他',
+      energyTypesList: ['其他', '汽油', '电动', '油电混合', '柴油'],
       vehicleStatusCheck: '全部',
-      vehicleStatusList: ['全部', '已关停', '已开启'],
+      vehicleStatusList: [
+        { name: '全部', state: -1 },
+        { name: '已关停', state: 0 },
+        { name: '已开启', state: 1 }
+      ],
       reversingImageCheck: '',
-      reversingImageList: ['有', '无']
+      reversingImageList: ['有', '无'],
+      spinShow: true
     };
   },
   created() {
     console.log('ModelAddition Index.vue created', this.$store);
     this.$store.dispatch('homeStore/initBreadcrumbList', window.location.href);
+    let p1 = this.axios({
+      url: this.global_.path.baseUrl + '/rentalcars/vehicleCategory/page',
+      method: 'get',
+      headers: { 'Content-Type': 'application/json' }
+    }).then(
+      res => {
+        console.log(
+          'ModelAddition Index.vue created axios /vehicleCategory success',
+          res
+        );
+        if (res.data.code === 0) {
+          this.vehicleTypeList.push(
+            { id: -1, name: '全部' },
+            ...res.data.data.data
+          );
+        } else {
+          this.$Message.error({
+            content: '车辆类型请求失败'
+          });
+        }
+      },
+      err => {
+        console.log(
+          'ModelAddition Index.vue created axios /vehicleCategory success',
+          err
+        );
+        this.$Message.error({
+          content: '车辆类型请求失败'
+        });
+      }
+    );
+    let p2 = this.axios({
+      url: this.global_.path.baseUrl + '/rentalcars/vehicleBrand/page',
+      method: 'get',
+      headers: { 'Content-Type': 'application/json' }
+    }).then(
+      res => {
+        console.log(
+          'ModelAddition Index.vue created axios /vehicleBrand success',
+          res
+        );
+        if (res.data.code === 0) {
+          this.fromBrandList.push(
+            { id: -1, name: '全部' },
+            ...res.data.data.dataSource
+          );
+        } else {
+          this.$Message.error({
+            content: '品牌数据请求失败'
+          });
+        }
+      },
+      err => {
+        console.log(
+          'ModelAddition Index.vue created axios /vehicleBrand success',
+          err
+        );
+        this.$Message.error({
+          content: '品牌数据请求失败'
+        });
+      }
+    );
+    Promise.all([p1, p2])
+      .then(res => {
+        console.log(
+          'ModelAddition Index.vue created Promise.all success',
+          res
+        );
+        this.spinShow = false;
+      })
+      .catch(err => {
+        console.log(
+          'ModelAddition Index.vue created Promise.all failure',
+          err
+        );
+        this.spinShow = false;
+      });
   },
   methods: {
     handleView(name) {
@@ -312,6 +366,7 @@ export default {
   padding: 20px;
   margin: 20px;
   min-height: 260px;
+  position: relative;
   .header {
     font-size: 18px;
     font-weight: bold;

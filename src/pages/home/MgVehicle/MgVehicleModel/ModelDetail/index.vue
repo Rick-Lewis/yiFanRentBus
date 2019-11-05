@@ -129,6 +129,7 @@ export default {
   name: 'ModelDetail',
   data: function() {
     return {
+      modelDetail: null,
       columns12: [
         {
           title: '车牌号',
@@ -188,22 +189,44 @@ export default {
           color: '蓝色',
           status: '入库'
         }
-      ]
+      ],
+      spinShow: true
     };
   },
   created() {
-    console.log('ModelDetail Index.vue created', this.$store);
+    console.log('ModelDetail Index.vue created', this.$store, this.$route);
     this.$store.dispatch('homeStore/initBreadcrumbList', window.location.href);
     this.axios({
-      url: this.global_.path.baseUrl + '/rentalcars/vehicleBrand/page',
+      url:
+        this.global_.path.baseUrl +
+        '/rentalcars/vehicleCategory/' +
+        this.$route.query.id,
       method: 'get',
       headers: { 'Content-Type': 'application/json' }
     }).then(
       res => {
-        console.log('ModelDetail Index.vue created axios /vehicleBrand success', res);
+        console.log(
+          'ModelDetail Index.vue created axios /vehicleCategory/{id} success',
+          res
+        );
+        if (res.data.code === 0) {
+          this.modelDetail = res.data.data;
+        } else {
+          this.$Message.error({
+            content: '操作失败'
+          });
+        }
+        this.spinShow = false;
       },
       err => {
-        console.log('ModelDetail Index.vue created axios /vehicleBrand success', err);
+        console.log(
+          'ModelDetail Index.vue created axios /vehicleCategory/{id} failure',
+          err
+        );
+        this.$Message.error({
+          content: '操作失败'
+        });
+        this.spinShow = false;
       }
     );
   },

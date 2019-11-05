@@ -189,7 +189,7 @@ export default {
       );
     },
     matchUrl(url, targetStr) {
-      let temp = url.split('/');
+      let temp = url.split('?')[0].split('/');
       let strTemp = '/' + temp.slice(temp.length - 2, temp.length).join('/');
       return strTemp === targetStr;
     },

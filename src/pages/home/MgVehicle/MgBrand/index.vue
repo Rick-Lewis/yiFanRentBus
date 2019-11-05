@@ -164,18 +164,18 @@ export default {
                 this.brandData.splice(index, 1);
               } else {
                 this.$Message.error({
-                  content: '品牌数据请求失败'
+                  content: '操作失败'
                 });
               }
               this.spinShow = false;
             },
             err => {
               console.log(
-                'MgBrand Index.vue created axios /vehicleBrand success',
+                'MgBrand Index.vue created axios /vehicleBrand/delete failure',
                 err
               );
               this.$Message.error({
-                content: '品牌数据请求失败'
+                content: '操作失败'
               });
               this.spinShow = false;
             }

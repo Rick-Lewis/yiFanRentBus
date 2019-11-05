@@ -1,7 +1,7 @@
 /** @Author: xu.long
  * @Date: 2019-09-20 09:30:54
  * @Last Modified by: xu.long
- * @Last Modified time: 2019-10-30 22:04:27
+ * @Last Modified time: 2019-11-05 21:14:32
  */
 const BREADCRUMB = {
   '/home/brand': [
@@ -133,7 +133,7 @@ export default {
     inc: state => state.total++,
     sub: state => state.total--,
     breadcrumb: (state, url) => {
-      let temp = url.split('/');
+      let temp = url.split('?')[0].split('/');
       let strTemp = '/' + temp.slice(temp.length - 2, temp.length).join('/');
       state.breadcrumbList = BREADCRUMB[strTemp];
     }
