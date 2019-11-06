@@ -44,9 +44,9 @@
         <template v-slot:brand_name="{ row }">
           <span>{{row.brand_name}}</span>
         </template>
-        <template v-slot:vehicleNum="{ row }">
+        <!-- <template v-slot:vehicleNum="{ row }">
           <Progress :percent="row.vehicleNum" />
-        </template>
+        </template> -->
         <template v-slot:state="{ row }">
           <Switch :value="row.state == '0' ? false : true" :disabled="true">
             <span slot="open">开</span>
@@ -104,10 +104,10 @@ export default {
           title: '车辆类型',
           key: 'category_name'
         },
-        {
-          title: '车辆数',
-          slot: 'vehicleNum'
-        },
+        // {
+        //   title: '车辆数',
+        //   slot: 'vehicleNum'
+        // },
         {
           title: '今日价格',
           key: 'standard_price'
@@ -197,13 +197,13 @@ export default {
       }
     );
     let p3 = this.axios({
-      url: this.global_.path.baseUrl + '/rentalcars/vehicleModel/page',
+      url: this.global_.path.baseUrl + '/rentalcars/vehicle/model/page',
       method: 'get',
       headers: { 'Content-Type': 'application/json' }
     }).then(
       res => {
         console.log(
-          'MgVehicleModel Index.vue created axios /vehicleModel success',
+          'MgVehicleModel Index.vue created axios /model success',
           res
         );
         if (res.data.code === 0) {
@@ -217,7 +217,7 @@ export default {
       },
       err => {
         console.log(
-          'MgVehicleModel Index.vue created axios /vehicleModel success',
+          'MgVehicleModel Index.vue created axios /model success',
           err
         );
         this.$Message.error({
@@ -284,7 +284,7 @@ export default {
       this.axios({
         url:
           this.global_.path.baseUrl +
-          '/rentalcars/vehicleModel/page?name=' +
+          '/rentalcars/vehicle/model/page?name=' +
           this.formItem.vehicleModelName +
           strTemp,
         method: 'get',
@@ -292,7 +292,7 @@ export default {
       }).then(
         res => {
           console.log(
-            'MgVehicleModel Index.vue created axios /vehicleModel success',
+            'MgVehicleModel Index.vue created axios /model success',
             res
           );
           if (res.data.code === 0) {
@@ -307,7 +307,7 @@ export default {
         },
         err => {
           console.log(
-            'MgVehicleModel Index.vue created axios /vehicleModel success',
+            'MgVehicleModel Index.vue created axios /model success',
             err
           );
           this.$Message.error({

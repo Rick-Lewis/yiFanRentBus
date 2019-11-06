@@ -56,7 +56,7 @@ export default {
   name: 'MyVehicle',
   data: function() {
     return {
-      vehicleStatusCheck: '就绪',
+      vehicleStatusCheck: '全部',
       vehicleStatusList: ['全部', '入库', '就绪', '租用', '维保'],
       statusColor: {
         入库: 'storage',

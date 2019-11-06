@@ -17,7 +17,7 @@
             <template v-if="item.status === 'finished'">
               <img :src="item.url" />
               <div class="upload-list-cover">
-                <Icon type="ios-eye-outline" @click.native="handleView(item.name)"></Icon>
+                <Icon type="ios-eye-outline" @click.native="handleView(item)"></Icon>
                 <Icon type="ios-trash-outline" @click.native="handleRemove(item)"></Icon>
               </div>
             </template>
@@ -30,6 +30,7 @@
             :show-upload-list="false"
             :on-success="handleSuccess"
             :on-error="handleError"
+            :default-file-list="defaultList"
             :format="['jpg','jpeg','png']"
             :max-size="2048"
             name="image"
@@ -46,11 +47,7 @@
             </div>
           </Upload>
           <Modal title="View Image" v-model="visible">
-            <img
-              :src="'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png'"
-              v-if="visible"
-              style="width: 100%"
-            />
+            <img :src="this.imgUrl" v-if="visible" style="width: 100%" />
           </Modal>
         </FormItem>
         <FormItem>
@@ -101,40 +98,43 @@
           </FormItem>
           <FormItem>
             <span>汽油规格：</span>
-            <Input v-model="confInfoForm.engine" placeholder="请输入汽油规格" style="width: 200px" />
+            <Input v-model="confInfoForm.oil_type" placeholder="请输入汽油规格" style="width: 200px" />
           </FormItem>
           <FormItem>
             <span style="padding-right: 14px;">座位数：</span>
-            <Input v-model="confInfoForm.engine" placeholder="请输入座位数" style="width: 200px" />
+            <Input v-model="confInfoForm.seat_count" placeholder="请输入座位数" style="width: 200px" />
           </FormItem>
           <FormItem>
             <span>前后雷达：</span>
             <CheckboxGroup v-model="confInfoForm.radar" style="display: inline;">
-              <Checkbox label="前雷达"></Checkbox>
-              <Checkbox label="后雷达"></Checkbox>
+              <Checkbox
+                v-for="(item, index) in radarList"
+                v-bind:key="index"
+                v-bind:label="item.name"
+              ></Checkbox>
             </CheckboxGroup>
           </FormItem>
         </div>
         <div class="right">
           <FormItem>
             <span style="padding-right: 14px;">变速箱：</span>
-            <Input v-model="confInfoForm.engine" placeholder="请输入变速箱" style="width: 200px" />
+            <Input v-model="confInfoForm.gearbox" placeholder="请输入变速箱" style="width: 200px" />
           </FormItem>
           <FormItem>
             <span>油箱容量：</span>
-            <Input v-model="confInfoForm.engine" placeholder="请输入油箱容量" style="width: 200px" />
+            <Input v-model="confInfoForm.oil_volume" placeholder="请输入油箱容量" style="width: 200px" />
           </FormItem>
           <FormItem>
             <span>综合油耗：</span>
-            <Input v-model="confInfoForm.engine" placeholder="请输入综合油耗" style="width: 200px" />
+            <Input v-model="confInfoForm.oil_litre" placeholder="请输入综合油耗" style="width: 200px" />
           </FormItem>
           <FormItem>
             <span>倒车影像：</span>
-            <RadioGroup v-model="reversingImageCheck">
+            <RadioGroup v-model="confInfoForm.backup_camera">
               <Radio
-                v-for="(item, index) in reversingImageList"
+                v-for="(item, index) in backupCameraList"
                 v-bind:key="index"
-                v-bind:label="item"
+                v-bind:label="item.name"
               ></Radio>
             </RadioGroup>
           </FormItem>
@@ -167,31 +167,36 @@ export default {
         vehicleModelName: ''
       },
       confInfoForm: {
-        engine: ''
+        engine: '',
+        oil_type: '',
+        seat_count: '',
+        radar: [],
+        gearbox: '',
+        oil_volume: '',
+        oil_litre: '',
+        backup_camera: '有'
       },
       priceInfoForm: {
         price: ''
       },
-      // defaultList: [
-      //   {
-      //     name: 'a42bdcc1178e62b4694c830f028db5c0',
-      //     url:
-      //       'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png'
-      //   },
-      //   {
-      //     name: 'bc7521e033abdd1e92222d733590f104',
-      //     url:
-      //       'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png'
-      //   }
-      // ],
-      imgName: '',
+      defaultList: [
+        {
+          name:
+            'vehicle_modelec843a7b-b59d-4ec9-bb73-cfa07bc9ef97_1573046594307.jpg',
+          url:
+            this.global_.path.baseUrl +
+            '/images/vehicle_modelec843a7b-b59d-4ec9-bb73-cfa07bc9ef97_1573046594307.jpg'
+        }
+      ],
+      imgName: '', // 放大图的名称
+      imgUrl: '', // 放大图的地址
       visible: false,
       uploadList: [],
       uploadUrl:
-        this.global_.path.baseUrl + '/rentalcars/upload/image/vehicle_model',
+        this.global_.path.baseUrl +
+        '/rentalcars/upload/image?image&folderName=vehicle_model',
       fromBrandCheck: '全部',
       fromBrandList: [],
-      modelBrand: '',
       vehicleTypeCheck: '全部',
       vehicleTypeList: [],
       energyTypesCheck: '其他',
@@ -202,8 +207,11 @@ export default {
         { name: '已关停', state: 0 },
         { name: '已开启', state: 1 }
       ],
-      reversingImageCheck: '',
-      reversingImageList: ['有', '无'],
+      radarList: [
+        { en: 'radar_head', name: '前雷达' },
+        { en: 'radar_tail', name: '后雷达' }
+      ],
+      backupCameraList: [{ name: '有', state: 1 }, { name: '无', state: 10 }],
       spinShow: true
     };
   },
@@ -274,23 +282,18 @@ export default {
     );
     Promise.all([p1, p2])
       .then(res => {
-        console.log(
-          'ModelAddition Index.vue created Promise.all success',
-          res
-        );
+        console.log('ModelAddition Index.vue created Promise.all success', res);
         this.spinShow = false;
       })
       .catch(err => {
-        console.log(
-          'ModelAddition Index.vue created Promise.all failure',
-          err
-        );
+        console.log('ModelAddition Index.vue created Promise.all failure', err);
         this.spinShow = false;
       });
   },
   methods: {
-    handleView(name) {
-      this.imgName = name;
+    handleView(item) {
+      this.imgName = item.name;
+      this.imgUrl = item.url;
       this.visible = true;
     },
     handleRemove(file) {
@@ -299,9 +302,12 @@ export default {
     },
     handleSuccess(res, file) {
       console.log('ModelAddition index.vue methods handleSuccess', res, file);
-      file.url =
-        'https://o5wwk8baw.qnssl.com/7eb99afb9d5f317c912f08b5212fd69a/avatar';
-      file.name = '7eb99afb9d5f317c912f08b5212fd69a';
+      file.name = res.data;
+      file.url = this.global_.path.baseUrl + res.data;
+      this.uploadList.push({
+        name: res.data,
+        url: this.global_.path.baseUrl + res.data
+      });
     },
     handleError(res, file, fileList) {
       console.log(
@@ -347,7 +353,68 @@ export default {
     },
     // 提交
     handleSubmit() {
-      console.log('ModelAddition index.vue methods handleSubmit');
+      let tempIndex0 = this.vehicleStatusList.findIndex(
+        item => item.name === this.vehicleStatusCheck
+      );
+      let tempIndex1 = this.fromBrandList.findIndex(
+        item => item.name === this.fromBrandCheck
+      );
+      let tempIndex2 = this.fromBrandList.findIndex(
+        item => item.name === this.fromBrandCheck
+      );
+      let temp = {
+        name: this.basicInfoForm.vehicleModelName,
+        state: this.vehicleStatusList[tempIndex0].state,
+        gearbox: this.confInfoForm.gearbox,
+        deposit: 5000.0,
+        basic_insurance: 0.0,
+        body_construction: '3厢',
+        brand_id: this.fromBrandList[tempIndex1].id,
+        category_id: this.vehicleTypeList[tempIndex2].id,
+        door_count: 4,
+        seat_count: this.confInfoForm.seat_count,
+        let_litre: '2.0T',
+        oil_litre: this.confInfoForm.oil_litre,
+        oil_type: this.confInfoForm.oil_type,
+        oil_volume: this.confInfoForm.oil_volume,
+        radar_head: this.confInfoForm.radar.indexOf('前雷达') !== -1 ? 1 : 0,
+        radar_tail: this.confInfoForm.radar.indexOf('后雷达') !== -1 ? 1 : 0,
+        backup_camera: this.confInfoForm.backup_camera === '有' ? 1 : 0,
+        standard_price: this.priceInfoForm.price,
+        energy_type: '汽油',
+        company_id: 1
+      };
+      console.log('ModelAddition index.vue methods handleSubmit', temp);
+      this.axios({
+        url: this.global_.path.baseUrl + '/rentalcars/vehicle/model/saveData',
+        method: 'post',
+        headers: { 'Content-Type': 'application/json' }
+      }).then(
+        res => {
+          console.log(
+            'ModelAddition Index.vue created axios /saveData success',
+            res
+          );
+          if (res.data.code === 0) {
+            this.$Message.success({
+              content: '操作成功'
+            });
+          } else {
+            this.$Message.error({
+              content: '操作失败'
+            });
+          }
+        },
+        err => {
+          console.log(
+            'MgVehicleModel Index.vue created axios /saveData failure',
+            err
+          );
+          this.$Message.error({
+            content: '操作失败'
+          });
+        }
+      );
     },
     // 取消
     handleCancel() {

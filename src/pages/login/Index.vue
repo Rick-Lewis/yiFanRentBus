@@ -46,6 +46,7 @@ export default {
     // 登录回调
     handleLogin: function() {
       console.log('login index.vue handleLogin', this);
+      // userAdmin admin123
       if (this.username && this.password) {
         this.axios({
           url: this.global_.path.baseUrl + '/rentalcars/login',
@@ -62,7 +63,7 @@ export default {
               res
             );
             if (res.data.code === 0) {
-              this.$router.push('/home/vehicle');
+              this.$router.push('/home/brand');
             } else {
               this.$Message.error({
                 content: '账号或密码错误'
