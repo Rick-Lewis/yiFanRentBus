@@ -1,7 +1,7 @@
 /** @Author: xu.long
  * @Date: 2019-09-20 09:30:54
  * @Last Modified by: xu.long
- * @Last Modified time: 2019-11-05 21:14:32
+ * @Last Modified time: 2019-11-09 14:05:43
  */
 const BREADCRUMB = {
   '/home/brand': [
@@ -12,6 +12,20 @@ const BREADCRUMB = {
     {
       path: '/home/brand',
       text: '品牌管理'
+    }
+  ],
+  '/home/brandAddition': [
+    {
+      path: '',
+      text: '车辆管理'
+    },
+    {
+      path: '/home/brand',
+      text: '品牌管理'
+    },
+    {
+      path: '/home/brandAddition',
+      text: '新增品牌'
     }
   ],
   '/home/vehicleModel': [

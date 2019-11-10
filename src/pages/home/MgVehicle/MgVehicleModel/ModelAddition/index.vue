@@ -5,11 +5,7 @@
       <Form :model="basicInfoForm" class="content">
         <FormItem style="margin-left: 0;">
           <span>车型名称：</span>
-          <Input
-            v-model="basicInfoForm.vehicleModelName"
-            placeholder="请输入车型名称"
-            style="width: 200px"
-          />
+          <Input v-model="basicInfoForm.name" placeholder="请输入车型名称" style="width: 200px" />
         </FormItem>
         <FormItem>
           <span>车型图片：</span>
@@ -30,17 +26,16 @@
             :show-upload-list="false"
             :on-success="handleSuccess"
             :on-error="handleError"
-            :default-file-list="defaultList"
             :format="['jpg','jpeg','png']"
             :max-size="2048"
             name="image"
             :on-format-error="handleFormatError"
             :on-exceeded-size="handleMaxSize"
             :before-upload="handleBeforeUpload"
-            multiple
             type="drag"
             :action="uploadUrl"
             style="display: inline-block;width:58px;"
+            :style="uploadList.length === 0 ? {} : {visibility: 'hidden'}"
           >
             <div style="width: 58px;height:58px;line-height: 58px;">
               <Icon type="ios-camera" size="20"></Icon>
@@ -94,15 +89,25 @@
         <div class="left">
           <FormItem>
             <span style="padding-right: 14px;">发动机：</span>
-            <Input v-model="confInfoForm.engine" placeholder="请输入发动机" style="width: 200px" />
+            <Input v-model="confInfoForm.oil_litre" placeholder="请输入发动机" style="width: 200px">
+              <div class="suffix" slot="suffix">T</div>
+            </Input>
           </FormItem>
           <FormItem>
             <span>汽油规格：</span>
-            <Input v-model="confInfoForm.oil_type" placeholder="请输入汽油规格" style="width: 200px" />
+            <Input v-model="confInfoForm.oil_type" placeholder="请输入汽油规格" style="width: 200px">
+              <div class="suffix" slot="suffix">L</div>
+            </Input>
           </FormItem>
           <FormItem>
             <span style="padding-right: 14px;">座位数：</span>
-            <Input v-model="confInfoForm.seat_count" placeholder="请输入座位数" style="width: 200px" />
+            <Input v-model="confInfoForm.seat_count" placeholder="请输入座位数" style="width: 200px">
+              <div class="suffix" slot="suffix">座</div>
+            </Input>
+          </FormItem>
+          <FormItem>
+            <span style="padding-right: 14px;">车门数：</span>
+            <Input v-model="confInfoForm.door_count" placeholder="请输入车门数" style="width: 200px" />
           </FormItem>
           <FormItem>
             <span>前后雷达：</span>
@@ -122,11 +127,25 @@
           </FormItem>
           <FormItem>
             <span>油箱容量：</span>
-            <Input v-model="confInfoForm.oil_volume" placeholder="请输入油箱容量" style="width: 200px" />
+            <Input v-model="confInfoForm.oil_volume" placeholder="请输入油箱容量" style="width: 200px">
+              <div class="suffix" slot="suffix">L</div>
+            </Input>
           </FormItem>
           <FormItem>
             <span>综合油耗：</span>
-            <Input v-model="confInfoForm.oil_litre" placeholder="请输入综合油耗" style="width: 200px" />
+            <Input v-model="confInfoForm.oil_litre" placeholder="请输入综合油耗" style="width: 200px">
+              <div class="suffix" slot="suffix" style="padding-right: 30px;">L/100km</div>
+            </Input>
+          </FormItem>
+          <FormItem>
+            <span>车厢：</span>
+            <Input
+              v-model="confInfoForm.body_construction"
+              placeholder="请输入几厢车"
+              style="width: 200px"
+            >
+              <div class="suffix" slot="suffix">厢</div>
+            </Input>
           </FormItem>
           <FormItem>
             <span>倒车影像：</span>
@@ -145,8 +164,22 @@
       <div class="header">价格信息</div>
       <Form class="content" :model="priceInfoForm">
         <FormItem>
+          <span>押金：</span>
+          <Input v-model="priceInfoForm.deposit" placeholder="请输入押金" style="width: 200px">
+            <div class="suffix" slot="suffix">元</div>
+          </Input>
+        </FormItem>
+        <FormItem>
+          <span>基础险：</span>
+          <Input v-model="priceInfoForm.basic_insurance" placeholder="请输入基础险" style="width: 200px">
+            <div class="suffix" slot="suffix">元</div>
+          </Input>
+        </FormItem>
+        <FormItem>
           <span>基础价格：</span>
-          <Input v-model="priceInfoForm.price" placeholder="请输入基础价格" style="width: 200px" />
+          <Input v-model="priceInfoForm.price" placeholder="请输入基础价格" style="width: 200px">
+            <div class="suffix" slot="suffix">元</div>
+          </Input>
         </FormItem>
       </Form>
     </div>
@@ -164,30 +197,23 @@ export default {
   data() {
     return {
       basicInfoForm: {
-        vehicleModelName: ''
+        name: ''
       },
       confInfoForm: {
-        engine: '',
         oil_type: '',
         seat_count: '',
         radar: [],
         gearbox: '',
         oil_volume: '',
         oil_litre: '',
-        backup_camera: '有'
+        backup_camera: '有',
+        door_count: '',
+        let_litre: '',
+        body_construction: ''
       },
       priceInfoForm: {
         price: ''
       },
-      defaultList: [
-        {
-          name:
-            'vehicle_modelec843a7b-b59d-4ec9-bb73-cfa07bc9ef97_1573046594307.jpg',
-          url:
-            this.global_.path.baseUrl +
-            '/images/vehicle_modelec843a7b-b59d-4ec9-bb73-cfa07bc9ef97_1573046594307.jpg'
-        }
-      ],
       imgName: '', // 放大图的名称
       imgUrl: '', // 放大图的地址
       visible: false,
@@ -211,15 +237,84 @@ export default {
         { en: 'radar_head', name: '前雷达' },
         { en: 'radar_tail', name: '后雷达' }
       ],
-      backupCameraList: [{ name: '有', state: 1 }, { name: '无', state: 10 }],
+      backupCameraList: [{ name: '有', state: 1 }, { name: '无', state: 0 }],
       spinShow: true
     };
   },
   created() {
     console.log('ModelAddition Index.vue created', this.$store);
     this.$store.dispatch('homeStore/initBreadcrumbList', window.location.href);
+    if (this.$route.query.action === 'edit') {
+      this.axios({
+        url:
+          this.global_.path.baseUrl +
+          '/rentalcars/vehicle/model/' +
+          this.$route.query.id,
+        method: 'get',
+        headers: { 'Content-Type': 'application/json' }
+      }).then(
+        res => {
+          console.log(
+            'ModelDetail Index.vue created axios /vehicleCategory/{id} success',
+            res
+          );
+          if (res.data.code === 0) {
+            this.basicInfoForm = {
+              name: res.data.data.name
+            };
+            this.confInfoForm = {
+              oil_type: res.data.data.oil_type,
+              seat_count: res.data.data.seat_count,
+              radar: [
+                res.data.data.radar_head === 1 ? '前雷达' : '',
+                res.data.data.radar_tail === 1 ? '后雷达' : ''
+              ],
+              gearbox: res.data.data.gearbox,
+              oil_volume: res.data.data.oil_volume,
+              oil_litre: res.data.data.oil_litre,
+              backup_camera: res.data.data.backup_camera === 1 ? '有' : '无',
+              door_count: res.data.data.door_count,
+              let_litre: res.data.data.let_litre,
+              body_construction: res.data.data.body_construction
+            };
+            this.priceInfoForm = {
+              price: res.data.data.standard_price,
+              deposit: res.data.data.deposit,
+              basic_insurance: res.data.data.basic_insurance
+            };
+            this.fromBrandCheck = res.data.data.brand_name;
+            this.vehicleTypeCheck = res.data.data.category_name;
+            this.energyTypesCheck = res.data.data.energy_type;
+            this.vehicleStatusCheck =
+              res.data.data.state === 1 ? '已开启' : '已关停';
+            if (res.data.data.image) {
+              this.uploadList.push({
+                name: res.data.data.image,
+                url: this.global_.path.baseUrl + '/' + res.data.data.image,
+                status: 'finished'
+              });
+            }
+          } else {
+            this.$Message.error({
+              content: '操作失败'
+            });
+          }
+          this.spinShow = false;
+        },
+        err => {
+          console.log(
+            'ModelDetail Index.vue created axios /vehicleCategory/{id} failure',
+            err
+          );
+          this.$Message.error({
+            content: '操作失败'
+          });
+          this.spinShow = false;
+        }
+      );
+    }
     let p1 = this.axios({
-      url: this.global_.path.baseUrl + '/rentalcars/vehicleCategory/page',
+      url: this.global_.path.baseUrl + '/rentalcars/vehicle/category/page',
       method: 'get',
       headers: { 'Content-Type': 'application/json' }
     }).then(
@@ -250,7 +345,7 @@ export default {
       }
     );
     let p2 = this.axios({
-      url: this.global_.path.baseUrl + '/rentalcars/vehicleBrand/page',
+      url: this.global_.path.baseUrl + '/rentalcars/vehicle/brand/page',
       method: 'get',
       headers: { 'Content-Type': 'application/json' }
     }).then(
@@ -301,13 +396,18 @@ export default {
       this.$refs.upload.fileList.splice(fileList.indexOf(file), 1);
     },
     handleSuccess(res, file) {
-      console.log('ModelAddition index.vue methods handleSuccess', res, file);
+      console.log(
+        'ModelAddition index.vue methods handleSuccess',
+        res,
+        file,
+        this.uploadList
+      );
       file.name = res.data;
       file.url = this.global_.path.baseUrl + res.data;
-      this.uploadList.push({
-        name: res.data,
-        url: this.global_.path.baseUrl + res.data
-      });
+      // this.uploadList.push({
+      //   name: res.data,
+      //   url: this.global_.path.baseUrl + res.data
+      // });
     },
     handleError(res, file, fileList) {
       console.log(
@@ -359,21 +459,25 @@ export default {
       let tempIndex1 = this.fromBrandList.findIndex(
         item => item.name === this.fromBrandCheck
       );
-      let tempIndex2 = this.fromBrandList.findIndex(
-        item => item.name === this.fromBrandCheck
+      let tempIndex2 = this.vehicleTypeList.findIndex(
+        item => item.name === this.vehicleTypeCheck
+      );
+      let tempIndex3 = this.energyTypesList.findIndex(
+        item => item === this.energyTypesCheck
       );
       let temp = {
-        name: this.basicInfoForm.vehicleModelName,
+        image: this.uploadList[0].name,
+        name: this.basicInfoForm.name,
         state: this.vehicleStatusList[tempIndex0].state,
         gearbox: this.confInfoForm.gearbox,
-        deposit: 5000.0,
-        basic_insurance: 0.0,
-        body_construction: '3厢',
+        deposit: this.priceInfoForm.deposit,
+        basic_insurance: this.priceInfoForm.basic_insurance,
+        body_construction: this.confInfoForm.body_construction,
         brand_id: this.fromBrandList[tempIndex1].id,
         category_id: this.vehicleTypeList[tempIndex2].id,
-        door_count: 4,
+        door_count: this.confInfoForm.door_count,
         seat_count: this.confInfoForm.seat_count,
-        let_litre: '2.0T',
+        let_litre: this.confInfoForm.let_litre,
         oil_litre: this.confInfoForm.oil_litre,
         oil_type: this.confInfoForm.oil_type,
         oil_volume: this.confInfoForm.oil_volume,
@@ -381,14 +485,17 @@ export default {
         radar_tail: this.confInfoForm.radar.indexOf('后雷达') !== -1 ? 1 : 0,
         backup_camera: this.confInfoForm.backup_camera === '有' ? 1 : 0,
         standard_price: this.priceInfoForm.price,
-        energy_type: '汽油',
-        company_id: 1
+        energy_type: this.energyTypesList[tempIndex3]
       };
+      if (this.$route.query.action === 'edit') {
+        temp = Object.assign({}, temp, { id: this.$route.query.id });
+      }
       console.log('ModelAddition index.vue methods handleSubmit', temp);
       this.axios({
-        url: this.global_.path.baseUrl + '/rentalcars/vehicle/model/saveData',
         method: 'post',
-        headers: { 'Content-Type': 'application/json' }
+        url: this.global_.path.baseUrl + '/rentalcars/vehicle/model/saveData',
+        headers: { 'Content-Type': 'application/json' },
+        data: temp
       }).then(
         res => {
           console.log(
@@ -399,6 +506,7 @@ export default {
             this.$Message.success({
               content: '操作成功'
             });
+            this.$router.back();
           } else {
             this.$Message.error({
               content: '操作失败'
@@ -419,6 +527,7 @@ export default {
     // 取消
     handleCancel() {
       console.log('ModelAddition index.vue methods handleCancel');
+      this.$router.back();
     }
   },
   mounted() {
@@ -434,6 +543,12 @@ export default {
   margin: 20px;
   min-height: 260px;
   position: relative;
+  .suffix {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
   .header {
     font-size: 18px;
     font-weight: bold;

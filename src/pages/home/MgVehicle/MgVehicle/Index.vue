@@ -4,21 +4,25 @@
       <div class="vehicle-status">
         <span>车辆状态：</span>
         <RadioGroup v-model="vehicleStatusCheck">
-          <Radio v-for="(item, index) in vehicleStatusList" v-bind:key="index" v-bind:label="item"></Radio>
+          <Radio
+            v-for="(item, index) in vehicleStatusList"
+            v-bind:key="index"
+            v-bind:label="item.name"
+          ></Radio>
         </RadioGroup>
       </div>
       <Form :model="formItem" inline class="form-container">
         <FormItem>
-          <span>车牌号：</span>
-          <Input v-model="formItem.licensePlateNum" placeholder="请输入车牌号" style="width: 200px" />
+          <span>车牌名称：</span>
+          <Input v-model="formItem.plate_num" placeholder="请输入车牌名称" style="width: 200px" />
         </FormItem>
         <FormItem>
           <span>车辆识别代码：</span>
-          <Input v-model="formItem.licensePlateCode" placeholder="请输入车辆识别代码" style="width: 200px" />
+          <Input v-model="formItem.vin" placeholder="请输入车辆识别代码" style="width: 200px" />
         </FormItem>
         <FormItem>
           <span>发动机号：</span>
-          <Input v-model="formItem.engineNo" placeholder="请输入发动机号" style="width: 200px" />
+          <Input v-model="formItem.engine_no" placeholder="请输入发动机号" style="width: 200px" />
         </FormItem>
         <FormItem>
           <Button type="primary" @click="handleSearch">查询</Button>
@@ -38,13 +42,20 @@
         <template slot-scope="{ row, index }" slot="action">
           <Button type="primary" size="small" style="margin-right: 5px" @click="edit(index)">编辑</Button>
           <Button type="error" size="small" @click="remove(index)">删除</Button>
-          <Button type="primary" size="small" @click="remove(index)">检查</Button>
+          <Button type="primary" size="small" @click="check(index)">检查</Button>
           <Button type="primary" size="small" @click="show(index)">详情</Button>
         </template>
       </Table>
       <div style="margin: 10px;overflow: hidden;">
         <div style="float: right;">
-          <Page :total="100" :current="1" @on-change="changePage"></Page>
+          <Page
+            :total="total"
+            size="small"
+            show-elevator
+            show-sizer
+            @on-change="handlePageChange"
+            @on-page-size-change="handlePageSizeChange"
+          />
         </div>
       </div>
     </div>
@@ -57,7 +68,28 @@ export default {
   data: function() {
     return {
       vehicleStatusCheck: '全部',
-      vehicleStatusList: ['全部', '入库', '就绪', '租用', '维保'],
+      vehicleStatusList: [
+        {
+          name: '全部',
+          state: -1
+        },
+        {
+          name: '入库',
+          state: 0
+        },
+        {
+          name: '就绪',
+          state: 1
+        },
+        {
+          name: '租用',
+          state: 0
+        },
+        {
+          name: '维保',
+          state: 0
+        }
+      ],
       statusColor: {
         入库: 'storage',
         就绪: 'ready',
@@ -65,9 +97,9 @@ export default {
         维保: 'maintenance'
       },
       formItem: {
-        licensePlateNum: '',
-        licensePlateCode: '',
-        engineNo: ''
+        plate_num: '',
+        vin: '',
+        engine_no: ''
       },
       vehicleColumns: [
         {
@@ -107,13 +139,17 @@ export default {
         }
       ],
       vehicleData: [],
-      spinShow: true
+      spinShow: true,
+      total: 0, // 数据总条数
+      currentPage: 1, // 当前页码
+      currentPageSize: 10 // 当前每页条数
     };
   },
   created() {
     console.log('MgVehicle Index.vue created');
+    this.$store.dispatch('homeStore/initBreadcrumbList', window.location.href);
     this.axios({
-      url: this.global_.path.baseUrl + '/rentalcars/vehicleDetail/page',
+      url: this.global_.path.baseUrl + '/rentalcars/vehicle/detail/page',
       method: 'get',
       headers: { 'Content-Type': 'application/json' }
     }).then(
@@ -124,6 +160,7 @@ export default {
         );
         if (res.data.code === 0) {
           this.vehicleData.push(...res.data.data.data);
+          this.total = res.data.data.total;
         } else {
           this.$Message.error({
             content: '车辆数据请求失败'
@@ -145,18 +182,78 @@ export default {
   },
   computed: {},
   methods: {
+    handleSelected(e, type) {
+      console.log('MgVehicleModel index.vue handleRadioChange', e, type);
+      let indexTemp = -1;
+      switch (type) {
+        case 'status':
+          indexTemp = this.vehicleStatusList.findIndex(item => item.name === e);
+          break;
+      }
+      return indexTemp;
+    },
     // 查询
     handleSearch() {
+      let state = this.vehicleStatusList[this.handleSelected(this.vehicleStatusCheck, 'status')].state;
+      let strTemp =
+        '?plate_num=' +
+        this.formItem.plate_num +
+        '&vin=' +
+        this.formItem.vin +
+        '&engine_no=' +
+        this.formItem.engine_no;
+      if (state !== -1) {
+        strTemp = strTemp + '&state=' + state;
+      }
       console.log('MgVehicle index.vue handleSearch');
+      this.axios({
+        url:
+          this.global_.path.baseUrl +
+          '/rentalcars/vehicle/detail/page' +
+          strTemp,
+        method: 'get',
+        headers: { 'Content-Type': 'application/json' }
+      }).then(
+        res => {
+          console.log(
+            'MgVehicle Index.vue created axios /vehicleDetail success',
+            res
+          );
+          if (res.data.code === 0) {
+            this.vehicleData.length = 0;
+            this.vehicleData.push(...res.data.data.data);
+          } else {
+            this.$Message.error({
+              content: '操作失败'
+            });
+          }
+          this.spinShow = false;
+        },
+        err => {
+          console.log(
+            'MgVehicle Index.vue created axios /vehicleDetail success',
+            err
+          );
+          this.$Message.error({
+            content: '操作失败'
+          });
+          this.spinShow = false;
+        }
+      );
     },
     // 重置
     handleReset() {
       for (let item in this.formItem) {
         this.formItem[item] = '';
       }
+      this.vehicleStatusCheck = '全部';
     },
     // 编辑
     edit(index) {
+      this.$router.push('/home/vehicleAddition?action=edit&id=' + this.vehicleData[index].id);
+    },
+    // 编辑
+    check(index) {
       this.$Modal.info({
         title: 'User Info',
         content: `Name：${this.data6[index].name}<br>Age：${this.data6[index].age}<br>Address：${this.data6[index].address}`
@@ -164,11 +261,54 @@ export default {
     },
     // 删除
     remove(index) {
-      this.data6.splice(index, 1);
+      this.$Modal.confirm({
+        title: '确定删除整行？',
+        content: '',
+        onOk: () => {
+          this.spinShow = true;
+          this.axios({
+            url:
+              this.global_.path.baseUrl +
+              '/rentalcars/vehicle/detail/delete?ids=' +
+              this.vehicleData[index].id,
+            method: 'delete',
+            headers: { 'Content-Type': 'application/json' }
+          }).then(
+            res => {
+              console.log(
+                'MgVehicle Index.vue created axios /vehicle/detail/delete success',
+                res
+              );
+              if (res.data.code === 0) {
+                this.$Message.info('操作成功');
+                this.vehicleData.splice(index, 1);
+              } else {
+                this.$Message.error({
+                  content: '操作失败'
+                });
+              }
+              this.spinShow = false;
+            },
+            err => {
+              console.log(
+                'MgVehicle Index.vue created axios /vehicle/detail/delete failure',
+                err
+              );
+              this.$Message.error({
+                content: '操作失败'
+              });
+              this.spinShow = false;
+            }
+          );
+        },
+        onCancel: () => {
+          console.log('MgVehicle index.vue confirm onCancel');
+        }
+      });
     },
     // 详情
     show(index) {
-      this.$router.push('/home/vehicleDetail');
+      this.$router.push('/home/vehicleDetail?id=' + this.vehicleData[index].id);
     },
     // 翻页
     changePage() {
@@ -177,11 +317,21 @@ export default {
     },
     // 新增
     add() {
-      this.$router.push('/home/vehicleAddition');
+      this.$router.push('/home/vehicleAddition?action=add');
     },
     // 维保
     maintain() {
       this.$router.push('/home/modelAddition');
+    },
+    // 页码改变
+    handlePageChange(e) {
+      console.log('MyVehicle Index.vue handlePageChange', e);
+      this.currentPageSize = e;
+    },
+    // 每页条数改变
+    handlePageSizeChange(e) {
+      console.log('MyVehicle Index.vue handlePageSizeChange', e);
+      this.currentPageSize = e;
     }
   },
   components: {}

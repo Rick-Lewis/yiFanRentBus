@@ -4,20 +4,20 @@
       <div class="header">基础信息</div>
       <div class="content">
         <div class="left">
-          <div>粤B 12345</div>
+          <div>{{vehicleDetail.plate_num}}</div>
           <div>车型信息：2019款奥迪Q5L</div>
-          <div>发动机号：K018354</div>
-          <div>出厂时间：2019-08-08</div>
-          <div>购买时间：2019-09-09</div>
+          <div>发动机号：{{vehicleDetail.engine_no}}</div>
+          <div>出厂时间：{{vehicleDetail.product_date}}</div>
+          <div>购买时间：{{vehicleDetail.purchase_date}}</div>
         </div>
         <div class="center">
           <div class="status">
             <div>状态</div>
             <div>就绪</div>
           </div>
-          <div>车辆识别代码：LXVJ2GEC0KA0163363</div>
-          <div>车辆颜色：蓝色</div>
-          <div>购买价格：389,000元</div>
+          <div>车辆识别代码：{{vehicleDetail.vin}}</div>
+          <div>车辆颜色：{{vehicleDetail.color}}</div>
+          <div>购买价格：{{vehicleDetail.purchase_price}}元</div>
         </div>
         <div class="right">
           <img src="../../../../../assets/logo.jpg" />
@@ -257,22 +257,43 @@ export default {
           cost: '920.00',
           insurancePolicyNo: '008975439'
         }
-      ]
+      ],
+      vehicleDetail: null
     };
   },
   created() {
     console.log('VehicleDetail Index.vue created', this.$store);
     this.$store.dispatch('homeStore/initBreadcrumbList', window.location.href);
     this.axios({
-      url: this.global_.path.baseUrl + '/rentalcars/vehicleDetail/',
+      url:
+        this.global_.path.baseUrl +
+        '/rentalcars/vehicle/detail/' +
+        this.$route.query.id,
       method: 'get',
       headers: { 'Content-Type': 'application/json' }
     }).then(
       res => {
-        console.log('VehicleDetail Index.vue created axios /vehicleDetail success', res);
+        console.log(
+          'VehicleDetail Index.vue created axios /vehicleDetail success',
+          res
+        );
+        if (res.data.code === 0) {
+          this.$Message.info('操作成功');
+          this.vehicleDetail = res.data.data;
+        } else {
+          this.$Message.error({
+            content: '操作失败'
+          });
+        }
       },
       err => {
-        console.log('VehicleDetail Index.vue created axios /vehicleDetail success', err);
+        console.log(
+          'VehicleDetail Index.vue created axios /vehicleDetail success',
+          err
+        );
+        this.$Message.error({
+          content: '操作失败'
+        });
       }
     );
   },

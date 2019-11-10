@@ -18,10 +18,10 @@
         </RadioGroup>
       </div>
       <div class="vehicle-status">
-        <span>车辆状态：</span>
-        <RadioGroup v-model="vehicleStatusCheck">
+        <span>车型状态：</span>
+        <RadioGroup v-model="vehicleModelStatusCheck">
           <Radio
-            v-for="(item, index) in vehicleStatusList"
+            v-for="(item, index) in vehicleModelStatusList"
             v-bind:key="index"
             v-bind:label="item.name"
           ></Radio>
@@ -86,8 +86,8 @@ export default {
       fromBrandList: [],
       vehicleTypeCheck: '全部',
       vehicleTypeList: [],
-      vehicleStatusCheck: '全部',
-      vehicleStatusList: [
+      vehicleModelStatusCheck: '全部',
+      vehicleModelStatusList: [
         { name: '全部', state: -1 },
         { name: '已关停', state: 0 },
         { name: '已开启', state: 1 }
@@ -134,8 +134,9 @@ export default {
   },
   created() {
     console.log('MgVehicleModel index.vue created');
+    this.$store.dispatch('homeStore/initBreadcrumbList', window.location.href);
     let p1 = this.axios({
-      url: this.global_.path.baseUrl + '/rentalcars/vehicleCategory/page',
+      url: this.global_.path.baseUrl + '/rentalcars/vehicle/category/page',
       method: 'get',
       headers: { 'Content-Type': 'application/json' }
     }).then(
@@ -166,7 +167,7 @@ export default {
       }
     );
     let p2 = this.axios({
-      url: this.global_.path.baseUrl + '/rentalcars/vehicleBrand/page',
+      url: this.global_.path.baseUrl + '/rentalcars/vehicle/brand/page',
       method: 'get',
       headers: { 'Content-Type': 'application/json' }
     }).then(
@@ -253,7 +254,7 @@ export default {
           indexTemp = this.vehicleTypeList.findIndex(item => item.name === e);
           break;
         case 'status':
-          indexTemp = this.vehicleStatusList.findIndex(item => item.name === e);
+          indexTemp = this.vehicleModelStatusList.findIndex(item => item.name === e);
           break;
       }
       return indexTemp;
@@ -262,7 +263,7 @@ export default {
     handleSearch() {
       let brandId = this.fromBrandList[this.handleSelected(this.fromBrandCheck, 'brand')].id;
       let categoryId = this.vehicleTypeList[this.handleSelected(this.vehicleTypeCheck, 'type')].id;
-      let state = this.vehicleStatusList[this.handleSelected(this.vehicleStatusCheck, 'status')].state;
+      let state = this.vehicleModelStatusList[this.handleSelected(this.vehicleModelStatusCheck, 'status')].state;
       let strTemp = '';
       if (brandId !== -1) {
         strTemp = strTemp + '&brand_id=' + brandId;
@@ -321,7 +322,7 @@ export default {
       for (let item in this.formItem) {
         this.formItem[item] = '';
       }
-      this.vehicleStatusCheck = '全部';
+      this.vehicleModelStatusCheck = '全部';
       this.vehicleTypeCheck = '全部';
       this.fromBrandCheck = '全部';
     },
@@ -335,7 +336,7 @@ export default {
           this.axios({
             url:
               this.global_.path.baseUrl +
-              '/rentalcars/vehicleCategory/delete?ids=' +
+              '/rentalcars/vehicle/model/delete?ids=' +
               this.vehicleModelData[index].id,
             method: 'delete',
             headers: { 'Content-Type': 'application/json' }
@@ -374,14 +375,11 @@ export default {
     },
     // 编辑行
     edit(index) {
-      this.$Modal.info({
-        title: 'User Info',
-        content: `Name：${this.data6[index].name}<br>Age：${this.data6[index].age}<br>Address：${this.data6[index].address}`
-      });
+      this.$router.push('/home/modelAddition?action=edit&id=' + this.vehicleModelData[index].id);
     },
     // 新增
     add() {
-      this.$router.push('/home/modelAddition');
+      this.$router.push('/home/modelAddition?action=add');
     },
     // 车型详情
     show(index) {

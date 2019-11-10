@@ -12,16 +12,28 @@
       </Form>
     </div>
     <div class="content-container">
-      <Button type="primary" style="margin-bottom: 10px;">+新增</Button>
+      <Button type="primary" style="margin-bottom: 10px;" @click="add">+新增</Button>
       <Table border :columns="brandColumns" :data="brandData" stripe>
-        <template slot-scope="{ row, index }" slot="action">
+        <template v-slot:logo="{ row, index }">
+          <div class="logo-container">
+            <img :src="global_.path.baseUrl + row.logo" />
+          </div>
+        </template>
+        <template v-slot:action="{ row, index }">
           <Button type="primary" size="small" style="margin-right: 5px" @click="edit(index)">编辑</Button>
           <Button type="error" size="small" @click="remove(index)">删除</Button>
         </template>
       </Table>
       <div class="page-container">
         <template>
-          <Page :total="100" size="small" show-elevator show-sizer />
+          <Page
+            :total="total"
+            size="small"
+            show-elevator
+            show-sizer
+            @on-change="handlePageChange"
+            @on-page-size-change="handlePageSizeChange"
+          />
         </template>
       </div>
     </div>
@@ -31,7 +43,7 @@
 
 <script>
 export default {
-  name: '',
+  name: 'MgBrand',
   data() {
     return {
       formItem: {
@@ -40,7 +52,7 @@ export default {
       brandColumns: [
         {
           title: 'Logo',
-          key: 'logo'
+          slot: 'logo'
         },
         {
           title: '品牌名称',
@@ -58,13 +70,15 @@ export default {
         }
       ],
       brandData: [],
-      spinShow: true
+      spinShow: true,
+      total: 0 // 数据总条数
     };
   },
   created() {
     console.log('MgBrand Index.vue created');
+    this.$store.dispatch('homeStore/initBreadcrumbList', window.location.href);
     this.axios({
-      url: this.global_.path.baseUrl + '/rentalcars/vehicleBrand/page',
+      url: this.global_.path.baseUrl + '/rentalcars/vehicle/brand/page',
       method: 'get',
       headers: { 'Content-Type': 'application/json' }
     }).then(
@@ -75,6 +89,7 @@ export default {
         );
         if (res.data.code === 0) {
           this.brandData.push(...res.data.data.dataSource);
+          this.total = res.data.data.total;
         } else {
           this.$Message.error({
             content: '品牌数据请求失败'
@@ -101,7 +116,7 @@ export default {
       this.axios({
         url:
           this.global_.path.baseUrl +
-          '/rentalcars/vehicleBrand/page?name=' +
+          '/rentalcars/vehicle/brand/page?name=' +
           this.formItem.brandName,
         method: 'get',
         headers: { 'Content-Type': 'application/json' }
@@ -149,7 +164,7 @@ export default {
           this.axios({
             url:
               this.global_.path.baseUrl +
-              '/rentalcars/vehicleBrand/delete?ids=' +
+              '/rentalcars/vehicle/brand/delete?ids=' +
               this.brandData[index].id,
             method: 'delete',
             headers: { 'Content-Type': 'application/json' }
@@ -188,10 +203,23 @@ export default {
     },
     // 编辑行
     edit(index) {
-      this.$Modal.info({
-        title: 'User Info',
-        content: `Name：${this.data6[index].name}<br>Age：${this.data6[index].age}<br>Address：${this.data6[index].address}`
-      });
+      this.$router.push(
+        '/home/brandAddition?action=edit&id=' + this.brandData[index].id
+      );
+    },
+    // 新增
+    add() {
+      this.$router.push('/home/brandAddition?action=add');
+    },
+    // 页码改变
+    handlePageChange(e) {
+      console.log('MgBrand Index.vue handlePageChange', e);
+      this.currentPageSize = e;
+    },
+    // 每页条数改变
+    handlePageSizeChange(e) {
+      console.log('MgBrand Index.vue handlePageSizeChange', e);
+      this.currentPageSize = e;
     }
   }
 };
@@ -210,6 +238,16 @@ export default {
     background-color: #fff;
     margin-top: 20px;
     padding: 20px;
+    .logo-container {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 10px 0;
+      img {
+        width: 58px;
+        height: 58px;
+      }
+    }
     .page-container {
       text-align: right;
       margin-top: 20px;

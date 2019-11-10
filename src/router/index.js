@@ -7,6 +7,7 @@ import MgVehicle from '@/pages/home/MgVehicle/MgVehicle';
 import VehicleAddition from '@/pages/home/MgVehicle/MgVehicle/VehicleAddition';
 import VehicleDetail from '@/pages/home/MgVehicle/MgVehicle/VehicleDetail';
 import MgBrand from '@/pages/home/MgVehicle/MgBrand';
+import BrandAddition from '@/pages/home/MgVehicle/MgBrand/BrandAddition';
 import MgVehicleModel from '@/pages/home/MgVehicle/MgVehicleModel';
 import ModelAddition from '@/pages/home/MgVehicle/MgVehicleModel/ModelAddition';
 import ModelDetail from '@/pages/home/MgVehicle/MgVehicleModel/ModelDetail';
@@ -40,6 +41,9 @@ export default new Router({
         {
           path: 'brand',
           component: MgBrand
+        }, {
+          path: 'brandAddition',
+          component: BrandAddition
         },
         {
           // 当 /home/vehicle 匹配成功，

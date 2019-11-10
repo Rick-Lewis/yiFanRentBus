@@ -7,18 +7,18 @@
           <img src="../../../../../assets/logo.jpg" />
         </div>
         <div class="center">
-          <div class="title">2019款奥迪Q5</div>
+          <div class="title">{{modelDetail.name}}</div>
           <div>车型品牌：奥迪</div>
           <div>车辆类型：中型SUV</div>
         </div>
         <div class="right">
           <div class="status">
             <div>状态</div>
-            <div>已启用</div>
+            <div>{{modelDetail.state === 1 ? '已启用' : '已停用'}}</div>
           </div>
           <div class="price">
             <div>今日日均</div>
-            <div>¥568.00</div>
+            <div>¥{{modelDetail.standard_price}}</div>
           </div>
         </div>
       </div>
@@ -29,39 +29,39 @@
         <div class="left">
           <div>
             <span>发动机：</span>
-            <span>2.0T 涡轮增加</span>
+            <span>{{modelDetail.let_litre}}T</span>
           </div>
           <div>
             <span>汽油规格：</span>
-            <span>95# | 98#</span>
+            <span>{{modelDetail.oil_type}}#</span>
           </div>
           <div>
             <span>前后雷达：</span>
-            <span>前雷达 | 后雷达</span>
+            <span>{{modelDetail.radar_head === 1 ? '前雷达' : ''}}</span><span>{{modelDetail.radar_tail === 1 ? ' | 后雷达' : ''}}</span>
           </div>
         </div>
         <div class="center">
           <div>
             <span>变速箱：</span>
-            <span>自动变速箱（8AT）</span>
+            <span>{{modelDetail.gearbox}}变速箱</span>
           </div>
           <div>
             <span>油箱容量：</span>
-            <span>55L</span>
+            <span>{{modelDetail.oil_volume}}L</span>
           </div>
           <div>
             <span>倒车影像：</span>
-            <span>有</span>
+            <span>{{modelDetail.backup_camera === 1 ? '有' : '无'}}</span>
           </div>
         </div>
         <div class="right">
           <div>
             <span>座位数：</span>
-            <span>5座</span>
+            <span>{{modelDetail.seat_count}}座</span>
           </div>
           <div>
             <span>综合油耗：</span>
-            <span>9.0 L/100km</span>
+            <span>{{modelDetail.oil_litre}} L/100km</span>
           </div>
         </div>
       </div>
@@ -199,7 +199,7 @@ export default {
     this.axios({
       url:
         this.global_.path.baseUrl +
-        '/rentalcars/vehicleCategory/' +
+        '/rentalcars/vehicle/model/' +
         this.$route.query.id,
       method: 'get',
       headers: { 'Content-Type': 'application/json' }
