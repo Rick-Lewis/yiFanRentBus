@@ -12,7 +12,7 @@ import MgVehicleModel from '@/pages/home/MgVehicle/MgVehicleModel';
 import ModelAddition from '@/pages/home/MgVehicle/MgVehicleModel/ModelAddition';
 import ModelDetail from '@/pages/home/MgVehicle/MgVehicleModel/ModelDetail';
 import MgOrder from '@/pages/home/OrderCenter/MgOrder';
-import OrderDetail from '@/pages/home/OrderCenter/OrderDetail';
+import OrderDetail from '@/pages/home/OrderCenter/MgOrder/OrderDetail';
 import MgPrice from '@/pages/home/MgPrice';
 
 Vue.use(Router);

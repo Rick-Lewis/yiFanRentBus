@@ -2,18 +2,18 @@
   <div class="order-detail-container">
     <div class="basic-info-container">
       <div class="header">
-        <span>单号：011909271202340076</span>
+        <span>单号：{{orderDetail.order.order_no}}</span>
         <span>司机：王大伟（130 8888 8888）</span>
       </div>
       <div class="content">
         <div class="left">
           <div>
-            <img src="../../../../assets/logo.jpg" style="width: 130px; height: 88px;" />
+            <img src="../../../../../assets/logo.jpg" style="width: 130px; height: 88px;" />
           </div>
           <div>
-            <div>粤B12345</div>
-            <div>2019款奥迪Q5L</div>
-            <div>￥238/日均</div>
+            <div>{{orderDetail.order.plate_num}}</div>
+            <div>{{orderDetail.model.name}}</div>
+            <div>￥{{orderDetail.order.price_unit}}/日均</div>
           </div>
         </div>
         <div class="string"></div>
@@ -21,15 +21,15 @@
           <div class="top">实际取还时间：</div>
           <div class="bottom">
             <div class="start">
-              <div>10-01</div>
-              <div>08:00</div>
+              <div>{{orderDetail.order.time_start.split(' ')[0]}}</div>
+              <div>{{orderDetail.order.time_start.split(' ')[1]}}</div>
             </div>
             <div class="time">
-              <div>7</div>
+              <div>{{orderDetail.order.days}}</div>
             </div>
             <div class="end">
-              <div>10-07</div>
-              <div>08:00</div>
+              <div>{{orderDetail.order.time_end.split(' ')[0]}}</div>
+              <div>{{orderDetail.order.time_end.split(' ')[1]}}</div>
             </div>
           </div>
         </div>
@@ -39,11 +39,11 @@
             <div class="top">实际取还地点：</div>
             <div class="bottom">
               <div class="fetch">
-                <span>古丈县政府店</span>
+                <span>{{orderDetail.order.store_pick_up_name}}</span>
                 <div>取</div>
               </div>
               <div class="return">
-                <span>古丈县政府店</span>
+                <span>{{orderDetail.order.store_drop_off_name}}</span>
                 <div>还</div>
               </div>
             </div>
@@ -55,7 +55,7 @@
             </div>
             <div>
               <div>实付金额</div>
-              <div>568.08元</div>
+              <div>{{orderDetail.order.price_total}}元</div>
             </div>
           </div>
         </div>
@@ -68,27 +68,27 @@
           <div class="fetch">
             <div>
               取车时间：
-              2019-09-01 09:32:09
+              {{orderDetail.order.time_start}}
             </div>
             <div style="margin-top: 15px;">
               取车门店：
-              古丈县政府店
+              {{orderDetail.order.store_pick_up_name}}
             </div>
           </div>
           <div class="return">
             <div>
               还车时间：
-              2019-09-01 09:32:09
+              {{orderDetail.order.time_end}}
             </div>
             <div style="margin-top: 15px;">
               还车门店：
-              古丈县政府店
+              {{orderDetail.order.store_drop_off_name}}
             </div>
           </div>
           <div class="duration">
             <div>
               预计租车时长：
-              7.5 天
+              {{orderDetail.order.days}} 天
             </div>
           </div>
         </div>
@@ -98,11 +98,11 @@
         <div class="content">
           <div>
             昵称：
-            十八
+            {{orderDetail.order.nick_name}}
           </div>
           <div>
             手机号：
-            1810 0000 000
+            {{orderDetail.order.telephone}}
           </div>
           <div style="opacity: 0;"></div>
         </div>
@@ -227,20 +227,20 @@ export default {
       spinShow: true
     };
   },
-  created(){
+  created() {
     console.log('OrderDetail Index.vue created');
     this.$store.dispatch('homeStore/initBreadcrumbList', window.location.href);
     this.axios({
       url:
         this.global_.path.baseUrl +
-        '/rentalcars/rental/detail/' +
-        this.$route.query.id,
+        '/rentalcars/order/rental/detail/' +
+        this.$route.query.order_no,
       method: 'get',
       headers: { 'Content-Type': 'application/json' }
     }).then(
       res => {
         console.log(
-          'OrderDetail Index.vue created axios /rental/detail/{id} success',
+          'OrderDetail Index.vue created axios /rental/detail/{order_no} success',
           res
         );
         if (res.data.code === 0) {
@@ -254,7 +254,7 @@ export default {
       },
       err => {
         console.log(
-          'OrderDetail Index.vue created axios /rental/detail/{id} failure',
+          'OrderDetail Index.vue created axios /rental/detail/{order_no} failure',
           err
         );
         this.$Message.error({
@@ -271,6 +271,7 @@ export default {
 .order-detail-container {
   margin-top: 5px;
   min-height: 260px;
+  position: relative;
   .basic-info-container {
     padding: 16px;
     background-color: #fff;
