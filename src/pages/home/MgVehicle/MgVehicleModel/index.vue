@@ -218,7 +218,7 @@ export default {
       },
       err => {
         console.log(
-          'MgVehicleModel Index.vue created axios /model success',
+          'MgVehicleModel Index.vue created axios /model failure',
           err
         );
         this.$Message.error({

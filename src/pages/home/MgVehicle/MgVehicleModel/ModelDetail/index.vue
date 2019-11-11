@@ -122,6 +122,7 @@
         </div>
       </div>
     </div>
+    <Spin size="large" fix v-if="spinShow"></Spin>
   </div>
 </template>
 <script>

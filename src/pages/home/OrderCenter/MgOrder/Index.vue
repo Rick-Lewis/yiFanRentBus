@@ -47,7 +47,7 @@
       </Form>
     </div>
     <div class="content-container">
-      <div class="item-container" v-for="(item, index) in [1,2,3,4,5]" v-bind:key="index">
+      <div class="item-container" v-for="(item, index) in orderData" v-bind:key="index">
         <div class="item-header">
           <span>下单时间：2019-10-01 08:30:09</span>
           <span style="padding-left: 15px;">订单编号：011909271202340076</span>
@@ -106,11 +106,24 @@
           </div>
           <div class="string"></div>
           <div class="col-item">
-            <a @click="handleToDetail">订单详情</a>
+            <a @click="show">订单详情</a>
           </div>
         </div>
       </div>
+      <div class="page-container">
+        <template>
+          <Page
+            :total="total"
+            size="small"
+            show-elevator
+            show-sizer
+            @on-change="handlePageChange"
+            @on-page-size-change="handlePageSizeChange"
+          />
+        </template>
+      </div>
     </div>
+    <Spin size="large" fix v-if="spinShow"></Spin>
   </div>
 </template>
 <script>
@@ -135,8 +148,46 @@ export default {
         orderNo: '',
         licensePlateNum: '',
         username: ''
-      }
+      },
+      orderData: [],
+      total: 0, // 数据总条数
+      currentPage: 1, // 当前页码
+      currentPageSize: 10, // 当前每页条数
+      spinShow: true
     };
+  },
+  created() {
+    console.log('MgOrder Index.vue created');
+    this.$store.dispatch('homeStore/initBreadcrumbList', window.location.href);
+    this.axios({
+      url: this.global_.path.baseUrl + '/rentalcars/order/rental/page',
+      method: 'get',
+      headers: { 'Content-Type': 'application/json' }
+    }).then(
+      res => {
+        console.log(
+          'MgOrder Index.vue created axios /order/rental success',
+          res
+        );
+        if (res.data.code === 0) {
+          this.orderData.push(...res.data.data.data);
+          this.total = res.data.data.total;
+        } else {
+          this.$Message.error({
+            content: '操作失败'
+          });
+        }
+      },
+      err => {
+        console.log(
+          'MgOrder Index.vue created axios /order/rental failure',
+          err
+        );
+        this.$Message.error({
+          content: '操作失败'
+        });
+      }
+    );
   },
   computed: {},
   methods: {
@@ -150,8 +201,19 @@ export default {
         this.formItem[item] = '';
       }
     },
-    handleToDetail() {
-      this.$router.push('/home/orderDetail');
+    // 车型详情
+    show(index) {
+      this.$router.push('/home/orderDetail?id=' + this.orderData[index].id);
+    },
+    // 页码改变
+    handlePageChange(e) {
+      console.log('MgOrder Index.vue handlePageChange', e);
+      this.currentPageSize = e;
+    },
+    // 每页条数改变
+    handlePageSizeChange(e) {
+      console.log('MgOrder Index.vue handlePageSizeChange', e);
+      this.currentPageSize = e;
     }
   },
   components: {}

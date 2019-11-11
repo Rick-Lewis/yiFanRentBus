@@ -126,6 +126,7 @@
         </div>
       </div>
     </div>
+    <Spin size="large" fix v-if="spinShow"></Spin>
   </div>
 </template>
 
@@ -221,8 +222,47 @@ export default {
           content: '车况很好，服务周到，已经安利给小伙伴了',
           time: '2017-10-01 12:00:00'
         }
-      ]
+      ],
+      orderDetail: null,
+      spinShow: true
     };
+  },
+  created(){
+    console.log('OrderDetail Index.vue created');
+    this.$store.dispatch('homeStore/initBreadcrumbList', window.location.href);
+    this.axios({
+      url:
+        this.global_.path.baseUrl +
+        '/rentalcars/rental/detail/' +
+        this.$route.query.id,
+      method: 'get',
+      headers: { 'Content-Type': 'application/json' }
+    }).then(
+      res => {
+        console.log(
+          'OrderDetail Index.vue created axios /rental/detail/{id} success',
+          res
+        );
+        if (res.data.code === 0) {
+          this.orderDetail = res.data.data;
+        } else {
+          this.$Message.error({
+            content: '操作失败'
+          });
+        }
+        this.spinShow = false;
+      },
+      err => {
+        console.log(
+          'OrderDetail Index.vue created axios /rental/detail/{id} failure',
+          err
+        );
+        this.$Message.error({
+          content: '操作失败'
+        });
+        this.spinShow = false;
+      }
+    );
   }
 };
 </script>
