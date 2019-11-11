@@ -44,9 +44,6 @@
         <template v-slot:brand_name="{ row }">
           <span>{{row.brand_name}}</span>
         </template>
-        <!-- <template v-slot:vehicleNum="{ row }">
-          <Progress :percent="row.vehicleNum" />
-        </template> -->
         <template v-slot:state="{ row }">
           <Switch :value="row.state == '0' ? false : true" :disabled="true">
             <span slot="open">开</span>
@@ -77,7 +74,6 @@
 </template>
 
 <script>
-// import homeStore from '../../../../store/home/index';
 export default {
   name: 'MgVehicleModel',
   data() {
@@ -104,10 +100,6 @@ export default {
           title: '车辆类型',
           key: 'category_name'
         },
-        // {
-        //   title: '车辆数',
-        //   slot: 'vehicleNum'
-        // },
         {
           title: '今日价格',
           key: 'standard_price'

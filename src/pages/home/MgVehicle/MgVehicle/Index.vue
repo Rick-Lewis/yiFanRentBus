@@ -13,8 +13,8 @@
       </div>
       <Form :model="formItem" inline class="form-container">
         <FormItem>
-          <span>车牌名称：</span>
-          <Input v-model="formItem.plate_num" placeholder="请输入车牌名称" style="width: 200px" />
+          <span>车牌号：</span>
+          <Input v-model="formItem.plate_num" placeholder="请输入车牌号" style="width: 200px" />
         </FormItem>
         <FormItem>
           <span>车辆识别代码：</span>
