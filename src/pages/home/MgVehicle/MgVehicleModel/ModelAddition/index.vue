@@ -89,14 +89,14 @@
         <div class="left">
           <FormItem>
             <span style="padding-right: 14px;">发动机：</span>
-            <Input v-model="confInfoForm.oil_litre" placeholder="请输入发动机" style="width: 200px">
+            <Input v-model="confInfoForm.let_litre" placeholder="请输入发动机" style="width: 200px">
               <div class="suffix" slot="suffix">T</div>
             </Input>
           </FormItem>
           <FormItem>
             <span>汽油规格：</span>
             <Input v-model="confInfoForm.oil_type" placeholder="请输入汽油规格" style="width: 200px">
-              <div class="suffix" slot="suffix">L</div>
+              <div class="suffix" slot="suffix">#</div>
             </Input>
           </FormItem>
           <FormItem>
@@ -107,7 +107,9 @@
           </FormItem>
           <FormItem>
             <span style="padding-right: 14px;">车门数：</span>
-            <Input v-model="confInfoForm.door_count" placeholder="请输入车门数" style="width: 200px" />
+            <Input v-model="confInfoForm.door_count" placeholder="请输入车门数" style="width: 200px">
+              <div class="suffix" slot="suffix">门</div>
+            </Input>
           </FormItem>
           <FormItem>
             <span>前后雷达：</span>
@@ -223,7 +225,7 @@ export default {
         '/rentalcars/upload/image?image&folderName=vehicle_model',
       fromBrandCheck: '全部',
       fromBrandList: [],
-      vehicleTypeCheck: '全部',
+      vehicleTypeCheck: '其他',
       vehicleTypeList: [],
       energyTypesCheck: '其他',
       energyTypesList: ['其他', '汽油', '电动', '油电混合', '柴油'],
@@ -324,10 +326,7 @@ export default {
           res
         );
         if (res.data.code === 0) {
-          this.vehicleTypeList.push(
-            { id: -1, name: '全部' },
-            ...res.data.data.data
-          );
+          this.vehicleTypeList.push(...res.data.data.data);
         } else {
           this.$Message.error({
             content: '车辆类型请求失败'
@@ -357,7 +356,7 @@ export default {
         if (res.data.code === 0) {
           this.fromBrandList.push(
             { id: -1, name: '全部' },
-            ...res.data.data.dataSource
+            ...res.data.data.data
           );
         } else {
           this.$Message.error({

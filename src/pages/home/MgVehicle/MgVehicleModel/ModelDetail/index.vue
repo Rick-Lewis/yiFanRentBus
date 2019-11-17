@@ -4,12 +4,12 @@
       <div class="header">基础信息</div>
       <div class="content">
         <div class="left">
-          <img src="../../../../../assets/logo.jpg" />
+          <img :src="global_.path.baseUrl + modelDetail.image" />
         </div>
         <div class="center">
           <div class="title">{{modelDetail.name}}</div>
-          <div>车型品牌：奥迪</div>
-          <div>车辆类型：中型SUV</div>
+          <div>车型品牌：{{modelDetail.brand_name}}</div>
+          <div>车辆类型：{{modelDetail.category_name}}</div>
         </div>
         <div class="right">
           <div class="status">
@@ -37,7 +37,8 @@
           </div>
           <div>
             <span>前后雷达：</span>
-            <span>{{modelDetail.radar_head === 1 ? '前雷达' : ''}}</span><span>{{modelDetail.radar_tail === 1 ? ' | 后雷达' : ''}}</span>
+            <span>{{modelDetail.radar_head === 1 ? '前雷达' : ''}}</span>
+            <span>{{modelDetail.radar_tail === 1 ? ' | 后雷达' : ''}}</span>
           </div>
         </div>
         <div class="center">
@@ -102,7 +103,7 @@
     <div class="vehicle-info-container">
       <div class="header">车辆信息</div>
       <div class="content">
-        <Table border :columns="columns12" :data="data6" stripe>
+        <Table border :columns="vehicleColumns" :data="vehicleData" stripe>
           <template v-slot:status="{ row }">
             <div>{{row.status}}</div>
           </template>
@@ -116,9 +117,14 @@
           </template>
         </Table>
         <div class="page-container">
-          <template>
-            <Page :total="100" />
-          </template>
+          <Page
+            :total="total"
+            size="small"
+            show-elevator
+            show-sizer
+            @on-change="handlePageChange"
+            @on-page-size-change="handlePageSizeChange"
+          />
         </div>
       </div>
     </div>
@@ -131,18 +137,18 @@ export default {
   data: function() {
     return {
       modelDetail: null,
-      columns12: [
+      vehicleColumns: [
         {
           title: '车牌号',
-          key: 'licensePlateNum'
+          key: 'plate_num'
         },
         {
           title: '车牌识别代码',
-          key: 'licensePlateCode'
+          key: 'vin'
         },
         {
           title: '发动机号',
-          key: 'EngineNo'
+          key: 'engine_no'
         },
         {
           title: '颜色',
@@ -161,37 +167,11 @@ export default {
           align: 'center'
         }
       ],
-      data6: [
-        {
-          licensePlateNum: '粤B 12345',
-          licensePlateCode: 'LXVJ2GEC0KA0163363',
-          EngineNo: 'K018354',
-          color: '蓝色',
-          status: '入库'
-        },
-        {
-          licensePlateNum: '粤B 12345',
-          licensePlateCode: 'LXVJ2GEC0KA0163363',
-          EngineNo: 'K018354',
-          color: '蓝色',
-          status: '入库'
-        },
-        {
-          licensePlateNum: '粤B 12345',
-          licensePlateCode: 'LXVJ2GEC0KA0163363',
-          EngineNo: 'K018354',
-          color: '蓝色',
-          status: '入库'
-        },
-        {
-          licensePlateNum: '粤B 12345',
-          licensePlateCode: 'LXVJ2GEC0KA0163363',
-          EngineNo: 'K018354',
-          color: '蓝色',
-          status: '入库'
-        }
-      ],
-      spinShow: true
+      vehicleData: [],
+      spinShow: true,
+      total: 0, // 数据总条数
+      currentPage: 1, // 当前页码
+      currentPageSize: 10 // 当前每页条数
     };
   },
   created() {
@@ -230,11 +210,58 @@ export default {
         this.spinShow = false;
       }
     );
+    this.axios({
+      url:
+        this.global_.path.baseUrl +
+        '/rentalcars/vehicle/detail/page?pageIndex=' +
+        this.currentPage +
+        '&pageSize=' +
+        this.currentPageSize + '&model_id=' + this.$route.query.id,
+      method: 'get',
+      headers: { 'Content-Type': 'application/json' }
+    }).then(
+      res => {
+        console.log(
+          'ModelDetail Index.vue created axios /vehicleDetail success',
+          res
+        );
+        if (res.data.code === 0) {
+          this.vehicleData.length = 0;
+          this.vehicleData.push(...res.data.data.data);
+          this.total = res.data.data.total;
+        } else {
+          this.$Message.error({
+            content: '车辆数据请求失败'
+          });
+        }
+        this.spinShow = false;
+      },
+      err => {
+        console.log(
+          'ModelDetail Index.vue created axios /vehicleDetail success',
+          err
+        );
+        this.$Message.error({
+          content: '车辆数据请求失败'
+        });
+        this.spinShow = false;
+      }
+    );
   },
   computed: {},
   methods: {
     handlePlateDetail(index) {
       console.log('ModelDetail index.vue methods handlePlateDetail', index);
+    },
+    // 页码改变
+    handlePageChange(e) {
+      console.log('ModelDetail Index.vue handlePageChange', e);
+      this.currentPageSize = e;
+    },
+    // 每页条数改变
+    handlePageSizeChange(e) {
+      console.log('ModelDetail Index.vue handlePageSizeChange', e);
+      this.currentPageSize = e;
     }
   },
   components: {}

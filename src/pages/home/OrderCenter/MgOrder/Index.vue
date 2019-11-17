@@ -4,7 +4,11 @@
       <div class="order-status">
         <span>订单状态：</span>
         <RadioGroup v-model="orderStatusCheck">
-          <Radio v-for="(item, index) in orderStatusList" v-bind:key="index" v-bind:label="item"></Radio>
+          <Radio
+            v-for="(item, index) in orderStatusList"
+            v-bind:key="index"
+            v-bind:label="item.name"
+          ></Radio>
         </RadioGroup>
       </div>
       <div class="driver-existence">
@@ -47,6 +51,7 @@
       </Form>
     </div>
     <div class="content-container">
+      <div v-if="orderData.length <= 0" style="text-align: center;">～ 没有更多了 ～</div>
       <div class="item-container" v-for="(item, index) in orderData" v-bind:key="index">
         <div class="item-header">
           <span>下单时间：2019-10-01 08:30:09</span>
@@ -65,7 +70,7 @@
             </div>
           </div>
           <div class="string"></div>
-          <div class="col-item">
+          <div class="col-item" style="text-align: center;">
             <div>{{item.telephone}}</div>
             <div>微信：十八</div>
           </div>
@@ -133,12 +138,12 @@ export default {
     return {
       orderStatusCheck: '全部',
       orderStatusList: [
-        '全部',
-        '未支付',
-        '待取车',
-        '进行中',
-        '已完成',
-        '已取消'
+        { name: '全部', value: -2 },
+        { name: '未支付', value: 0 },
+        { name: '待取车', value: 1 },
+        { name: '进行中', value: 2 },
+        { name: '已完成', value: 3 },
+        { name: '已取消', value: -1 }
       ],
       driverExistenceCheck: '全部',
       driverExistenceList: ['全部', '无', '有'],
@@ -160,7 +165,12 @@ export default {
     console.log('MgOrder Index.vue created');
     this.$store.dispatch('homeStore/initBreadcrumbList', window.location.href);
     this.axios({
-      url: this.global_.path.baseUrl + '/rentalcars/order/rental/page',
+      url:
+        this.global_.path.baseUrl +
+        '/rentalcars/order/rental/page?pageIndex=' +
+        this.currentPage +
+        '&pageSize=' +
+        this.currentPageSize,
       method: 'get',
       headers: { 'Content-Type': 'application/json' }
     }).then(
@@ -193,8 +203,24 @@ export default {
   },
   computed: {},
   methods: {
+    handleSelected(e, type) {
+      console.log('MgOrder index.vue handleSelected', e, type);
+      let indexTemp = -1;
+      switch (type) {
+        case 'status':
+          indexTemp = this.orderStatusList.findIndex(item => item.name === e);
+          break;
+      }
+      return indexTemp;
+    },
     // 查询
     handleSearch() {
+      let indexTemp = this.handleSelected(this.orderStatusCheck, 'status');
+      let statusTemp = this.orderStatusList[indexTemp].value;
+      let strTemp = '';
+      if (statusTemp !== -2) {
+        strTemp = strTemp + '&status=' + statusTemp;
+      }
       console.log('MgOrder index.vue handleSearch');
       this.axios({
         url:
@@ -204,7 +230,7 @@ export default {
           '&plate_num=' +
           this.formItem.plate_num +
           '&key=' +
-          this.formItem.key,
+          this.formItem.key + strTemp,
         method: 'get',
         headers: { 'Content-Type': 'application/json' }
       }).then(
@@ -248,17 +274,93 @@ export default {
     // 车型详情
     show(index) {
       console.log('MgOrder Index.vue show', this.orderData[index]);
-      this.$router.push('/home/orderDetail?order_no=' + this.orderData[index].order_no);
+      this.$router.push(
+        '/home/orderDetail?order_no=' + this.orderData[index].order_no
+      );
     },
     // 页码改变
     handlePageChange(e) {
       console.log('MgOrder Index.vue handlePageChange', e);
-      this.currentPageSize = e;
+      this.currentPage = e;
+      this.axios({
+        url:
+          this.global_.path.baseUrl +
+          '/rentalcars/order/rental/page?pageIndex=' +
+          this.currentPage +
+          '&pageSize=' +
+          this.currentPageSize,
+        method: 'get',
+        headers: { 'Content-Type': 'application/json' }
+      }).then(
+        res => {
+          console.log(
+            'MgOrder Index.vue created axios /order/rental success',
+            res
+          );
+          if (res.data.code === 0) {
+            this.orderData.length = 0;
+            this.orderData.push(...res.data.data.data);
+            this.total = res.data.data.total;
+          } else {
+            this.$Message.error({
+              content: '操作失败'
+            });
+          }
+          this.spinShow = false;
+        },
+        err => {
+          console.log(
+            'MgOrder Index.vue created axios /order/rental failure',
+            err
+          );
+          this.$Message.error({
+            content: '操作失败'
+          });
+          this.spinShow = false;
+        }
+      );
     },
     // 每页条数改变
     handlePageSizeChange(e) {
       console.log('MgOrder Index.vue handlePageSizeChange', e);
       this.currentPageSize = e;
+      this.axios({
+        url:
+          this.global_.path.baseUrl +
+          '/rentalcars/order/rental/page?pageIndex=' +
+          this.currentPage +
+          '&pageSize=' +
+          this.currentPageSize,
+        method: 'get',
+        headers: { 'Content-Type': 'application/json' }
+      }).then(
+        res => {
+          console.log(
+            'MgOrder Index.vue created axios /order/rental success',
+            res
+          );
+          if (res.data.code === 0) {
+            this.orderData.length = 0;
+            this.orderData.push(...res.data.data.data);
+            this.total = res.data.data.total;
+          } else {
+            this.$Message.error({
+              content: '操作失败'
+            });
+          }
+          this.spinShow = false;
+        },
+        err => {
+          console.log(
+            'MgOrder Index.vue created axios /order/rental failure',
+            err
+          );
+          this.$Message.error({
+            content: '操作失败'
+          });
+          this.spinShow = false;
+        }
+      );
     }
   },
   components: {}
@@ -311,6 +413,7 @@ export default {
           align-items: center;
           .start {
             margin-right: 10px;
+            text-align: center;
           }
           .time {
             div {
@@ -322,6 +425,7 @@ export default {
           }
           .end {
             margin-left: 10px;
+            text-align: center;
           }
         }
         .address {

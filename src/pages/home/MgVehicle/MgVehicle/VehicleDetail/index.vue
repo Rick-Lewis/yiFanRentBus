@@ -4,37 +4,46 @@
       <div class="header">基础信息</div>
       <div class="content">
         <div class="left">
-          <div>{{vehicleDetail.plate_num}}</div>
-          <div>车型信息：2019款奥迪Q5L</div>
-          <div>发动机号：{{vehicleDetail.engine_no}}</div>
-          <div>出厂时间：{{vehicleDetail.product_date}}</div>
-          <div>购买时间：{{vehicleDetail.purchase_date}}</div>
+          <div>{{vehicleDetail && vehicleDetail.vehicleDetail.plate_num}}</div>
+          <div>车型信息：{{vehicleDetail && vehicleDetail.vehicleDetail.model_name}}</div>
+          <div>发动机号：{{vehicleDetail && vehicleDetail.vehicleDetail.engine_no}}</div>
+          <div>出厂时间：{{vehicleDetail && vehicleDetail.vehicleDetail.product_date}}</div>
+          <div>购买时间：{{vehicleDetail && vehicleDetail.vehicleDetail.purchase_date}}</div>
         </div>
         <div class="center">
           <div class="status">
             <div>状态</div>
             <div>就绪</div>
           </div>
-          <div>车辆识别代码：{{vehicleDetail.vin}}</div>
-          <div>车辆颜色：{{vehicleDetail.color}}</div>
-          <div>购买价格：{{vehicleDetail.purchase_price}}元</div>
+          <div>车辆识别代码：{{vehicleDetail && vehicleDetail.vehicleDetail.vin}}</div>
+          <div>车辆颜色：{{vehicleDetail && vehicleDetail.vehicleDetail.color}}</div>
+          <div>购买价格：{{vehicleDetail && vehicleDetail.vehicleDetail.purchase_price}}元</div>
         </div>
         <div class="right">
-          <img src="../../../../../assets/logo.jpg" />
+          <img :src="vehicleDetail && (global_.path.baseUrl + vehicleDetail.vehicleDetail.image)" />
         </div>
       </div>
     </div>
     <div class="lease-record-container">
       <div class="header">租用记录</div>
       <div class="content">
-        <Table border :columns="columns12" :data="data6" stripe>
+        <Table border :columns="rtColumns" :data="rtData" stripe>
           <template slot-scope="{ row, index }" slot="action">
             <Button type="primary" size="small" @click="show(index)">详情</Button>
           </template>
         </Table>
         <div style="margin: 10px;overflow: hidden;">
           <div style="float: right;">
-            <Page :total="100" :current="1" @on-change="changePage"></Page>
+            <template>
+              <Page
+                :total="rtTotal"
+                size="small"
+                show-elevator
+                show-sizer
+                @on-change="handlePageChange"
+                @on-page-size-change="handlePageSizeChange"
+              />
+            </template>
           </div>
         </div>
       </div>
@@ -42,14 +51,23 @@
     <div class="maintenance-record-container">
       <div class="header">维保记录</div>
       <div class="content">
-        <Table border :columns="columns22" :data="data7" stripe>
+        <Table border :columns="mtColumns" :data="mtData" stripe>
           <template slot-scope="{ row, index }" slot="action">
             <Button type="primary" size="small" @click="show(index)">详情</Button>
           </template>
         </Table>
         <div style="margin: 10px;overflow: hidden;">
           <div style="float: right;">
-            <Page :total="100" :current="1" @on-change="changePage"></Page>
+            <template>
+              <Page
+                :total="mtTotal"
+                size="small"
+                show-elevator
+                show-sizer
+                @on-change="handlePageChange"
+                @on-page-size-change="handlePageSizeChange"
+              />
+            </template>
           </div>
         </div>
       </div>
@@ -57,14 +75,23 @@
     <div class="insurance-record-container">
       <div class="header">保险记录</div>
       <div class="content">
-        <Table border :columns="columns32" :data="data8" stripe>
+        <Table border :columns="irColumns" :data="irData" stripe>
           <template slot-scope="{ row, index }" slot="action">
             <Button type="primary" size="small" @click="show(index)">详情</Button>
           </template>
         </Table>
         <div style="margin: 10px;overflow: hidden;">
           <div style="float: right;">
-            <Page :total="100" :current="1" @on-change="changePage"></Page>
+            <template>
+              <Page
+                :total="irTotal"
+                size="small"
+                show-elevator
+                show-sizer
+                @on-change="handlePageChange"
+                @on-page-size-change="handlePageSizeChange"
+              />
+            </template>
           </div>
         </div>
       </div>
@@ -76,7 +103,7 @@ export default {
   name: 'VehicleDetail',
   data: function() {
     return {
-      columns12: [
+      rtColumns: [
         {
           title: '租用时间',
           key: 'leaseTime'
@@ -104,37 +131,8 @@ export default {
           align: 'center'
         }
       ],
-      data6: [
-        {
-          leaseTime: '2019-10-01至2019-10-07（7天）',
-          leaseUser: '13006617634',
-          userUnit: '私人会员',
-          cost: '2,344.00',
-          mileageRecord: '24,567km'
-        },
-        {
-          leaseTime: '2019-10-01至2019-10-07（7天）',
-          leaseUser: '13006617634',
-          userUnit: '私人会员',
-          cost: '2,344.00',
-          mileageRecord: '24,567km'
-        },
-        {
-          leaseTime: '2019-10-01至2019-10-07（7天）',
-          leaseUser: '13006617634',
-          userUnit: '私人会员',
-          cost: '2,344.00',
-          mileageRecord: '24,567km'
-        },
-        {
-          leaseTime: '2019-10-01至2019-10-07（7天）',
-          leaseUser: '13006617634',
-          userUnit: '私人会员',
-          cost: '2,344.00',
-          mileageRecord: '24,567km'
-        }
-      ],
-      columns22: [
+      rtData: [],
+      mtColumns: [
         {
           title: '维保日期',
           key: 'maintenanceDate'
@@ -162,37 +160,8 @@ export default {
           align: 'center'
         }
       ],
-      data7: [
-        {
-          maintenanceDate: '2019-10-01至2019-10-07（7天）',
-          type: '清洁',
-          serviceUnit: '湖南小凤凰车服公司',
-          cost: '20.00',
-          head: '隔壁老王'
-        },
-        {
-          maintenanceDate: '2019-10-01至2019-10-07（7天）',
-          type: '清洁',
-          serviceUnit: '湖南小凤凰车服公司',
-          cost: '20.00',
-          head: '隔壁老王'
-        },
-        {
-          maintenanceDate: '2019-10-01至2019-10-07（7天）',
-          type: '清洁',
-          serviceUnit: '湖南小凤凰车服公司',
-          cost: '20.00',
-          head: '隔壁老王'
-        },
-        {
-          maintenanceDate: '2019-10-01至2019-10-07（7天）',
-          type: '清洁',
-          serviceUnit: '湖南小凤凰车服公司',
-          cost: '20.00',
-          head: '隔壁老王'
-        }
-      ],
-      columns32: [
+      mtData: [],
+      irColumns: [
         {
           title: '保险日期',
           key: 'dateOfInsurance'
@@ -224,41 +193,17 @@ export default {
           align: 'center'
         }
       ],
-      data8: [
-        {
-          dateOfInsurance: '2019-10-01至2019-10-07',
-          insuredDate: '2019-10-01',
-          type: '交强险',
-          serviceUnit: '平安财产险',
-          cost: '920.00',
-          insurancePolicyNo: '008975439'
-        },
-        {
-          dateOfInsurance: '2019-10-01至2019-10-07',
-          insuredDate: '2019-10-01',
-          type: '交强险',
-          serviceUnit: '平安财产险',
-          cost: '920.00',
-          insurancePolicyNo: '008975439'
-        },
-        {
-          dateOfInsurance: '2019-10-01至2019-10-07',
-          insuredDate: '2019-10-01',
-          type: '交强险',
-          serviceUnit: '平安财产险',
-          cost: '920.00',
-          insurancePolicyNo: '008975439'
-        },
-        {
-          dateOfInsurance: '2019-10-01至2019-10-07',
-          insuredDate: '2019-10-01',
-          type: '交强险',
-          serviceUnit: '平安财产险',
-          cost: '920.00',
-          insurancePolicyNo: '008975439'
-        }
-      ],
-      vehicleDetail: null
+      irData: [],
+      vehicleDetail: null,
+      rtTotal: 0, // 数据总条数
+      rtCurrentPage: 1, // 当前页码
+      rtCurrentPageSize: 10, // 当前每页条数
+      mtTotal: 0, // 数据总条数
+      mtCurrentPage: 1, // 当前页码
+      mtCurrentPageSize: 10, // 当前每页条数
+      irTotal: 0, // 数据总条数
+      irCurrentPage: 1, // 当前页码
+      irCurrentPageSize: 10 // 当前每页条数
     };
   },
   created() {
@@ -303,10 +248,15 @@ export default {
     show(index) {
       console.log('VehicleDetail index.vue methods show');
     },
-    // 翻页
-    changePage() {
-      // The simulated data is changed directly here, and the actual usage scenario should fetch the data from the server
-      console.log('VehicleDetail Index.vue methods changePage');
+    // 页码改变
+    handlePageChange(e) {
+      console.log('VehicleDetail Index.vue handlePageChange', e);
+      this.currentPageSize = e;
+    },
+    // 每页条数改变
+    handlePageSizeChange(e) {
+      console.log('VehicleDetail Index.vue handlePageSizeChange', e);
+      this.currentPageSize = e;
     }
   },
   components: {}

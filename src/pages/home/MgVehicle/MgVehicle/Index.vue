@@ -113,6 +113,7 @@ export default {
         },
         {
           title: '车辆识别代码',
+          width: 180,
           key: 'vin'
         },
         {
@@ -148,8 +149,49 @@ export default {
   created() {
     console.log('MgVehicle Index.vue created');
     this.$store.dispatch('homeStore/initBreadcrumbList', window.location.href);
-    this.axios({
-      url: this.global_.path.baseUrl + '/rentalcars/vehicle/detail/page',
+    let p1 = this.axios({
+      url: this.global_.path.baseUrl + '/rentalcars/status/vehicle',
+      method: 'get',
+      headers: { 'Content-Type': 'application/json' }
+    }).then(
+      res => {
+        console.log(
+          'MgVehicle Index.vue created axios /status/vehicle success',
+          res
+        );
+        // if (res.data.code === 0) {
+        // let obj = [];
+        // let temp = JSON.stringify(res.data);
+        // for (let item in temp) {
+        //   obj.push({
+        //     name: temp[item],
+        //     value: item
+        //   });
+        // }
+        // this.vehicleStatusList.push({ name: '全部', value: -2 }, ...obj);
+        // } else {
+        //   this.$Message.error({
+        //     content: '车辆状态数据请求失败'
+        //   });
+        // }
+      },
+      err => {
+        console.log(
+          'MgVehicle Index.vue created axios /status/vehicle failure',
+          err
+        );
+        this.$Message.error({
+          content: '车辆状态数据请求失败'
+        });
+      }
+    );
+    let p2 = this.axios({
+      url:
+        this.global_.path.baseUrl +
+        '/rentalcars/vehicle/detail/page?pageIndex=' +
+        this.currentPage +
+        '&pageSize=' +
+        this.currentPageSize,
       method: 'get',
       headers: { 'Content-Type': 'application/json' }
     }).then(
@@ -166,7 +208,6 @@ export default {
             content: '车辆数据请求失败'
           });
         }
-        this.spinShow = false;
       },
       err => {
         console.log(
@@ -176,9 +217,17 @@ export default {
         this.$Message.error({
           content: '车辆数据请求失败'
         });
-        this.spinShow = false;
       }
     );
+    Promise.all([p1, p2])
+      .then(res => {
+        console.log('MgVehicle Index.vue created Promise.all success', res);
+        this.spinShow = false;
+      })
+      .catch(err => {
+        console.log('MgVehicle Index.vue created Promise.all failure', err);
+        this.spinShow = false;
+      });
   },
   computed: {},
   methods: {
@@ -194,7 +243,8 @@ export default {
     },
     // 查询
     handleSearch() {
-      let state = this.vehicleStatusList[this.handleSelected(this.vehicleStatusCheck, 'status')].state;
+      let indexTemp = this.handleSelected(this.vehicleStatusCheck, 'status');
+      let state = this.vehicleStatusList[indexTemp].state;
       let strTemp =
         '?plate_num=' +
         this.formItem.plate_num +
@@ -210,7 +260,11 @@ export default {
         url:
           this.global_.path.baseUrl +
           '/rentalcars/vehicle/detail/page' +
-          strTemp,
+          strTemp +
+          'pageIndex=' +
+          this.currentPage +
+          '&pageSize=' +
+          this.currentPageSize,
         method: 'get',
         headers: { 'Content-Type': 'application/json' }
       }).then(
@@ -250,7 +304,9 @@ export default {
     },
     // 编辑
     edit(index) {
-      this.$router.push('/home/vehicleAddition?action=edit&id=' + this.vehicleData[index].id);
+      this.$router.push(
+        '/home/vehicleAddition?action=edit&id=' + this.vehicleData[index].id
+      );
     },
     // 编辑
     check(index) {
@@ -327,11 +383,85 @@ export default {
     handlePageChange(e) {
       console.log('MyVehicle Index.vue handlePageChange', e);
       this.currentPageSize = e;
+      this.axios({
+        url:
+          this.global_.path.baseUrl +
+          '/rentalcars/vehicle/detail/page?pageIndex=' +
+          this.currentPage +
+          '&pageSize=' +
+          this.currentPageSize,
+        method: 'get',
+        headers: { 'Content-Type': 'application/json' }
+      }).then(
+        res => {
+          console.log(
+            'MgVehicle Index.vue created axios /vehicleDetail success',
+            res
+          );
+          if (res.data.code === 0) {
+            this.vehicleData.length = 0;
+            this.vehicleData.push(...res.data.data.data);
+            this.total = res.data.data.total;
+          } else {
+            this.$Message.error({
+              content: '车辆数据请求失败'
+            });
+          }
+          this.spinShow = false;
+        },
+        err => {
+          console.log(
+            'MgVehicle Index.vue created axios /vehicleDetail success',
+            err
+          );
+          this.$Message.error({
+            content: '车辆数据请求失败'
+          });
+          this.spinShow = false;
+        }
+      );
     },
     // 每页条数改变
     handlePageSizeChange(e) {
       console.log('MyVehicle Index.vue handlePageSizeChange', e);
       this.currentPageSize = e;
+      this.axios({
+        url:
+          this.global_.path.baseUrl +
+          '/rentalcars/vehicle/detail/page?pageIndex=' +
+          this.currentPage +
+          '&pageSize=' +
+          this.currentPageSize,
+        method: 'get',
+        headers: { 'Content-Type': 'application/json' }
+      }).then(
+        res => {
+          console.log(
+            'MgVehicle Index.vue created axios /vehicleDetail success',
+            res
+          );
+          if (res.data.code === 0) {
+            this.vehicleData.length = 0;
+            this.vehicleData.push(...res.data.data.data);
+            this.total = res.data.data.total;
+          } else {
+            this.$Message.error({
+              content: '车辆数据请求失败'
+            });
+          }
+          this.spinShow = false;
+        },
+        err => {
+          console.log(
+            'MgVehicle Index.vue created axios /vehicleDetail success',
+            err
+          );
+          this.$Message.error({
+            content: '车辆数据请求失败'
+          });
+          this.spinShow = false;
+        }
+      );
     }
   },
   components: {}

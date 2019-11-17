@@ -71,14 +71,21 @@ export default {
       ],
       brandData: [],
       spinShow: true,
-      total: 0 // 数据总条数
+      total: 0, // 数据总条数
+      currentPage: 1, // 当前页码
+      currentPageSize: 10 // 当前每页条数
     };
   },
   created() {
     console.log('MgBrand Index.vue created');
     this.$store.dispatch('homeStore/initBreadcrumbList', window.location.href);
     this.axios({
-      url: this.global_.path.baseUrl + '/rentalcars/vehicle/brand/page',
+      url:
+        this.global_.path.baseUrl +
+        '/rentalcars/vehicle/brand/page?pageIndex=' +
+        this.currentPage +
+        '&pageSize=' +
+        this.currentPageSize,
       method: 'get',
       headers: { 'Content-Type': 'application/json' }
     }).then(
@@ -88,7 +95,7 @@ export default {
           res
         );
         if (res.data.code === 0) {
-          this.brandData.push(...res.data.data.dataSource);
+          this.brandData.push(...res.data.data.data);
           this.total = res.data.data.total;
         } else {
           this.$Message.error({
@@ -117,7 +124,11 @@ export default {
         url:
           this.global_.path.baseUrl +
           '/rentalcars/vehicle/brand/page?name=' +
-          this.formItem.brandName,
+          this.formItem.brandName +
+          '&pageIndex=' +
+          this.currentPage +
+          '&pageSize=' +
+          this.currentPageSize,
         method: 'get',
         headers: { 'Content-Type': 'application/json' }
       }).then(
@@ -128,7 +139,8 @@ export default {
           );
           if (res.data.code === 0) {
             this.brandData.length = 0;
-            this.brandData.push(...res.data.data.dataSource);
+            this.brandData.push(...res.data.data.data);
+            this.total = res.data.data.total;
           } else {
             this.$Message.error({
               content: '品牌数据请求失败'
@@ -214,12 +226,86 @@ export default {
     // 页码改变
     handlePageChange(e) {
       console.log('MgBrand Index.vue handlePageChange', e);
-      this.currentPageSize = e;
+      this.currentPage = e;
+      this.axios({
+        url:
+          this.global_.path.baseUrl +
+          '/rentalcars/vehicle/brand/page?pageIndex=' +
+          this.currentPage +
+          '&pageSize=' +
+          this.currentPageSize,
+        method: 'get',
+        headers: { 'Content-Type': 'application/json' }
+      }).then(
+        res => {
+          console.log(
+            'MgBrand Index.vue created axios /vehicleBrand success',
+            res
+          );
+          if (res.data.code === 0) {
+            this.brandData.length = 0;
+            this.brandData.push(...res.data.data.data);
+            this.total = res.data.data.total;
+          } else {
+            this.$Message.error({
+              content: '品牌数据请求失败'
+            });
+          }
+          this.spinShow = false;
+        },
+        err => {
+          console.log(
+            'MgBrand Index.vue created axios /vehicleBrand success',
+            err
+          );
+          this.$Message.error({
+            content: '品牌数据请求失败'
+          });
+          this.spinShow = false;
+        }
+      );
     },
     // 每页条数改变
     handlePageSizeChange(e) {
       console.log('MgBrand Index.vue handlePageSizeChange', e);
       this.currentPageSize = e;
+      this.axios({
+        url:
+          this.global_.path.baseUrl +
+          '/rentalcars/vehicle/brand/page?pageIndex=' +
+          this.currentPage +
+          '&pageSize=' +
+          this.currentPageSize,
+        method: 'get',
+        headers: { 'Content-Type': 'application/json' }
+      }).then(
+        res => {
+          console.log(
+            'MgBrand Index.vue created axios /vehicleBrand success',
+            res
+          );
+          if (res.data.code === 0) {
+            this.brandData.length = 0;
+            this.brandData.push(...res.data.data.data);
+            this.total = res.data.data.total;
+          } else {
+            this.$Message.error({
+              content: '品牌数据请求失败'
+            });
+          }
+          this.spinShow = false;
+        },
+        err => {
+          console.log(
+            'MgBrand Index.vue created axios /vehicleBrand success',
+            err
+          );
+          this.$Message.error({
+            content: '品牌数据请求失败'
+          });
+          this.spinShow = false;
+        }
+      );
     }
   }
 };
