@@ -83,6 +83,12 @@
           <span>购买价格：</span>
           <Input v-model="basicInfoForm.purchase_price" placeholder="请输入购买价格" style="width: 200px" />
         </FormItem>
+        <FormItem>
+          <span>所属门店：</span>
+          <RadioGroup v-model="shopCheck">
+            <Radio v-for="(item, index) in shopList" v-bind:key="index" v-bind:label="item.name"></Radio>
+          </RadioGroup>
+        </FormItem>
       </Form>
     </div>
     <div class="btn-container">
@@ -112,6 +118,8 @@ export default {
       uploadList: [],
       vehicleModelCheck: '其他',
       vehicleModelList: [],
+      shopCheck: '其他',
+      shopList: [],
       vehicleColor: '',
       spinShow: true,
       uploadUrl:
@@ -122,7 +130,36 @@ export default {
   created() {
     console.log('VehicleAddition Index.vue created', this.$store);
     this.$store.dispatch('homeStore/initBreadcrumbList', window.location.href);
-    this.axios({
+    let p1 = this.axios({
+      url: this.global_.path.baseUrl + '/rentalcars/store/page',
+      method: 'get',
+      headers: { 'Content-Type': 'application/json' }
+    }).then(
+      res => {
+        console.log(
+          'VehicleAddition Index.vue created axios /store/page success',
+          res
+        );
+        if (res.data.code === 0) {
+          this.shopList.push(...res.data.data.data);
+          this.shopCheck = this.shopList[0].name;
+        } else {
+          this.$Message.error({
+            content: '门店获取失败'
+          });
+        }
+      },
+      err => {
+        console.log(
+          'VehicleAddition Index.vue created axios /store/page failure',
+          err
+        );
+        this.$Message.error({
+          content: '门店获取失败'
+        });
+      }
+    );
+    let p2 = this.axios({
       url: this.global_.path.baseUrl + '/rentalcars/vehicle/model/page',
       method: 'get',
       headers: { 'Content-Type': 'application/json' }
@@ -153,26 +190,31 @@ export default {
                 );
                 if (res.data.code === 0) {
                   this.basicInfoForm = {
-                    plate_num: res.data.data.plate_num,
-                    vin: res.data.data.vin,
-                    engine_no: res.data.data.engine_no,
-                    color: res.data.data.color,
-                    product_date: res.data.data.product_date,
-                    purchase_date: res.data.data.purchase_date,
-                    purchase_price: res.data.data.purchase_price
+                    plate_num: res.data.data.vehicleDetail.plate_num,
+                    vin: res.data.data.vehicleDetail.vin,
+                    engine_no: res.data.data.vehicleDetail.engine_no,
+                    color: res.data.data.vehicleDetail.color,
+                    product_date: res.data.data.vehicleDetail.product_date,
+                    purchase_date: res.data.data.vehicleDetail.purchase_date,
+                    purchase_price: res.data.data.vehicleDetail.purchase_price
                   };
-                  let tempIndex = this.vehicleModelList.findIndex(
-                    item => item.id === res.data.data.model_id
+                  this.vehicleModelCheck =
+                    res.data.data.vehicleDetail.model_name;
+                  let indexTmep = this.shopList.findIndex(
+                    item => item.id === res.data.data.vehicleDetail.store_id
                   );
-                  if (tempIndex !== -1) {
-                    this.vehicleModelCheck = this.vehicleModelList[tempIndex].name;
+                  if (indexTmep !== -1) {
+                    this.shopCheck = this.shopList[indexTmep].name;
+                  } else {
+                    this.shopCheck = this.shopList[0].name;
                   }
-
-                  if (res.data.data.image) {
+                  if (res.data.data.vehicleDetail.image) {
                     this.uploadList.push({
-                      name: res.data.data.image,
+                      name: res.data.data.vehicleDetail.image,
                       url:
-                        this.global_.path.baseUrl + '/' + res.data.data.image,
+                        this.global_.path.baseUrl +
+                        '/' +
+                        res.data.data.vehicleDetail.image,
                       status: 'finished'
                     });
                   }
@@ -181,7 +223,6 @@ export default {
                     content: '操作失败'
                   });
                 }
-                this.spinShow = false;
               },
               err => {
                 console.log(
@@ -191,7 +232,6 @@ export default {
                 this.$Message.error({
                   content: '操作失败'
                 });
-                this.spinShow = false;
               }
             );
           }
@@ -200,7 +240,6 @@ export default {
             content: '车辆类型请求失败'
           });
         }
-        this.spinShow = false;
       },
       err => {
         console.log(
@@ -210,9 +249,17 @@ export default {
         this.$Message.error({
           content: '车辆类型请求失败'
         });
-        this.spinShow = false;
       }
     );
+    Promise.all([p1, p2])
+      .then(res => {
+        console.log('MgVehicle Index.vue created Promise.all success', res);
+        this.spinShow = false;
+      })
+      .catch(err => {
+        console.log('MgVehicle Index.vue created Promise.all failure', err);
+        this.spinShow = false;
+      });
   },
   computed: {},
   methods: {
@@ -268,6 +315,9 @@ export default {
     },
     // 提交
     handleSubmit() {
+      let tempIndex1 = this.shopList.findIndex(
+        item => item.name === this.shopCheck
+      );
       let tempIndex2 = this.vehicleModelList.findIndex(
         item => item.name === this.vehicleModelCheck
       );
@@ -281,7 +331,8 @@ export default {
         product_date: this.basicInfoForm.product_date,
         purchase_date: this.basicInfoForm.purchase_date,
         purchase_price: this.basicInfoForm.purchase_price,
-        model_id: this.vehicleModelList[tempIndex2].id
+        model_id: this.vehicleModelList[tempIndex2].id,
+        store_id: this.shopList[tempIndex1].id
       };
       if (this.$route.query.action === 'edit') {
         temp = Object.assign({}, temp, { id: this.$route.query.id });

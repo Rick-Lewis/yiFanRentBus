@@ -13,7 +13,7 @@
         <div class="center">
           <div class="status">
             <div>状态</div>
-            <div>就绪</div>
+            <div>{{vehicleDetail && getStatusNameByValue(vehicleDetail.vehicleDetail.state)}}</div>
           </div>
           <div>车辆识别代码：{{vehicleDetail && vehicleDetail.vehicleDetail.vin}}</div>
           <div>车辆颜色：{{vehicleDetail && vehicleDetail.vehicleDetail.color}}</div>
@@ -203,12 +203,35 @@ export default {
       mtCurrentPageSize: 10, // 当前每页条数
       irTotal: 0, // 数据总条数
       irCurrentPage: 1, // 当前页码
-      irCurrentPageSize: 10 // 当前每页条数
+      irCurrentPageSize: 10, // 当前每页条数
+      vehicleStatusList: []
     };
   },
   created() {
     console.log('VehicleDetail Index.vue created', this.$store);
     this.$store.dispatch('homeStore/initBreadcrumbList', window.location.href);
+    this.axios({
+      url: this.global_.path.baseUrl + '/rentalcars/status/vehicle',
+      method: 'get',
+      headers: { 'Content-Type': 'application/json' }
+    }).then(
+      res => {
+        console.log(
+          'VehicleDetail Index.vue created axios /status/vehicle success',
+          res
+        );
+        this.vehicleStatusList.push({ name: '全部', status: -2 }, ...res.data);
+      },
+      err => {
+        console.log(
+          'VehicleDetail Index.vue created axios /status/vehicle failure',
+          err
+        );
+        this.$Message.error({
+          content: '车辆状态数据请求失败'
+        });
+      }
+    );
     this.axios({
       url:
         this.global_.path.baseUrl +
@@ -244,6 +267,17 @@ export default {
   },
   computed: {},
   methods: {
+    getStatusNameByValue(status) {
+      console.log(
+        'MgVehicleModel index.vue getStatusNameByValue',
+        status,
+        this.vehicleStatusList.slice()
+      );
+      let objTemp = this.vehicleStatusList
+        .slice()
+        .find(item => item.status === status);
+      return objTemp.name;
+    },
     // 详情
     show(index) {
       console.log('VehicleDetail index.vue methods show');

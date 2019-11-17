@@ -37,12 +37,16 @@
       </div>
       <Table border :columns="vehicleColumns" :data="vehicleData" stripe>
         <template v-slot:state="{ row }">
-          <div :class="statusColor[row.state]">{{row.state}}</div>
+          <div :class="statusColor[row.state]">{{getStatusNameByValue(row.state)}}</div>
         </template>
         <template slot-scope="{ row, index }" slot="action">
           <Button type="primary" size="small" style="margin-right: 5px" @click="edit(index)">编辑</Button>
           <Button type="error" size="small" @click="remove(index)">删除</Button>
-          <Button type="primary" size="small" @click="check(index)">检查</Button>
+          <Button
+            type="primary"
+            size="small"
+            @click="check(index)"
+          >{{getStatusNameByValue(row.state + 1)}}</Button>
           <Button type="primary" size="small" @click="show(index)">详情</Button>
         </template>
       </Table>
@@ -68,33 +72,14 @@ export default {
   data: function() {
     return {
       vehicleStatusCheck: '全部',
-      vehicleStatusList: [
-        {
-          name: '全部',
-          state: -1
-        },
-        {
-          name: '入库',
-          state: 0
-        },
-        {
-          name: '就绪',
-          state: 1
-        },
-        {
-          name: '租用',
-          state: 0
-        },
-        {
-          name: '维保',
-          state: 0
-        }
-      ],
+      vehicleStatusList: [],
       statusColor: {
-        入库: 'storage',
-        就绪: 'ready',
-        租用: 'rent',
-        维保: 'maintenance'
+        '-1': 'invalid',
+        '0': 'storage',
+        '1': 'ready',
+        '2': 'reserve',
+        '3': 'rent',
+        '4': 'maintenance'
       },
       formItem: {
         plate_num: '',
@@ -126,7 +111,7 @@ export default {
         },
         {
           title: '车型',
-          key: 'model_id'
+          key: 'model_name'
         },
         {
           title: '状态',
@@ -162,13 +147,7 @@ export default {
         // if (res.data.code === 0) {
         // let obj = [];
         // let temp = JSON.stringify(res.data);
-        // for (let item in temp) {
-        //   obj.push({
-        //     name: temp[item],
-        //     value: item
-        //   });
-        // }
-        // this.vehicleStatusList.push({ name: '全部', value: -2 }, ...obj);
+        this.vehicleStatusList.push({ name: '全部', status: -2 }, ...res.data);
         // } else {
         //   this.$Message.error({
         //     content: '车辆状态数据请求失败'
@@ -231,6 +210,17 @@ export default {
   },
   computed: {},
   methods: {
+    getStatusNameByValue(status) {
+      console.log(
+        'MgVehicleModel index.vue getStatusNameByValue',
+        status,
+        this.vehicleStatusList.slice()
+      );
+      let objTemp = this.vehicleStatusList
+        .slice()
+        .find(item => item.status === status);
+      return objTemp.name;
+    },
     handleSelected(e, type) {
       console.log('MgVehicleModel index.vue handleRadioChange', e, type);
       let indexTemp = -1;
@@ -244,7 +234,7 @@ export default {
     // 查询
     handleSearch() {
       let indexTemp = this.handleSelected(this.vehicleStatusCheck, 'status');
-      let state = this.vehicleStatusList[indexTemp].state;
+      let statusTemp = this.vehicleStatusList[indexTemp].status;
       let strTemp =
         '?plate_num=' +
         this.formItem.plate_num +
@@ -252,8 +242,8 @@ export default {
         this.formItem.vin +
         '&engine_no=' +
         this.formItem.engine_no;
-      if (state !== -1) {
-        strTemp = strTemp + '&state=' + state;
+      if (statusTemp !== -2) {
+        strTemp = strTemp + '&status=' + statusTemp;
       }
       console.log('MgVehicle index.vue handleSearch');
       this.axios({
@@ -310,10 +300,49 @@ export default {
     },
     // 编辑
     check(index) {
-      this.$Modal.info({
-        title: 'User Info',
-        content: `Name：${this.data6[index].name}<br>Age：${this.data6[index].age}<br>Address：${this.data6[index].address}`
-      });
+      // let temp = {
+      //   plate_nums: this.vehicleData[index].plate_num,
+      //   state: this.vehicleData[index].state + 1
+      // };
+      let temp =
+        'plate_nums=' +
+        this.vehicleData[index].plate_num +
+        '&status=' +
+        this.vehicleData[index].state +
+        1;
+      this.axios({
+        method: 'post',
+        url: this.global_.path.baseUrl + '/rentalcars/vehicle/detail/status',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        data: temp
+      }).then(
+        res => {
+          console.log(
+            'MgVehicle Index.vue created axios /vehilce/detail/status success',
+            res
+          );
+          if (res.data.code === 0) {
+            this.vehicleData[index].state = this.vehicleData[index].state + 1;
+            this.$Message.success({
+              content: '操作成功'
+            });
+            // this.$router.back();
+          } else {
+            this.$Message.error({
+              content: '操作失败'
+            });
+          }
+        },
+        err => {
+          console.log(
+            'MgVehicle Index.vue created axios /vehilce/detail/status failure',
+            err
+          );
+          this.$Message.error({
+            content: '操作失败'
+          });
+        }
+      );
     },
     // 删除
     remove(index) {

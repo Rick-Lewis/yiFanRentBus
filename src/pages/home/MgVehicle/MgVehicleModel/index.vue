@@ -8,7 +8,7 @@
         </RadioGroup>
       </div>
       <div class="vehicle-type">
-        <span>车辆类型：</span>
+        <span>车型类型：</span>
         <RadioGroup v-model="vehicleTypeCheck">
           <Radio
             v-for="(item, index) in vehicleTypeList"
@@ -101,7 +101,7 @@ export default {
           slot: 'brand_name'
         },
         {
-          title: '车辆类型',
+          title: '车型类型',
           key: 'category_name'
         },
         {
@@ -109,7 +109,7 @@ export default {
           key: 'standard_price'
         },
         {
-          title: '车辆状态',
+          title: '车型状态',
           slot: 'state',
           width: 150,
           align: 'center'
@@ -175,7 +175,7 @@ export default {
         if (res.data.code === 0) {
           this.fromBrandList.push(
             { id: -1, name: '全部' },
-            ...res.data.data.dataSource
+            ...res.data.data.data
           );
         } else {
           this.$Message.error({

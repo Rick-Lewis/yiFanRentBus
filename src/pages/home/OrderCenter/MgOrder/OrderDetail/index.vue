@@ -2,18 +2,22 @@
   <div class="order-detail-container">
     <div class="basic-info-container">
       <div class="header">
-        <span>单号：{{orderDetail.order.order_no}}</span>
-        <span>司机：王大伟（130 8888 8888）</span>
+        <span>单号：{{orderDetail && orderDetail.order.order_no}}</span>
+        <span>下单时间：{{orderDetail && orderDetail.order.time_create}}</span>
+        <!-- <span>司机：王大伟（130 8888 8888）</span> -->
       </div>
       <div class="content">
         <div class="left">
           <div>
-            <img src="../../../../../assets/logo.jpg" style="width: 130px; height: 88px;" />
+            <img
+              :src="orderDetail && (global_.path.baseUrl + orderDetail.model.image)"
+              style="width: 130px; height: 88px;"
+            />
           </div>
           <div>
-            <div>{{orderDetail.order.plate_num}}</div>
-            <div>{{orderDetail.model.name}}</div>
-            <div>￥{{orderDetail.order.price_unit}}/日均</div>
+            <div>{{orderDetail && orderDetail.order.plate_num}}</div>
+            <div>{{orderDetail && orderDetail.model.name}}</div>
+            <div>￥{{orderDetail && orderDetail.order.price_unit}}/日均</div>
           </div>
         </div>
         <div class="string"></div>
@@ -21,15 +25,15 @@
           <div class="top">实际取还时间：</div>
           <div class="bottom">
             <div class="start">
-              <div>{{orderDetail.order.time_start.split(' ')[0]}}</div>
-              <div>{{orderDetail.order.time_start.split(' ')[1]}}</div>
+              <div>{{orderDetail && orderDetail.order.time_start.split(' ')[0]}}</div>
+              <div>{{orderDetail && orderDetail.order.time_start.split(' ')[1]}}</div>
             </div>
             <div class="time">
-              <div>{{orderDetail.order.days}}</div>
+              <div>{{orderDetail && orderDetail.order.days}}</div>
             </div>
             <div class="end">
-              <div>{{orderDetail.order.time_end.split(' ')[0]}}</div>
-              <div>{{orderDetail.order.time_end.split(' ')[1]}}</div>
+              <div>{{orderDetail && orderDetail.order.time_end.split(' ')[0]}}</div>
+              <div>{{orderDetail && orderDetail.order.time_end.split(' ')[1]}}</div>
             </div>
           </div>
         </div>
@@ -39,11 +43,11 @@
             <div class="top">实际取还地点：</div>
             <div class="bottom">
               <div class="fetch">
-                <span>{{orderDetail.order.store_pick_up_name}}</span>
+                <span>{{orderDetail && orderDetail.order.store_pick_up_name}}</span>
                 <div>取</div>
               </div>
               <div class="return">
-                <span>{{orderDetail.order.store_drop_off_name}}</span>
+                <span>{{orderDetail && orderDetail.order.store_drop_off_name}}</span>
                 <div>还</div>
               </div>
             </div>
@@ -55,7 +59,7 @@
             </div>
             <div>
               <div>实付金额</div>
-              <div>{{orderDetail.order.price_total}}元</div>
+              <div>{{orderDetail && orderDetail.order.price_total}}元</div>
             </div>
           </div>
         </div>
@@ -68,27 +72,27 @@
           <div class="fetch">
             <div>
               取车时间：
-              {{orderDetail.order.time_start}}
+              {{orderDetail && orderDetail.order.time_start}}
             </div>
             <div style="margin-top: 15px;">
               取车门店：
-              {{orderDetail.order.store_pick_up_name}}
+              {{orderDetail && orderDetail.order.store_pick_up_name}}
             </div>
           </div>
           <div class="return">
             <div>
               还车时间：
-              {{orderDetail.order.time_end}}
+              {{orderDetail && orderDetail.order.time_end}}
             </div>
             <div style="margin-top: 15px;">
               还车门店：
-              {{orderDetail.order.store_drop_off_name}}
+              {{orderDetail && orderDetail.order.store_drop_off_name}}
             </div>
           </div>
           <div class="duration">
             <div>
               预计租车时长：
-              {{orderDetail.order.days}} 天
+              {{orderDetail && orderDetail.order.days}} 天
             </div>
           </div>
         </div>
@@ -98,11 +102,11 @@
         <div class="content">
           <div>
             昵称：
-            {{orderDetail.order.nick_name}}
+            {{orderDetail && orderDetail.order.nick_name}}
           </div>
           <div>
             手机号：
-            {{orderDetail.order.telephone}}
+            {{orderDetail && orderDetail.order.telephone}}
           </div>
           <div style="opacity: 0;"></div>
         </div>
@@ -149,28 +153,7 @@ export default {
           key: 'remark'
         }
       ],
-      optData: [
-        {
-          type: '价格修改',
-          time: '2017-10-01 12:00:00',
-          remark: '将订单价格从【1200.00】调整为【1000.00】'
-        },
-        {
-          type: '价格修改',
-          time: '2017-10-01 12:00:00',
-          remark: '将订单价格从【1200.00】调整为【1000.00】'
-        },
-        {
-          type: '价格修改',
-          time: '2017-10-01 12:00:00',
-          remark: '将订单价格从【1200.00】调整为【1000.00】'
-        },
-        {
-          type: '价格修改',
-          time: '2017-10-01 12:00:00',
-          remark: '将订单价格从【1200.00】调整为【1000.00】'
-        }
-      ],
+      optData: [],
       costColumns: [
         {
           title: '费用项目',
@@ -185,18 +168,7 @@ export default {
           key: 'oderNo'
         }
       ],
-      costData: [
-        {
-          costItem: '车辆租赁',
-          sum: '900.00',
-          oderNo: '19080987678909866'
-        },
-        {
-          costItem: '车辆租赁',
-          sum: '900.00',
-          oderNo: '19080987678909866'
-        }
-      ],
+      costData: [],
       evalColumns: [
         {
           title: '星级',
@@ -211,18 +183,7 @@ export default {
           key: 'time'
         }
       ],
-      evalData: [
-        {
-          level: '5星',
-          content: '车况很好，服务周到，已经安利给小伙伴了',
-          time: '2017-10-01 12:00:00'
-        },
-        {
-          level: '5星',
-          content: '车况很好，服务周到，已经安利给小伙伴了',
-          time: '2017-10-01 12:00:00'
-        }
-      ],
+      evalData: [],
       orderDetail: null,
       spinShow: true
     };
@@ -276,8 +237,12 @@ export default {
     padding: 16px;
     background-color: #fff;
     .header {
+      padding-bottom: 10px;
       span:first-child {
         font-size: 20px;
+      }
+      span:last-child{
+        margin-left: 10px;
       }
     }
     .content {

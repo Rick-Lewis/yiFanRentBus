@@ -4,10 +4,18 @@
       <div class="header">基础信息</div>
       <Form :model="basicInfoForm" class="content">
         <FormItem style="margin-left: 0;">
-          <span>车型名称：</span>
+          <span>品牌名称：</span>
           <Input
-            v-model="basicInfoForm.vehicleModelName"
+            v-model="basicInfoForm.brandName"
             placeholder="请输入车型名称"
+            style="width: 200px"
+          />
+        </FormItem>
+        <FormItem style="margin-left: 0;">
+          <span>英文名称：</span>
+          <Input
+            v-model="basicInfoForm.brandEn"
+            placeholder="请输入英文名称"
             style="width: 200px"
           />
         </FormItem>
@@ -66,7 +74,8 @@ export default {
   data: function() {
     return {
       basicInfoForm: {
-        vehicleModelName: ''
+        brandName: '',
+        brandEn: ''
       },
       defaultList: [],
       imgName: '', // 放大图的名称
@@ -98,7 +107,8 @@ export default {
           );
           if (res.data.code === 0) {
             this.basicInfoForm = {
-              vehicleModelName: res.data.data.name
+              brandName: res.data.data.name,
+              brandEn: res.data.data.name_en
             };
             if (res.data.data.logo) {
               this.uploadList.push({
@@ -190,7 +200,8 @@ export default {
     // 提交
     handleSubmit() {
       let temp = {
-        name: this.basicInfoForm.vehicleModelName,
+        name: this.basicInfoForm.brandName,
+        name_en: this.basicInfoForm.brandEn,
         logo: this.uploadList[0].name
       };
       if (this.$route.query.action === 'edit') {

@@ -17,18 +17,32 @@
           <Radio
             v-for="(item, index) in driverExistenceList"
             v-bind:key="index"
-            v-bind:label="item"
+            v-bind:label="item.name"
           ></Radio>
         </RadioGroup>
       </div>
       <div class="time">
         <span>时间查询：</span>
-        <RadioGroup v-model="timeCheck">
+        <RadioGroup v-model="timeCheck" @on-change="handleCalDuration1">
           <Radio v-for="(item, index) in timeList" v-bind:key="index" v-bind:label="item"></Radio>
         </RadioGroup>
         <div class="custom-time">
-          <DatePicker type="date" placeholder="开始时间" style="width: 200px"></DatePicker>
-          <DatePicker type="date" placeholder="结束时间" style="width: 200px"></DatePicker>
+          <DatePicker
+            format="yyyy-MM-dd HH:mm:ss"
+            v-model="time_start"
+            @on-change="handleCalDurationS"
+            type="date"
+            placeholder="开始时间"
+            style="width: 200px"
+          ></DatePicker>
+          <DatePicker
+            format="yyyy-MM-dd HH:mm:ss"
+            v-model="time_end"
+            @on-change="handleCalDurationE"
+            type="date"
+            placeholder="结束时间"
+            style="width: 200px"
+          ></DatePicker>
         </div>
       </div>
       <Form :model="formItem" inline class="form-container">
@@ -54,16 +68,19 @@
       <div v-if="orderData.length <= 0" style="text-align: center;">～ 没有更多了 ～</div>
       <div class="item-container" v-for="(item, index) in orderData" v-bind:key="index">
         <div class="item-header">
-          <span>下单时间：2019-10-01 08:30:09</span>
+          <span>下单时间：{{item.time_create}}</span>
           <span style="padding-left: 15px;">订单编号：{{item.order_no}}</span>
-          <span style="padding-left: 15px;">司机：王大伟</span>
+          <!-- <span style="padding-left: 15px;">司机：王大伟</span> -->
         </div>
         <div class="item-content">
           <div class="col-item info">
             <div>
-              <img src="../../../../assets/logo.jpg" style="width: 130px; height: 88px;" />
+              <img
+                :src="global_.path.baseUrl + item.model_image"
+                style="width: 130px; height: 88px;"
+              />
             </div>
-            <div>
+            <div style="padding-left: 10px;">
               <div>{{item.plate_num}}</div>
               <div>{{item.model_name}}</div>
               <div>￥{{item.price_unit}}/日均</div>
@@ -72,7 +89,7 @@
           <div class="string"></div>
           <div class="col-item" style="text-align: center;">
             <div>{{item.telephone}}</div>
-            <div>微信：十八</div>
+            <div>微信：{{item.nick_name}}</div>
           </div>
           <div class="string"></div>
           <div class="col-item duration">
@@ -106,7 +123,7 @@
           <div class="string"></div>
           <div class="col-item">
             <div>
-              <Tag color="warning">进行中</Tag>
+              <Tag color="warning">{{orderStatusList[haneleIndexByStatus(item.status)].name}}</Tag>
             </div>
           </div>
           <div class="string"></div>
@@ -137,18 +154,18 @@ export default {
   data: function() {
     return {
       orderStatusCheck: '全部',
-      orderStatusList: [
-        { name: '全部', value: -2 },
-        { name: '未支付', value: 0 },
-        { name: '待取车', value: 1 },
-        { name: '进行中', value: 2 },
-        { name: '已完成', value: 3 },
-        { name: '已取消', value: -1 }
-      ],
+      orderStatusList: [],
       driverExistenceCheck: '全部',
-      driverExistenceList: ['全部', '无', '有'],
-      timeCheck: '今日',
-      timeList: ['今日', '近7天', '近一个月', '近三个月', '自定义'],
+      driverExistenceList: [
+        { name: '全部', value: -2 },
+        { name: '无', value: 0 },
+        { name: '有', value: 1 }
+      ],
+      timeCheck: '全部',
+      timeList: ['全部', '今日', '近7天', '近一个月', '近三个月'],
+      time_start: '',
+      time_end: '',
+      duration: null,
       formItem: {
         order_no: '',
         plate_num: '',
@@ -164,7 +181,37 @@ export default {
   created() {
     console.log('MgOrder Index.vue created');
     this.$store.dispatch('homeStore/initBreadcrumbList', window.location.href);
-    this.axios({
+    let p1 = this.axios({
+      url: this.global_.path.baseUrl + '/rentalcars/status/order',
+      method: 'get',
+      headers: { 'Content-Type': 'application/json' }
+    }).then(
+      res => {
+        console.log(
+          'MgOrder Index.vue created axios /status/order success',
+          res
+        );
+        // if (res.data.code === 0) {
+        // let obj = [];
+        // let temp = JSON.stringify(res.data);
+        this.orderStatusList.push({ name: '全部', status: -2 }, ...res.data);
+        // } else {
+        //   this.$Message.error({
+        //     content: '车辆状态数据请求失败'
+        //   });
+        // }
+      },
+      err => {
+        console.log(
+          'MgOrder Index.vue created axios /status/order failure',
+          err
+        );
+        this.$Message.error({
+          content: '车辆状态数据请求失败'
+        });
+      }
+    );
+    let p2 = this.axios({
       url:
         this.global_.path.baseUrl +
         '/rentalcars/order/rental/page?pageIndex=' +
@@ -187,7 +234,6 @@ export default {
             content: '操作失败'
           });
         }
-        this.spinShow = false;
       },
       err => {
         console.log(
@@ -197,12 +243,112 @@ export default {
         this.$Message.error({
           content: '操作失败'
         });
-        this.spinShow = false;
       }
     );
+    Promise.all([p1, p2])
+      .then(res => {
+        console.log('MgVehicle Index.vue created Promise.all success', res);
+        this.spinShow = false;
+      })
+      .catch(err => {
+        console.log('MgVehicle Index.vue created Promise.all failure', err);
+        this.spinShow = false;
+      });
   },
   computed: {},
   methods: {
+    handleCalDuration1(val) {
+      let nowDate = this.$moment(new Date()).format('YYYY-MM-DD HH:mm:ss');
+      let timeStartTemp = '';
+      let timeEndTemp = '';
+      this.time_start = '';
+      this.time_end = '';
+      switch (val) {
+        case '今日':
+          timeStartTemp = this.$moment(new Date()).format(
+            'YYYY-MM-DD 00:00:00'
+          );
+          timeEndTemp = nowDate;
+          break;
+        case '近7天':
+          timeStartTemp = this.$moment()
+            .subtract('days', 6)
+            .format('YYYY-MM-DD HH:mm:ss');
+          timeEndTemp = nowDate;
+          break;
+        case '近一个月':
+          timeStartTemp = this.$moment()
+            .subtract('days', 29)
+            .format('YYYY-MM-DD HH:mm:ss');
+          timeEndTemp = nowDate;
+          break;
+        case '近三个月':
+          timeStartTemp = this.$moment()
+            .subtract('days', 89)
+            .format('YYYY-MM-DD HH:mm:ss');
+          timeEndTemp = nowDate;
+          break;
+      }
+      console.log(
+        'MyOrder Index.vue methods handleCalDuration1',
+        nowDate,
+        timeStartTemp,
+        timeEndTemp,
+        val
+      );
+      this.duration = Object.assign(
+        {},
+        { timeStart: timeStartTemp, timeEnd: timeEndTemp }
+      );
+    },
+    handleCalDurationS(val) {
+      let nowDate = this.$moment(new Date()).format('YYYY-MM-DD HH:mm:ss');
+      let timeStartTemp = '';
+      let timeEndTemp = '';
+      this.timeCheck = '全部';
+      timeStartTemp = this.$moment(this.time_start).format(
+        'YYYY-MM-DD HH:mm:ss'
+      );
+      timeEndTemp = nowDate;
+      console.log(
+        'MyOrder Index.vue methods handleCalDurationS',
+        nowDate,
+        timeStartTemp,
+        timeEndTemp,
+        val
+      );
+      this.duration = Object.assign(
+        {},
+        { timeStart: timeStartTemp, timeEnd: timeEndTemp }
+      );
+    },
+    handleCalDurationE(val) {
+      let nowDate = this.$moment(new Date()).format('YYYY-MM-DD HH:mm:ss');
+      let timeStartTemp = '';
+      let timeEndTemp = '';
+      this.timeCheck = '全部';
+      if (this.time_end) {
+        timeStartTemp = nowDate;
+        timeEndTemp = this.$moment(this.time_end).format('YYYY-MM-DD HH:mm:ss');
+      }
+      console.log(
+        'MyOrder Index.vue methods handleCalDurationE',
+        nowDate,
+        timeStartTemp,
+        timeEndTemp,
+        val
+      );
+      this.duration = Object.assign(
+        {},
+        { timeStart: timeStartTemp, timeEnd: timeEndTemp }
+      );
+    },
+    haneleIndexByStatus(status) {
+      let indexTemp = this.orderStatusList.findIndex(
+        item => item.status === status
+      );
+      return indexTemp;
+    },
     handleSelected(e, type) {
       console.log('MgOrder index.vue handleSelected', e, type);
       let indexTemp = -1;
@@ -210,16 +356,33 @@ export default {
         case 'status':
           indexTemp = this.orderStatusList.findIndex(item => item.name === e);
           break;
+        case 'with_driver':
+          indexTemp = this.driverExistenceList.findIndex(
+            item => item.name === e
+          );
       }
       return indexTemp;
     },
     // 查询
     handleSearch() {
       let indexTemp = this.handleSelected(this.orderStatusCheck, 'status');
-      let statusTemp = this.orderStatusList[indexTemp].value;
+      let statusTemp = this.orderStatusList[indexTemp].status;
+      indexTemp = this.handleSelected(this.driverExistenceCheck, 'with_driver');
+      let withDriverTemp = this.driverExistenceList[indexTemp].value;
       let strTemp = '';
       if (statusTemp !== -2) {
         strTemp = strTemp + '&status=' + statusTemp;
+      }
+      if (withDriverTemp !== -2) {
+        strTemp = strTemp + '&with_driver=' + withDriverTemp;
+      }
+      if (this.duration) {
+        strTemp =
+          strTemp +
+          '&time_start=' +
+          this.duration.timeStart +
+          '&time_end=' +
+          this.duration.timeEnd;
       }
       console.log('MgOrder index.vue handleSearch');
       this.axios({
@@ -230,7 +393,8 @@ export default {
           '&plate_num=' +
           this.formItem.plate_num +
           '&key=' +
-          this.formItem.key + strTemp,
+          this.formItem.key +
+          strTemp,
         method: 'get',
         headers: { 'Content-Type': 'application/json' }
       }).then(
@@ -280,6 +444,25 @@ export default {
     },
     // 页码改变
     handlePageChange(e) {
+      let indexTemp = this.handleSelected(this.orderStatusCheck, 'status');
+      let statusTemp = this.orderStatusList[indexTemp].status;
+      indexTemp = this.handleSelected(this.driverExistenceCheck, 'with_driver');
+      let withDriverTemp = this.driverExistenceList[indexTemp].value;
+      let strTemp = '';
+      if (statusTemp !== -2) {
+        strTemp = strTemp + '&status=' + statusTemp;
+      }
+      if (withDriverTemp !== -2) {
+        strTemp = strTemp + '&with_driver=' + withDriverTemp;
+      }
+      if (this.duration) {
+        strTemp =
+          strTemp +
+          '&time_start=' +
+          this.duration.timeStart +
+          '&time_end=' +
+          this.duration.timeEnd;
+      }
       console.log('MgOrder Index.vue handlePageChange', e);
       this.currentPage = e;
       this.axios({
@@ -288,7 +471,8 @@ export default {
           '/rentalcars/order/rental/page?pageIndex=' +
           this.currentPage +
           '&pageSize=' +
-          this.currentPageSize,
+          this.currentPageSize +
+          strTemp,
         method: 'get',
         headers: { 'Content-Type': 'application/json' }
       }).then(
@@ -322,6 +506,25 @@ export default {
     },
     // 每页条数改变
     handlePageSizeChange(e) {
+      let indexTemp = this.handleSelected(this.orderStatusCheck, 'status');
+      let statusTemp = this.orderStatusList[indexTemp].status;
+      indexTemp = this.handleSelected(this.driverExistenceCheck, 'with_driver');
+      let withDriverTemp = this.driverExistenceList[indexTemp].value;
+      let strTemp = '';
+      if (statusTemp !== -2) {
+        strTemp = strTemp + '&status=' + statusTemp;
+      }
+      if (withDriverTemp !== -2) {
+        strTemp = strTemp + '&with_driver=' + withDriverTemp;
+      }
+      if (this.duration) {
+        strTemp =
+          strTemp +
+          '&time_start=' +
+          this.duration.timeStart +
+          '&time_end=' +
+          this.duration.timeEnd;
+      }
       console.log('MgOrder Index.vue handlePageSizeChange', e);
       this.currentPageSize = e;
       this.axios({
@@ -330,7 +533,8 @@ export default {
           '/rentalcars/order/rental/page?pageIndex=' +
           this.currentPage +
           '&pageSize=' +
-          this.currentPageSize,
+          this.currentPageSize +
+          strTemp,
         method: 'get',
         headers: { 'Content-Type': 'application/json' }
       }).then(
