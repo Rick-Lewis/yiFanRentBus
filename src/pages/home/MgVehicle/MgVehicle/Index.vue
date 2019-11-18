@@ -300,21 +300,21 @@ export default {
     },
     // 编辑
     check(index) {
-      // let temp = {
-      //   plate_nums: this.vehicleData[index].plate_num,
-      //   state: this.vehicleData[index].state + 1
-      // };
-      let temp =
-        'plate_nums=' +
-        this.vehicleData[index].plate_num +
-        '&status=' +
-        this.vehicleData[index].state +
-        1;
+      let temp = {
+        plate_nums: this.vehicleData[index].plate_num,
+        state: this.vehicleData[index].state + 1
+      };
+      // let temp =
+      //   'plate_nums=' +
+      //   this.vehicleData[index].plate_num +
+      //   '&status=' +
+      //   this.vehicleData[index].state +
+      //   1;
       this.axios({
         method: 'post',
         url: this.global_.path.baseUrl + '/rentalcars/vehicle/detail/status',
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        data: temp
+        data: this.$qs.stringfy(temp)
       }).then(
         res => {
           console.log(
