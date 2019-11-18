@@ -55,7 +55,7 @@
           <div>
             <div style="margin-right: 60px;">
               <div>状态</div>
-              <div>已完成</div>
+              <div>{{orderStatus}}</div>
             </div>
             <div>
               <div>实付金额</div>
@@ -224,6 +224,14 @@ export default {
         this.spinShow = false;
       }
     );
+  },
+  computed: {
+    orderStatus() {
+      let temp = this.$store.state.myOrderStore.orderStatusList.find(
+        item => item.status === this.orderDetail.order.status
+      );
+      return temp ? temp.name : '';
+    }
   }
 };
 </script>
@@ -241,7 +249,7 @@ export default {
       span:first-child {
         font-size: 20px;
       }
-      span:last-child{
+      span:last-child {
         margin-left: 10px;
       }
     }

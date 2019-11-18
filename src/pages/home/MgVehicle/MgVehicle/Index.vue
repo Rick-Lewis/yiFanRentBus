@@ -314,7 +314,7 @@ export default {
         method: 'post',
         url: this.global_.path.baseUrl + '/rentalcars/vehicle/detail/status',
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        data: this.$qs.stringfy(temp)
+        data: this.$qs.stringify(temp)
       }).then(
         res => {
           console.log(

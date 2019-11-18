@@ -127,7 +127,12 @@
             </div>
           </div>
           <div class="string"></div>
-          <div class="col-item">
+          <div class="col-item" style="width: 170px; text-align:center;">
+            <a @click="handleOperate(index, 'refund')" v-if="item.status === 1">退款</a>
+            <a
+              @click="handleOperate(index)"
+              v-if="item.status === 1 || item.status === 3"
+            >{{getOperateText(index)}}</a>
             <a @click="show(index)">订单详情</a>
           </div>
         </div>
@@ -149,6 +154,7 @@
   </div>
 </template>
 <script>
+// import myOrderStore from '../../../../store/home/OrderCenter/MyOrder/index';
 export default {
   name: 'MgOrder',
   data: function() {
@@ -179,7 +185,8 @@ export default {
     };
   },
   created() {
-    console.log('MgOrder Index.vue created');
+    console.log('MgOrder Index.vue created', this.$store);
+    // this.$store.registerModule('myOrderStore', myOrderStore);
     this.$store.dispatch('homeStore/initBreadcrumbList', window.location.href);
     let p1 = this.axios({
       url: this.global_.path.baseUrl + '/rentalcars/status/order',
@@ -195,6 +202,7 @@ export default {
         // let obj = [];
         // let temp = JSON.stringify(res.data);
         this.orderStatusList.push({ name: '全部', status: -2 }, ...res.data);
+        this.$store.dispatch('myOrderStore/init', res.data);
         // } else {
         //   this.$Message.error({
         //     content: '车辆状态数据请求失败'
@@ -255,8 +263,150 @@ export default {
         this.spinShow = false;
       });
   },
+  destroyed() {
+    console.log('MgVehicle Index.vue destroyed');
+    // this.$store.unregisterModule('myOrderStore');
+  },
   computed: {},
   methods: {
+    getOperateText(index) {
+      let temp = '';
+      switch (this.orderData[index].status) {
+        case 1:
+          temp = '取车';
+          break;
+        case 3:
+          temp = '还车';
+          break;
+      }
+      return temp;
+    },
+    handleOperate(index, text = '') {
+      if (text === 'refund') {
+        // 退款
+        let temp = {
+          order_no: this.orderData[index].order_no,
+          refund_fee: this.orderData[index].price_total
+        };
+        this.$Modal.confirm({
+          title: '确定退款？',
+          content: '',
+          onOk: () => {
+            this.spinShow = true;
+            this.axios({
+              url:
+                this.global_.path.baseUrl + '/rentalcars/order/rental/refund',
+              method: 'post',
+              data: this.$qs.stringify(temp),
+              headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
+            }).then(
+              res => {
+                console.log(
+                  'MgVehicle Index.vue handleOperate axios /rental/refund success',
+                  res
+                );
+                if (res.data.code === 0) {
+                  this.$Message.info('操作成功');
+                  this.orderData[index].status = 2;
+                } else {
+                  this.$Message.error({
+                    content: '操作失败'
+                  });
+                }
+                this.spinShow = false;
+              },
+              err => {
+                console.log(
+                  'MgVehicle Index.vue handleOperate axios /rental/refund failure',
+                  err
+                );
+                this.$Message.error({
+                  content: '操作失败'
+                });
+                this.spinShow = false;
+              }
+            );
+          },
+          onCancel: () => {
+            console.log('MgVehicle index.vue confirm onCancel');
+          }
+        });
+      } else if (this.orderData[index].status === 1) {
+        // 取车
+        let temp = {
+          order_no: this.orderData[index].order_no
+        };
+        this.axios({
+          url: this.global_.path.baseUrl + '/rentalcars/order/rental/pickup',
+          method: 'post',
+          data: this.$qs.stringify(temp),
+          headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
+        }).then(
+          res => {
+            console.log(
+              'MgVehicle Index.vue handleOperate axios /rental/pickup success',
+              res
+            );
+            if (res.data.code === 0) {
+              this.$Message.info('操作成功');
+              this.orderData[index].status = 3;
+            } else {
+              this.$Message.error({
+                content: '操作失败'
+              });
+            }
+            this.spinShow = false;
+          },
+          err => {
+            console.log(
+              'MgVehicle Index.vue handleOperate axios /rental/pickup failure',
+              err
+            );
+            this.$Message.error({
+              content: '操作失败'
+            });
+            this.spinShow = false;
+          }
+        );
+      } else if (this.orderData[index].status === 3) {
+        // 还车
+        let temp = {
+          order_no: this.orderData[index].order_no
+        };
+        this.axios({
+          url: this.global_.path.baseUrl + '/rentalcars/order/rental/dropoff',
+          method: 'post',
+          data: this.$qs.stringify(temp),
+          headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
+        }).then(
+          res => {
+            console.log(
+              'MgVehicle Index.vue handleOperate axios /rental/dropoff success',
+              res
+            );
+            if (res.data.code === 0) {
+              this.$Message.info('操作成功');
+              this.orderData[index].status = 4;
+            } else {
+              this.$Message.error({
+                content: '操作失败'
+              });
+            }
+            this.spinShow = false;
+          },
+          err => {
+            console.log(
+              'MgVehicle Index.vue handleOperate axios /rental/refund failure',
+              err
+            );
+            this.$Message.error({
+              content: '操作失败'
+            });
+            this.spinShow = false;
+          }
+        );
+      }
+    },
     handleCalDuration1(val) {
       let nowDate = this.$moment(new Date()).format('YYYY-MM-DD HH:mm:ss');
       let timeStartTemp = '';
