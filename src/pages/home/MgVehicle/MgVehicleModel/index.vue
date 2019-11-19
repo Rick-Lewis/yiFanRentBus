@@ -65,11 +65,12 @@
             show-sizer
             @on-change="handlePageChange"
             @on-page-size-change="handlePageSizeChange"
+            show-total
           />
         </template>
       </div>
+      <Spin size="large" fix v-if="spinShow"></Spin>
     </div>
-    <Spin size="large" fix v-if="spinShow"></Spin>
   </div>
 </template>
 
@@ -242,6 +243,13 @@ export default {
         );
         this.spinShow = false;
       });
+    let that = this;
+    document.onkeydown = function(e) {
+      var key = window.event.keyCode;
+      if (key === 13) {
+        that.handleSearch();
+      }
+    };
   },
   methods: {
     handleSelected(e, type) {
@@ -288,6 +296,7 @@ export default {
         state,
         strTemp
       );
+      this.spinShow = true;
       this.axios({
         url:
           this.global_.path.baseUrl +
@@ -315,6 +324,7 @@ export default {
               content: '车型数据请求失败'
             });
           }
+          this.spinShow = false;
         },
         err => {
           console.log(
@@ -324,6 +334,7 @@ export default {
           this.$Message.error({
             content: '车型数据请求失败'
           });
+          this.spinShow = false;
         }
       );
     },
@@ -339,7 +350,7 @@ export default {
     // 删除行
     remove(index) {
       this.$Modal.confirm({
-        title: '确定删除整行？',
+        title: `确定删除${this.vehicleModelData[index].name}车型吗？`,
         content: '',
         onOk: () => {
           this.spinShow = true;
@@ -508,6 +519,7 @@ export default {
     background-color: #fff;
     margin-top: 20px;
     padding: 20px;
+    position: relative;
     .page-container {
       text-align: right;
       margin-top: 20px;

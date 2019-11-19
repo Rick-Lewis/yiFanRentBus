@@ -26,7 +26,11 @@ export default new Router({
     {
       path: '/login',
       name: 'Login',
-      component: Login
+      component: Login,
+      meta: {
+        path: '/login',
+        name: '登录页'
+      }
     },
     {
       path: '/welcome',
@@ -37,47 +41,91 @@ export default new Router({
       path: '/home',
       name: 'Home',
       component: Home,
+      meta: {
+        path: '/home',
+        name: ''
+      },
       children: [
         {
           path: 'brand',
-          component: MgBrand
+          component: MgBrand,
+          meta: {
+            path: '/home/brand',
+            name: '品牌管理'
+          }
         }, {
           path: 'brandAddition',
-          component: BrandAddition
+          component: BrandAddition,
+          meta: {
+            path: '/home/brandAddition',
+            name: '新增品牌'
+          }
         },
         {
           // 当 /home/vehicle 匹配成功，
           // vehicle 会被渲染在 home/Index.vue 的 <router-view> 中
           path: 'vehicle',
-          component: MgVehicle
+          component: MgVehicle,
+          meta: {
+            path: '/home/vehicle',
+            name: '车辆管理'
+          }
         },
         {
           path: 'vehicleAddition',
-          component: VehicleAddition
+          component: VehicleAddition,
+          meta: {
+            path: '/home/vehicleAddition',
+            name: '新增车辆'
+          }
         },
         {
           path: 'vehicleDetail',
-          component: VehicleDetail
+          component: VehicleDetail,
+          meta: {
+            path: '/home/vehicleDetail',
+            name: '车辆详情'
+          }
         },
         {
           path: 'vehicleModel',
-          component: MgVehicleModel
+          component: MgVehicleModel,
+          meta: {
+            path: '/home/vehicleModel',
+            name: '车型管理'
+          }
         },
         {
           path: 'modelAddition',
-          component: ModelAddition
+          component: ModelAddition,
+          meta: {
+            path: '/home/modelAddition',
+            name: '新增车型'
+          }
         },
         {
           path: 'modelDetail',
-          component: ModelDetail
+          component: ModelDetail,
+          meta: {
+            path: '/home/modelDetail',
+            name: '车型详情'
+          }
         },
         {
           path: 'mgOrder',
-          component: MgOrder
+          component: MgOrder,
+          meta: {
+            path: '/home/mgOrder',
+            name: '订单管理'
+          }
         },
         {
           path: 'orderDetail',
-          component: OrderDetail
+          component: OrderDetail,
+          meta: {
+            path: '/home/orderDetail',
+            name: '订单详情'
+          }
         },
         {
           path: 'mgPrice',

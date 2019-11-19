@@ -33,11 +33,12 @@
             show-sizer
             @on-change="handlePageChange"
             @on-page-size-change="handlePageSizeChange"
+            show-total
           />
         </template>
       </div>
+      <Spin size="large" fix v-if="spinShow"></Spin>
     </div>
-    <Spin size="large" fix v-if="spinShow"></Spin>
   </div>
 </template>
 
@@ -115,6 +116,13 @@ export default {
         this.spinShow = false;
       }
     );
+    let that = this;
+    document.onkeydown = function(e) {
+      var key = window.event.keyCode;
+      if (key === 13) {
+        that.handleSearch();
+      }
+    };
   },
   methods: {
     handleSearch() {
@@ -169,7 +177,7 @@ export default {
     remove(index) {
       console.log('MgBrand index.vue remove', index);
       this.$Modal.confirm({
-        title: '确定删除整行？',
+        title: `确定删除${this.brandData[index].name}品牌吗？`,
         content: '',
         onOk: () => {
           this.spinShow = true;
@@ -324,14 +332,15 @@ export default {
     background-color: #fff;
     margin-top: 20px;
     padding: 20px;
+    position: relative;
     .logo-container {
       display: flex;
       align-items: center;
       justify-content: center;
       padding: 10px 0;
       img {
-        width: 58px;
-        height: 58px;
+        width: 29px;
+        height: 29px;
       }
     }
     .page-container {

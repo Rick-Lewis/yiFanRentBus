@@ -2,26 +2,22 @@
   <div class="brand-addition-container">
     <div class="basic-info-container">
       <div class="header">基础信息</div>
-      <Form :model="basicInfoForm" class="content">
-        <FormItem style="margin-left: 0;">
-          <span>品牌名称：</span>
-          <Input
-            v-model="basicInfoForm.brandName"
-            placeholder="请输入车型名称"
-            style="width: 200px"
-          />
+      <Form ref="formDynamic" :model="basicInfoForm" class="content" :rules="ruleValidate">
+        <FormItem label="品牌名称：" prop="brandName">
+          <!-- <span>品牌名称：</span> -->
+          <Input v-model="basicInfoForm.brandName" placeholder="请输入品牌名称" style="width: 200px" />
         </FormItem>
-        <FormItem style="margin-left: 0;">
-          <span>英文名称：</span>
-          <Input
-            v-model="basicInfoForm.brandEn"
-            placeholder="请输入英文名称"
-            style="width: 200px"
-          />
+        <FormItem label="英文名称：" prop="brandEn">
+          <!-- <span>英文名称：</span> -->
+          <Input v-model="basicInfoForm.brandEn" placeholder="请输入英文名称" style="width: 200px" />
         </FormItem>
-        <FormItem>
-          <span>车型图片：</span>
-          <div class="upload-list" v-for="(item, index) in uploadList" v-bind:key="index">
+        <FormItem label="品牌LOGO：" prop="uploadList">
+          <!-- <span>品牌LOGO：</span> -->
+          <div
+            class="upload-list"
+            v-for="(item, index) in basicInfoForm.uploadList"
+            v-bind:key="index"
+          >
             <template v-if="item.status === 'finished'">
               <img :src="item.url" />
               <div class="upload-list-cover">
@@ -49,12 +45,13 @@
             type="drag"
             :action="uploadUrl"
             style="display: inline-block;width:58px;"
-            :style="uploadList.length === 0 ? {} : {visibility: 'hidden'}"
+            :style="basicInfoForm.uploadList.length === 0 ? {} : {display: 'none'}"
           >
             <div style="width: 58px;height:58px;line-height: 58px;">
               <Icon type="ios-camera" size="20"></Icon>
             </div>
           </Upload>
+          <span style="margin-left: 10px;">支持格式png、jpg，分辨率100*100的图片，大小不超过500k</span>
           <Modal title="View Image" v-model="visible">
             <img :src="this.imgUrl" v-if="visible" style="width: 100%" />
           </Modal>
@@ -62,8 +59,8 @@
       </Form>
     </div>
     <div class="btn-container">
-      <Button type="primary" @click="handleSubmit">提交</Button>
-      <Button style="margin-left: 8px" @click="handleCancel">取消</Button>
+      <Button type="primary" @click="handleSubmit('formDynamic')">提交</Button>
+      <Button style="margin-left: 8px" @click="handleCancel()">取消</Button>
     </div>
     <Spin size="large" fix v-if="spinShow"></Spin>
   </div>
@@ -75,13 +72,51 @@ export default {
     return {
       basicInfoForm: {
         brandName: '',
-        brandEn: ''
+        brandEn: '',
+        uploadList: []
+      },
+      ruleValidate: {
+        brandName: [
+          {
+            required: true,
+            message: '品牌名称不能为空',
+            trigger: 'blur'
+          },
+          {
+            type: 'string',
+            max: 10,
+            message: '支持汉字和字母，长度不超过10',
+            trigger: 'blur'
+          }
+        ],
+        brandEn: [
+          {
+            required: true,
+            message: '英文名称不能为空',
+            trigger: 'blur'
+          },
+          {
+            type: 'string',
+            max: 20,
+            message: '支持字母，长度不超过20',
+            trigger: 'blur'
+          }
+        ],
+        uploadList: [
+          {
+            required: true,
+            type: 'array',
+            min: 1,
+            message: '品牌LOGO不能为空',
+            trigger: 'change'
+          }
+        ]
       },
       defaultList: [],
       imgName: '', // 放大图的名称
       imgUrl: '', // 放大图的地址
       visible: false,
-      uploadList: [],
+      // uploadList: [],
       uploadUrl:
         this.global_.path.baseUrl +
         '/rentalcars/upload/image?image&folderName=brand',
@@ -111,7 +146,7 @@ export default {
               brandEn: res.data.data.name_en
             };
             if (res.data.data.logo) {
-              this.uploadList.push({
+              this.basicInfoForm.uploadList.push({
                 name: res.data.data.logo,
                 url: this.global_.path.baseUrl + '/' + res.data.data.logo,
                 status: 'finished'
@@ -150,7 +185,7 @@ export default {
         'BrandAddition index.vue methods handleSuccess',
         res,
         file,
-        this.uploadList
+        this.basicInfoForm.uploadList
       );
       file.name = res.data;
       file.url = this.global_.path.baseUrl + res.data;
@@ -183,7 +218,7 @@ export default {
     },
     handleBeforeUpload(file) {
       console.log('BrandAddition index.vue methods handleBeforeUpload', file);
-      const check = this.uploadList.length < 5;
+      const check = this.basicInfoForm.uploadList.length < 5;
       if (!check) {
         this.$Notice.warning({
           title: '上传图片不能超过5张'
@@ -198,48 +233,55 @@ export default {
       );
     },
     // 提交
-    handleSubmit() {
-      let temp = {
-        name: this.basicInfoForm.brandName,
-        name_en: this.basicInfoForm.brandEn,
-        logo: this.uploadList[0].name
-      };
-      if (this.$route.query.action === 'edit') {
-        temp = Object.assign({}, temp, { id: this.$route.query.id });
-      }
-      console.log('BrandAddition index.vue methods handleSubmit', temp);
-      this.axios({
-        method: 'post',
-        url: this.global_.path.baseUrl + '/rentalcars/vehicle/brand/saveData',
-        headers: { 'Content-Type': 'application/json' },
-        data: temp
-      }).then(
-        res => {
-          console.log(
-            'BrandAddition Index.vue created axios /saveData success',
-            res
-          );
-          if (res.data.code === 0) {
-            this.$Message.success({
-              content: '操作成功'
-            });
-            this.$router.back();
-          } else {
-            this.$Message.error({
-              content: '操作失败'
-            });
+    handleSubmit(name) {
+      this.$refs[name].validate(valid => {
+        if (valid) {
+          let temp = {
+            name: this.basicInfoForm.brandName,
+            name_en: this.basicInfoForm.brandEn,
+            logo: this.basicInfoForm.uploadList[0].name
+          };
+          if (this.$route.query.action === 'edit') {
+            temp = Object.assign({}, temp, { id: this.$route.query.id });
           }
-        },
-        err => {
-          console.log(
-            'MgVehicleModel Index.vue created axios /saveData failure',
-            err
+          console.log('BrandAddition index.vue methods handleSubmit', temp);
+          this.axios({
+            method: 'post',
+            url:
+              this.global_.path.baseUrl + '/rentalcars/vehicle/brand/saveData',
+            headers: { 'Content-Type': 'application/json' },
+            data: temp
+          }).then(
+            res => {
+              console.log(
+                'BrandAddition Index.vue created axios /saveData success',
+                res
+              );
+              if (res.data.code === 0) {
+                this.$Message.success({
+                  content: '操作成功'
+                });
+                this.$router.back();
+              } else {
+                this.$Message.error({
+                  content: '操作失败'
+                });
+              }
+            },
+            err => {
+              console.log(
+                'MgVehicleModel Index.vue created axios /saveData failure',
+                err
+              );
+              this.$Message.error({
+                content: '操作失败'
+              });
+            }
           );
-          this.$Message.error({
-            content: '操作失败'
-          });
+        } else {
+          this.$Message.error('有必填项未填写');
         }
-      );
+      });
     },
     // 取消
     handleCancel() {
@@ -249,7 +291,7 @@ export default {
   },
   computed: {},
   mounted() {
-    this.uploadList = this.$refs.upload.fileList;
+    this.basicInfoForm.uploadList = this.$refs.upload.fileList;
   }
 };
 </script>

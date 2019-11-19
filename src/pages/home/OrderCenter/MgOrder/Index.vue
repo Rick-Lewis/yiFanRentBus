@@ -146,11 +146,12 @@
             show-sizer
             @on-change="handlePageChange"
             @on-page-size-change="handlePageSizeChange"
+            show-total
           />
         </template>
       </div>
+      <Spin size="large" fix v-if="spinShow"></Spin>
     </div>
-    <Spin size="large" fix v-if="spinShow"></Spin>
   </div>
 </template>
 <script>
@@ -198,16 +199,8 @@ export default {
           'MgOrder Index.vue created axios /status/order success',
           res
         );
-        // if (res.data.code === 0) {
-        // let obj = [];
-        // let temp = JSON.stringify(res.data);
         this.orderStatusList.push({ name: '全部', status: -2 }, ...res.data);
         this.$store.dispatch('myOrderStore/init', res.data);
-        // } else {
-        //   this.$Message.error({
-        //     content: '车辆状态数据请求失败'
-        //   });
-        // }
       },
       err => {
         console.log(
@@ -262,6 +255,13 @@ export default {
         console.log('MgVehicle Index.vue created Promise.all failure', err);
         this.spinShow = false;
       });
+    let that = this;
+    document.onkeydown = function(e) {
+      var key = window.event.keyCode;
+      if (key === 13) {
+        that.handleSearch();
+      }
+    };
   },
   destroyed() {
     console.log('MgVehicle Index.vue destroyed');
@@ -535,6 +535,7 @@ export default {
           this.duration.timeEnd;
       }
       console.log('MgOrder index.vue handleSearch');
+      this.spinShow = true;
       this.axios({
         url:
           this.global_.path.baseUrl +
@@ -746,6 +747,7 @@ export default {
   }
   .content-container {
     margin-top: 15px;
+    position: relative;
     .item-container {
       margin-bottom: 10px;
       background-color: #fff;

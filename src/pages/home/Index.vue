@@ -45,7 +45,11 @@
       <Layout>
         <Header class="layout-header-bar">
           <Breadcrumb>
-            <BreadcrumbItem v-for="(item, index) in breadcrumbList" v-bind:key="index">{{item.text}}</BreadcrumbItem>
+            <BreadcrumbItem
+              v-for="(item, index) in breadcrumbList"
+              v-bind:key="index"
+              :to="item.path + (!item.query ? '' : item.query)"
+            >{{item.text}}</BreadcrumbItem>
           </Breadcrumb>
           <div>
             <Avatar icon="ios-person" />

@@ -1,9 +1,9 @@
 /** @Author: xu.long
  * @Date: 2019-09-20 09:30:54
  * @Last Modified by: xu.long
- * @Last Modified time: 2019-11-09 14:05:43
+ * @Last Modified time: 2019-11-19 22:15:01
  */
-const BREADCRUMB = {
+let BREADCRUMB = {
   '/home/brand': [
     {
       path: '',
@@ -11,7 +11,8 @@ const BREADCRUMB = {
     },
     {
       path: '/home/brand',
-      text: '品牌管理'
+      text: '品牌管理',
+      query: ''
     }
   ],
   '/home/brandAddition': [
@@ -25,7 +26,8 @@ const BREADCRUMB = {
     },
     {
       path: '/home/brandAddition',
-      text: '新增品牌'
+      text: '新增品牌',
+      query: ''
     }
   ],
   '/home/vehicleModel': [
@@ -35,7 +37,8 @@ const BREADCRUMB = {
     },
     {
       path: '/home/vehicleModel',
-      text: '车型管理'
+      text: '车型管理',
+      query: ''
     }
   ],
   '/home/modelAddition': [
@@ -49,7 +52,8 @@ const BREADCRUMB = {
     },
     {
       path: '/home/modelAddition',
-      text: '新增车型'
+      text: '新增车型',
+      query: ''
     }
   ],
   '/home/modelDetail': [
@@ -63,7 +67,8 @@ const BREADCRUMB = {
     },
     {
       path: '/home/modelDetail',
-      text: '车型详情'
+      text: '车型详情',
+      query: ''
     }
   ],
   '/home/vehicle': [
@@ -73,7 +78,8 @@ const BREADCRUMB = {
     },
     {
       path: '/home/vehicle',
-      text: '车辆管理'
+      text: '车辆管理',
+      query: ''
     }
   ],
   '/home/vehicleAddition': [
@@ -87,7 +93,8 @@ const BREADCRUMB = {
     },
     {
       path: '/home/vehicleAddition',
-      text: '新增车辆'
+      text: '新增车辆',
+      query: ''
     }
   ],
   '/home/vehicleDetail': [
@@ -101,7 +108,8 @@ const BREADCRUMB = {
     },
     {
       path: '/home/vehicleDetail',
-      text: '车辆详情'
+      text: '车辆详情',
+      query: ''
     }
   ],
   '/home/mgOrder': [
@@ -111,7 +119,8 @@ const BREADCRUMB = {
     },
     {
       path: '/home/mgOrder',
-      text: '订单管理'
+      text: '订单管理',
+      query: ''
     }
   ],
   '/home/orderDetail': [
@@ -125,7 +134,8 @@ const BREADCRUMB = {
     },
     {
       path: '/home/orderDetail',
-      text: '订单详情'
+      text: '订单详情',
+      query: ''
     }
   ]
 };
@@ -147,8 +157,11 @@ export default {
     inc: state => state.total++,
     sub: state => state.total--,
     breadcrumb: (state, url) => {
+      let queryTemp = url.split('?')[1];
       let temp = url.split('?')[0].split('/');
       let strTemp = '/' + temp.slice(temp.length - 2, temp.length).join('/');
+      let index = BREADCRUMB[strTemp].length - 1;
+      BREADCRUMB[strTemp][index].query = '?' + queryTemp;
       state.breadcrumbList = BREADCRUMB[strTemp];
     }
   }
