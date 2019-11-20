@@ -1,7 +1,7 @@
 <template>
   <div class="login-container">
     <div class="header-container">
-      <img src="../../assets/logo.jpg" />
+      <img src="@/assets/logo.jpg" />
       <span>一帆租车企业管理平台</span>
     </div>
     <div class="content-container">
@@ -19,7 +19,7 @@
             />
           </div>
           <div class="other">
-            <Checkbox v-model="isRemember">记住账号密码</Checkbox>
+            <Checkbox v-model="isRemember" @on-change="handleRemember">记住账号密码</Checkbox>
           </div>
           <div class="btn-container">
             <Button type="warning" @click="handleLogin" long>登录</Button>
@@ -41,6 +41,15 @@ export default {
       password: '',
       isRemember: ''
     };
+  },
+  created() {
+    let isRememberTemp = window.localStorage.getItem('isRemember') === 'true';
+    console.log('login index.vue created', isRememberTemp);
+    this.isRemember = isRememberTemp;
+    if (isRememberTemp) {
+      this.username = window.localStorage.getItem('username');
+      this.password = window.localStorage.getItem('password');
+    }
   },
   methods: {
     // 登录回调
@@ -71,7 +80,10 @@ export default {
             }
           },
           err => {
-            console.log('login Index.vue handleLogin axios /login failure', err);
+            console.log(
+              'login Index.vue handleLogin axios /login failure',
+              err
+            );
             this.$Message.error({
               content: '账号或密码错误'
             });
@@ -81,6 +93,17 @@ export default {
         this.$Message.warning({
           content: '账号或密码不能为空'
         });
+      }
+    },
+    handleRemember(val) {
+      console.log('login index.vue methods handleRemember', val);
+      window.localStorage.setItem('isRemember', val);
+      if (val) {
+        window.localStorage.setItem('username', this.username);
+        window.localStorage.setItem('password', this.password);
+      } else {
+        window.localStorage.setItem('username', '');
+        window.localStorage.setItem('password', '');
       }
     }
   },

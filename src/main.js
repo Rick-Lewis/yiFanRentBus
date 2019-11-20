@@ -37,9 +37,11 @@ axios.interceptors.response.use(
         response.data.data === '登录超时，请重新登陆'
       ) {
         window.location.assign(window.location.origin + '/#/login');
+      } else {
+        return response;
       }
     }
-    return response;
+    // return response;
   },
   function(error) {
     // 对响应错误做点什么
