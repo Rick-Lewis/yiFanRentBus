@@ -13,7 +13,6 @@ import ModelAddition from '@/pages/home/MgVehicle/MgVehicleModel/ModelAddition';
 import ModelDetail from '@/pages/home/MgVehicle/MgVehicleModel/ModelDetail';
 import MgOrder from '@/pages/home/OrderCenter/MgOrder';
 import OrderDetail from '@/pages/home/OrderCenter/MgOrder/OrderDetail';
-import MgPrice from '@/pages/home/MgPrice';
 
 Vue.use(Router);
 
@@ -41,24 +40,41 @@ export default new Router({
       path: '/home',
       name: 'Home',
       component: Home,
-      meta: {
-        path: '/home',
-        name: ''
-      },
       children: [
         {
           path: 'brand',
           component: MgBrand,
           meta: {
-            path: '/home/brand',
-            name: '品牌管理'
+            breadcrumb: [
+              {
+                path: '',
+                text: '车辆管理'
+              },
+              {
+                path: '/home/brand',
+                text: '品牌管理'
+              }
+            ]
           }
-        }, {
+        },
+        {
           path: 'brandAddition',
           component: BrandAddition,
           meta: {
-            path: '/home/brandAddition',
-            name: '新增品牌'
+            breadcrumb: [
+              {
+                path: '',
+                text: '车辆管理'
+              },
+              {
+                path: '/home/brand',
+                text: '品牌管理'
+              },
+              {
+                path: '/home/brandAddition',
+                text: '新增品牌'
+              }
+            ]
           }
         },
         {
@@ -67,69 +83,149 @@ export default new Router({
           path: 'vehicle',
           component: MgVehicle,
           meta: {
-            path: '/home/vehicle',
-            name: '车辆管理'
+            breadcrumb: [
+              {
+                path: '',
+                text: '车辆管理'
+              },
+              {
+                path: '/home/vehicle',
+                text: '车辆管理'
+              }
+            ]
           }
         },
         {
           path: 'vehicleAddition',
           component: VehicleAddition,
           meta: {
-            path: '/home/vehicleAddition',
-            name: '新增车辆'
+            breadcrumb: [
+              {
+                path: '',
+                text: '车辆管理'
+              },
+              {
+                path: '/home/vehicle',
+                text: '车辆管理'
+              },
+              {
+                path: '/home/vehicleAddition',
+                text: '新增车辆'
+              }
+            ]
           }
         },
         {
           path: 'vehicleDetail',
           component: VehicleDetail,
           meta: {
-            path: '/home/vehicleDetail',
-            name: '车辆详情'
+            breadcrumb: [
+              {
+                path: '',
+                text: '车辆管理'
+              },
+              {
+                path: '/home/vehicle',
+                text: '车辆管理'
+              },
+              {
+                path: '/home/vehicleDetail',
+                text: '车辆详情'
+              }
+            ]
           }
         },
         {
           path: 'vehicleModel',
           component: MgVehicleModel,
           meta: {
-            path: '/home/vehicleModel',
-            name: '车型管理'
+            breadcrumb: [
+              {
+                path: '',
+                text: '车辆管理'
+              },
+              {
+                path: '/home/vehicleModel',
+                text: '车型管理'
+              }
+            ]
           }
         },
         {
           path: 'modelAddition',
           component: ModelAddition,
           meta: {
-            path: '/home/modelAddition',
-            name: '新增车型'
+            breadcrumb: [
+              {
+                path: '',
+                text: '车辆管理'
+              },
+              {
+                path: '/home/vehicleModel',
+                text: '车型管理'
+              },
+              {
+                path: '/home/modelAddition',
+                text: '新增车型'
+              }
+            ]
           }
         },
         {
           path: 'modelDetail',
           component: ModelDetail,
           meta: {
-            path: '/home/modelDetail',
-            name: '车型详情'
+            breadcrumb: [
+              {
+                path: '',
+                text: '车辆管理'
+              },
+              {
+                path: '/home/vehicleModel',
+                text: '车型管理'
+              },
+              {
+                path: '/home/modelDetail',
+                text: '车型详情'
+              }
+            ]
           }
         },
         {
           path: 'mgOrder',
           component: MgOrder,
           meta: {
-            path: '/home/mgOrder',
-            name: '订单管理'
+            breadcrumb: [
+              {
+                path: '',
+                text: '订单管理'
+              },
+              {
+                path: '/home/mgOrder',
+                text: '订单管理'
+              }
+            ]
           }
         },
         {
           path: 'orderDetail',
           component: OrderDetail,
           meta: {
-            path: '/home/orderDetail',
-            name: '订单详情'
+            breadcrumb: [
+              {
+                path: '',
+                text: '订单管理'
+              },
+              {
+                path: '/home/mgOrder',
+                text: '订单管理'
+              },
+              {
+                path: '/home/orderDetail',
+                text: '订单详情'
+              }
+            ]
           }
-        },
-        {
-          path: 'mgPrice',
-          component: MgPrice
         }
       ]
     }
