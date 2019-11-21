@@ -11,4 +11,6 @@ export default {
     computed: {},
 };
 </script>
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+@import './Index.scss';
+</style>

@@ -1,7 +1,13 @@
 <template>
   <div class="layout">
     <Layout class="container">
-      <Sider ref="side1" :collapsed-width="78" v-model="isCollapsed">
+      <Sider
+        ref="side1"
+        hide-trigger
+        collapsible
+        :collapsed-width="78"
+        v-model="isCollapsed"
+      >
         <Header :class="headerClasses">
           <!-- <img class="layout-logo" src="../../assets/logo.jpg" /> -->
           <div class="layout-logo"></div>
@@ -44,14 +50,24 @@
       </Sider>
       <Layout>
         <Header class="layout-header-bar">
-          <Breadcrumb>
-            <BreadcrumbItem
-              v-for="(item, index) in breadcrumbList"
-              v-bind:key="index"
-              :to="item.path + (!item.query ? '' : item.query)"
-            >{{item.text}}</BreadcrumbItem>
-          </Breadcrumb>
-          <div>
+          <div class="left">
+            <Icon
+              @click.native="collapsedSider"
+              :class="rotateIcon"
+              :style="{ margin: '0 20px' }"
+              type="md-menu"
+              size="24"
+            ></Icon>
+            <Breadcrumb>
+              <BreadcrumbItem
+                v-for="(item, index) in breadcrumbList"
+                v-bind:key="index"
+                :to="item.path + (!item.query ? '' : item.query)"
+                >{{ item.text }}</BreadcrumbItem
+              >
+            </Breadcrumb>
+          </div>
+          <div class="right">
             <Avatar icon="ios-person" />
             <Dropdown @on-click="handleDropdown" placement="top">
               <span style="padding-left: 10px">
@@ -247,84 +263,6 @@ export default {
   components: {}
 };
 </script>
-<style lang='scss' scoped>
-.layout {
-  background: #f5f7f9;
-  position: relative;
-  border-radius: 4px;
-  overflow: hidden;
-  .container {
-    height: 100vh;
-    img.layout-logo {
-      width: 60px;
-      height: 60px;
-      border-radius: 3px;
-      position: relative;
-      top: 2px;
-      left: 20px;
-    }
-    div.layout-logo {
-      width: 155px;
-      height: 30px;
-      background: #5b6270;
-      border-radius: 3px;
-      float: left;
-      position: relative;
-      top: 15px;
-      left: 20px;
-      transition: width 0.3s ease;
-    }
-    div.header {
-      padding: 0;
-    }
-    div.collapsed-header {
-      & > div {
-        width: 40px;
-      }
-    }
-    .layout-header-bar {
-      background-color: #fff;
-      box-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 0px 20px;
-    }
-  }
-}
-.layout-logo-left {
-  width: 90%;
-  height: 30px;
-  background: #5b6270;
-  border-radius: 3px;
-  margin: 15px auto;
-}
-.menu-icon {
-  transition: all 0.3s;
-}
-.menu-item span {
-  display: inline-block;
-  overflow: hidden;
-  width: 69px;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  vertical-align: bottom;
-  transition: width 0.2s ease 0.2s;
-}
-.menu-item i {
-  transform: translateX(0px);
-  transition: font-size 0.2s ease, transform 0.2s ease;
-  vertical-align: middle;
-  font-size: 16px;
-}
-.collapsed-menu span {
-  width: 0px;
-  transition: width 0.2s ease;
-}
-.collapsed-menu i {
-  transform: translateX(5px);
-  transition: font-size 0.2s ease 0.2s, transform 0.2s ease 0.2s;
-  vertical-align: middle;
-  font-size: 22px;
-}
+<style lang="scss" scoped>
+@import './Index.scss';
 </style>

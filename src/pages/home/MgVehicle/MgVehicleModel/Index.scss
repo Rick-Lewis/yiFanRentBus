@@ -1,0 +1,31 @@
+.vehicle-model-container {
+  margin: 20px;
+  min-height: 260px;
+  position: relative;
+  .filtrate-container {
+    background-color: #fff;
+    padding: 20px 20px 0 20px;
+    .from-brand {
+      padding: 10px 8px;
+    }
+    .vehicle-type {
+      padding: 10px 8px;
+    }
+    .vehicle-status {
+      padding: 10px 8px;
+    }
+    .form-container {
+      padding: 10px 8px 0 8px;
+    }
+  }
+  .content-container {
+    background-color: #fff;
+    margin-top: 20px;
+    padding: 20px;
+    position: relative;
+    .page-container {
+      text-align: right;
+      margin-top: 20px;
+    }
+  }
+}

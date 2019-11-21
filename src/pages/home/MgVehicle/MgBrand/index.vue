@@ -320,33 +320,5 @@ export default {
 </script>
 
 <style lang='scss' scoped>
-.brand-container {
-  margin: 20px;
-  min-height: 260px;
-  position: relative;
-  .filtrate-container {
-    background-color: #fff;
-    padding: 20px 20px 0 20px;
-  }
-  .content-container {
-    background-color: #fff;
-    margin-top: 20px;
-    padding: 20px;
-    position: relative;
-    .logo-container {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 10px 0;
-      img {
-        width: 29px;
-        height: 29px;
-      }
-    }
-    .page-container {
-      text-align: right;
-      margin-top: 20px;
-    }
-  }
-}
+@import './Index.scss';
 </style>

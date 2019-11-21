@@ -1,0 +1,150 @@
+.model-detail-container {
+  background-color: #fff;
+  padding: 20px;
+  margin: 20px;
+  min-height: 260px;
+  .header {
+    font-size: 18px;
+    font-weight: bold;
+    padding-bottom: 20px;
+  }
+  .basic-info-container {
+    border-bottom: 1px solid #e4e4e4;
+    padding-bottom: 30px;
+    .content {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      .left {
+        img {
+          width: 290px;
+          height: 220px;
+        }
+      }
+      .center {
+        padding-bottom: 40px;
+        div {
+          margin-bottom: 10px;
+        }
+        .title {
+          font-size: 20px;
+          font-weight: bold;
+          padding-bottom: 15px;
+        }
+      }
+      .right {
+        padding-bottom: 40px;
+        display: flex;
+        .status {
+          text-align: right;
+          padding-right: 150px;
+          div {
+            margin-bottom: 10px;
+            position: relative;
+            &:last-child {
+              font-size: 18px;
+              padding-left: 25px;
+              &::before {
+                content: '';
+                position: absolute;
+                top: 0;
+                bottom: 0;
+                left: 0;
+                margin: auto 0;
+                width: 20px;
+                height: 20px;
+                border-radius: 20px;
+                background-color: #f74d00;
+              }
+            }
+          }
+        }
+        .price {
+          text-align: right;
+          padding-right: 60px;
+          div {
+            margin-bottom: 10px;
+            &:last-child {
+              font-size: 18px;
+              color: #f74d00;
+            }
+          }
+        }
+      }
+    }
+  }
+  .conf-info-container {
+    border-bottom: 1px solid #e4e4e4;
+    padding-bottom: 20px;
+    padding-right: 60px;
+    .header {
+      padding-top: 20px;
+    }
+    .content {
+      display: flex;
+      justify-content: space-between;
+      .left {
+        div {
+          margin-bottom: 10px;
+        }
+      }
+      .center {
+        div {
+          margin-bottom: 10px;
+        }
+      }
+      .right {
+        div {
+          margin-bottom: 10px;
+        }
+      }
+    }
+  }
+  .vehicle-statistics-container {
+    border-bottom: 1px solid #e4e4e4;
+    padding-bottom: 30px;
+    .header {
+      padding-top: 20px;
+    }
+    .content {
+      display: flex;
+      .card {
+        width: 245px;
+        height: 100px;
+        border-radius: 3px;
+        border: 1px solid #e4e4e4;
+        margin-right: 10px;
+        &:last-child {
+          margin-right: 0;
+        }
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        .left {
+          width: 58px;
+          height: 58px;
+          background-color: #c1c1c1;
+          border-radius: 58px;
+        }
+        .right {
+          margin-left: 15px;
+          line-height: 1;
+          div:last-child {
+            font-size: 30px;
+          }
+        }
+      }
+    }
+  }
+  .vehicle-info-container {
+    .header {
+      padding-top: 20px;
+    }
+    .content {
+      .page-container {
+        text-align: right;
+        margin-top: 20px;
+      }
+    }
+  }
+}
