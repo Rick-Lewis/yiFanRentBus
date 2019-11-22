@@ -1,48 +1,65 @@
 <template>
   <div class="vehicle-model-container">
     <div class="filtrate-container">
-      <div class="from-brand">
-        <span>所属品牌：</span>
-        <RadioGroup v-model="fromBrandCheck">
-          <Radio v-for="(item, index) in fromBrandList" v-bind:key="index" v-bind:label="item.name"></Radio>
-        </RadioGroup>
-      </div>
-      <div class="vehicle-type">
-        <span>车型类型：</span>
-        <RadioGroup v-model="vehicleTypeCheck">
-          <Radio
-            v-for="(item, index) in vehicleTypeList"
-            v-bind:key="index"
-            v-bind:label="item.name"
-          ></Radio>
-        </RadioGroup>
-      </div>
-      <div class="vehicle-status">
-        <span>车型状态：</span>
-        <RadioGroup v-model="vehicleModelStatusCheck">
-          <Radio
-            v-for="(item, index) in vehicleModelStatusList"
-            v-bind:key="index"
-            v-bind:label="item.name"
-          ></Radio>
-        </RadioGroup>
-      </div>
-      <Form :model="formItem" inline class="form-container">
-        <FormItem>
-          <span>车型名称：</span>
-          <Input v-model="formItem.vehicleModelName" placeholder="请输入车型名称" style="width: 200px" />
+      <Form :model="formItem" class="form-container">
+        <FormItem label="所属品牌：" class="from-brand">
+          <!-- <span>所属品牌：</span> -->
+          <RadioGroup v-model="formItem.from_brand_check">
+            <Radio
+              v-for="(item, index) in fromBrandList"
+              v-bind:key="index"
+              v-bind:label="item.name"
+            ></Radio>
+          </RadioGroup>
         </FormItem>
-        <FormItem>
-          <Button type="primary" @click="handleSearch">查询</Button>
-          <Button style="margin-left: 8px" @click="handleReset">重置</Button>
+        <FormItem label="车型类型：" class="vehicle-type">
+          <!-- <span>车型类型：</span> -->
+          <RadioGroup v-model="formItem.vehicle_type_check">
+            <Radio
+              v-for="(item, index) in vehicleTypeList"
+              v-bind:key="index"
+              v-bind:label="item.name"
+            ></Radio>
+          </RadioGroup>
         </FormItem>
+        <FormItem label="车型状态：" class="vehicle-status">
+          <!-- <span>车型状态：</span> -->
+          <RadioGroup v-model="formItem.vehicle_model_status_check">
+            <Radio
+              v-for="(item, index) in vehicleModelStatusList"
+              v-bind:key="index"
+              v-bind:label="item.name"
+            ></Radio>
+          </RadioGroup>
+        </FormItem>
+        <div>
+          <FormItem label="车型名称：">
+            <!-- <span>车型名称：</span> -->
+            <Input
+              v-model="formItem.vehicle_model_name"
+              placeholder="请输入车型名称"
+              style="width: 200px"
+            />
+          </FormItem>
+          <FormItem>
+            <Button type="primary" @click="handleSearch">查询</Button>
+            <Button style="margin-left: 8px" @click="handleReset">重置</Button>
+          </FormItem>
+        </div>
       </Form>
     </div>
     <div class="content-container">
-      <Button type="primary" style="margin-bottom: 10px;" @click="add">+新增</Button>
-      <Table border :columns="vehicleModelColumns" :data="vehicleModelData" stripe>
+      <Button type="primary" style="margin-bottom: 10px;" @click="add"
+        >+新增</Button
+      >
+      <Table
+        border
+        :columns="vehicleModelColumns"
+        :data="vehicleModelData"
+        stripe
+      >
         <template v-slot:brand_name="{ row }">
-          <span>{{row.brand_name}}</span>
+          <span>{{ row.brand_name }}</span>
         </template>
         <template v-slot:state="{ row }">
           <Switch :value="row.state == '0' ? false : true" :disabled="true">
@@ -51,7 +68,13 @@
           </Switch>
         </template>
         <template v-slot:action="{ row, index }">
-          <Button type="primary" size="small" style="margin-right: 5px" @click="edit(index)">编辑</Button>
+          <Button
+            type="primary"
+            size="small"
+            style="margin-right: 5px"
+            @click="edit(index)"
+            >编辑</Button
+          >
           <Button type="error" size="small" @click="remove(index)">删除</Button>
           <Button type="primary" size="small" @click="show(index)">详情</Button>
         </template>
@@ -79,18 +102,18 @@ export default {
   name: 'MgVehicleModel',
   data() {
     return {
-      fromBrandCheck: '全部',
       fromBrandList: [],
-      vehicleTypeCheck: '全部',
       vehicleTypeList: [],
-      vehicleModelStatusCheck: '全部',
       vehicleModelStatusList: [
         { name: '全部', state: -1 },
         { name: '已关停', state: 0 },
         { name: '已开启', state: 1 }
       ],
       formItem: {
-        vehicleModelName: ''
+        from_brand_check: '全部',
+        vehicle_type_check: '全部',
+        vehicle_model_status_check: '全部',
+        vehicle_model_name: ''
       },
       vehicleModelColumns: [
         {
@@ -272,11 +295,17 @@ export default {
     },
     // 查询
     handleSearch() {
-      let indexTemp = this.handleSelected(this.fromBrandCheck, 'brand');
+      let indexTemp = this.handleSelected(
+        this.formItem.from_brand_check,
+        'brand'
+      );
       let brandId = this.fromBrandList[indexTemp].id;
-      indexTemp = this.handleSelected(this.vehicleTypeCheck, 'type');
+      indexTemp = this.handleSelected(this.formItem.vehicle_type_check, 'type');
       let categoryId = this.vehicleTypeList[indexTemp].id;
-      indexTemp = this.handleSelected(this.vehicleModelStatusCheck, 'status');
+      indexTemp = this.handleSelected(
+        this.formItem.vehicle_model_status_check,
+        'status'
+      );
       let state = this.vehicleModelStatusList[indexTemp].state;
       let strTemp = '';
       if (brandId !== -1) {
@@ -301,7 +330,7 @@ export default {
         url:
           this.global_.path.baseUrl +
           '/rentalcars/vehicle/model/page?name=' +
-          this.formItem.vehicleModelName +
+          this.formItem.vehicle_model_name +
           strTemp +
           '&pageIndex=' +
           this.currentPage +
@@ -343,9 +372,9 @@ export default {
       for (let item in this.formItem) {
         this.formItem[item] = '';
       }
-      this.vehicleModelStatusCheck = '全部';
-      this.vehicleTypeCheck = '全部';
-      this.fromBrandCheck = '全部';
+      this.formItem.vehicle_model_status_check = '全部';
+      this.formItem.vehicle_type_check = '全部';
+      this.formItem.from_brand_check = '全部';
     },
     // 删除行
     remove(index) {
@@ -494,6 +523,6 @@ export default {
 };
 </script>
 
-<style lang='scss' scoped>
+<style lang="scss" scoped>
 @import './Index.scss';
 </style>

@@ -1,33 +1,35 @@
 <template>
   <div class="vehicle-container">
     <div class="filtrate-container">
-      <div class="vehicle-status">
-        <span>车辆状态：</span>
-        <RadioGroup v-model="vehicleStatusCheck">
+      <Form :model="formItem" class="form-container">
+      <FormItem label="车辆状态：" class="vehicle-status">
+        <!-- <span>车辆状态：</span> -->
+        <RadioGroup v-model="formItem.vehicle_status_check">
           <Radio
             v-for="(item, index) in vehicleStatusList"
             v-bind:key="index"
             v-bind:label="item.name"
           ></Radio>
         </RadioGroup>
-      </div>
-      <Form :model="formItem" inline class="form-container">
-        <FormItem>
-          <span>车牌号：</span>
+      </FormItem>
+      <div>
+        <FormItem label="车牌号：">
+          <!-- <span>车牌号：</span> -->
           <Input v-model="formItem.plate_num" placeholder="请输入车牌号" style="width: 200px" />
         </FormItem>
-        <FormItem>
-          <span>车辆识别代码：</span>
+        <FormItem label="车辆识别代码：">
+          <!-- <span>车辆识别代码：</span> -->
           <Input v-model="formItem.vin" placeholder="请输入车辆识别代码" style="width: 200px" />
         </FormItem>
-        <FormItem>
-          <span>发动机号：</span>
+        <FormItem label="发动机号：">
+          <!-- <span>发动机号：</span> -->
           <Input v-model="formItem.engine_no" placeholder="请输入发动机号" style="width: 200px" />
         </FormItem>
         <FormItem>
           <Button type="primary" @click="handleSearch">查询</Button>
           <Button style="margin-left: 8px" @click="handleReset">重置</Button>
         </FormItem>
+      </div>
       </Form>
     </div>
     <div class="content-container">
@@ -72,7 +74,6 @@ export default {
   name: 'MyVehicle',
   data: function() {
     return {
-      vehicleStatusCheck: '全部',
       vehicleStatusList: [],
       statusColor: {
         '-1': 'invalid',
@@ -83,6 +84,7 @@ export default {
         '4': 'maintenance'
       },
       formItem: {
+        vehicle_status_check: '全部',
         plate_num: '',
         vin: '',
         engine_no: ''
@@ -233,7 +235,7 @@ export default {
     },
     // 查询
     handleSearch() {
-      let indexTemp = this.handleSelected(this.vehicleStatusCheck, 'status');
+      let indexTemp = this.handleSelected(this.formItem.vehicle_status_check, 'status');
       let statusTemp = this.vehicleStatusList[indexTemp].status;
       let strTemp =
         '?plate_num=' +
@@ -291,7 +293,7 @@ export default {
       for (let item in this.formItem) {
         this.formItem[item] = '';
       }
-      this.vehicleStatusCheck = '全部';
+      this.formItem.vehicle_status_check = '全部';
     },
     // 编辑
     edit(index) {

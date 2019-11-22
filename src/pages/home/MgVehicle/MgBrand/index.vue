@@ -3,7 +3,7 @@
     <div class="filtrate-container">
       <Form :model="formItem" :label-width="85" inline>
         <FormItem label="品牌名称：">
-          <Input v-model="formItem.brandName" placeholder="请输入品牌名称" style="width: 200px" />
+          <Input v-model="formItem.brand_name" placeholder="请输入品牌名称" style="width: 200px" />
         </FormItem>
         <FormItem>
           <Button type="primary" @click="handleSearch">查询</Button>
@@ -48,7 +48,7 @@ export default {
   data() {
     return {
       formItem: {
-        brandName: ''
+        brand_name: ''
       },
       brandColumns: [
         {
@@ -126,13 +126,13 @@ export default {
   },
   methods: {
     handleSearch() {
-      console.log('MgBrand index.vue handleSearch', this.formItem.brandName);
+      console.log('MgBrand index.vue handleSearch', this.formItem.brand_name);
       this.spinShow = true;
       this.axios({
         url:
           this.global_.path.baseUrl +
           '/rentalcars/vehicle/brand/page?name=' +
-          this.formItem.brandName +
+          this.formItem.brand_name +
           '&pageIndex=' +
           this.currentPage +
           '&pageSize=' +

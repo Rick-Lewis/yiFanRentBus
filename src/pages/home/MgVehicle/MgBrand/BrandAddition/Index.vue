@@ -3,19 +3,19 @@
     <div class="basic-info-container">
       <div class="header">基础信息</div>
       <Form ref="formDynamic" :model="basicInfoForm" class="content" :rules="ruleValidate">
-        <FormItem label="品牌名称：" prop="brandName">
+        <FormItem label="品牌名称：" prop="brand_name">
           <!-- <span>品牌名称：</span> -->
-          <Input v-model="basicInfoForm.brandName" placeholder="请输入品牌名称" style="width: 200px" />
+          <Input v-model="basicInfoForm.brand_name" placeholder="请输入品牌名称" style="width: 200px" />
         </FormItem>
-        <FormItem label="英文名称：" prop="brandEn">
+        <FormItem label="英文名称：" prop="brand_en">
           <!-- <span>英文名称：</span> -->
-          <Input v-model="basicInfoForm.brandEn" placeholder="请输入英文名称" style="width: 200px" />
+          <Input v-model="basicInfoForm.brand_en" placeholder="请输入英文名称" style="width: 200px" />
         </FormItem>
-        <FormItem label="品牌LOGO：" prop="uploadList">
+        <FormItem label="品牌LOGO：" prop="upload_list">
           <!-- <span>品牌LOGO：</span> -->
           <div
             class="upload-list"
-            v-for="(item, index) in basicInfoForm.uploadList"
+            v-for="(item, index) in basicInfoForm.upload_list"
             v-bind:key="index"
           >
             <template v-if="item.status === 'finished'">
@@ -45,7 +45,7 @@
             type="drag"
             :action="uploadUrl"
             style="display: inline-block;width:58px;"
-            :style="basicInfoForm.uploadList.length === 0 ? {} : {display: 'none'}"
+            :style="basicInfoForm.upload_list.length === 0 ? {} : {display: 'none'}"
           >
             <div style="width: 58px;height:58px;line-height: 58px;">
               <Icon type="ios-camera" size="20"></Icon>
@@ -71,12 +71,12 @@ export default {
   data: function() {
     return {
       basicInfoForm: {
-        brandName: '',
-        brandEn: '',
-        uploadList: []
+        brand_name: '',
+        brand_en: '',
+        upload_list: []
       },
       ruleValidate: {
-        brandName: [
+        brand_name: [
           {
             required: true,
             message: '品牌名称不能为空',
@@ -89,7 +89,7 @@ export default {
             trigger: 'blur'
           }
         ],
-        brandEn: [
+        brand_en: [
           {
             required: true,
             message: '英文名称不能为空',
@@ -102,7 +102,7 @@ export default {
             trigger: 'blur'
           }
         ],
-        uploadList: [
+        upload_list: [
           {
             required: true,
             type: 'array',
@@ -142,11 +142,11 @@ export default {
           );
           if (res.data.code === 0) {
             this.basicInfoForm = {
-              brandName: res.data.data.name,
-              brandEn: res.data.data.name_en
+              brand_name: res.data.data.name,
+              brand_en: res.data.data.name_en
             };
             if (res.data.data.logo) {
-              this.basicInfoForm.uploadList.push({
+              this.basicInfoForm.upload_list.push({
                 name: res.data.data.logo,
                 url: this.global_.path.baseUrl + '/' + res.data.data.logo,
                 status: 'finished'
@@ -185,7 +185,7 @@ export default {
         'BrandAddition index.vue methods handleSuccess',
         res,
         file,
-        this.basicInfoForm.uploadList
+        this.basicInfoForm.upload_list
       );
       file.name = res.data;
       file.url = this.global_.path.baseUrl + res.data;
@@ -218,7 +218,7 @@ export default {
     },
     handleBeforeUpload(file) {
       console.log('BrandAddition index.vue methods handleBeforeUpload', file);
-      const check = this.basicInfoForm.uploadList.length < 5;
+      const check = this.basicInfoForm.upload_list.length < 5;
       if (!check) {
         this.$Notice.warning({
           title: '上传图片不能超过5张'
@@ -237,9 +237,9 @@ export default {
       this.$refs[name].validate(valid => {
         if (valid) {
           let temp = {
-            name: this.basicInfoForm.brandName,
-            name_en: this.basicInfoForm.brandEn,
-            logo: this.basicInfoForm.uploadList[0].name
+            name: this.basicInfoForm.brand_name,
+            name_en: this.basicInfoForm.brand_en,
+            logo: this.basicInfoForm.upload_list[0].name
           };
           if (this.$route.query.action === 'edit') {
             temp = Object.assign({}, temp, { id: this.$route.query.id });
@@ -291,7 +291,7 @@ export default {
   },
   computed: {},
   mounted() {
-    this.basicInfoForm.uploadList = this.$refs.upload.fileList;
+    this.basicInfoForm.upload_list = this.$refs.upload.fileList;
   }
 };
 </script>

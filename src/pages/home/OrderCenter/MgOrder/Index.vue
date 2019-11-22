@@ -1,75 +1,102 @@
 <template>
   <div class="order-container">
     <div class="filtrate-container">
-      <div class="order-status">
-        <span>订单状态：</span>
-        <RadioGroup v-model="orderStatusCheck">
-          <Radio
-            v-for="(item, index) in orderStatusList"
-            v-bind:key="index"
-            v-bind:label="item.name"
-          ></Radio>
-        </RadioGroup>
-      </div>
-      <div class="driver-existence">
-        <span>有无司机：</span>
-        <RadioGroup v-model="driverExistenceCheck">
-          <Radio
-            v-for="(item, index) in driverExistenceList"
-            v-bind:key="index"
-            v-bind:label="item.name"
-          ></Radio>
-        </RadioGroup>
-      </div>
-      <div class="time">
-        <span>时间查询：</span>
-        <RadioGroup v-model="timeCheck" @on-change="handleCalDuration1">
-          <Radio v-for="(item, index) in timeList" v-bind:key="index" v-bind:label="item"></Radio>
-        </RadioGroup>
-        <div class="custom-time">
-          <DatePicker
-            format="yyyy-MM-dd HH:mm:ss"
-            v-model="time_start"
-            @on-change="handleCalDurationS"
-            type="date"
-            placeholder="开始时间"
+      <Form :model="formItem" class="form-container">
+        <FormItem label="订单状态：" class="order-status">
+          <!-- <span>订单状态：</span> -->
+          <RadioGroup v-model="formItem.order_status_check">
+            <Radio
+              v-for="(item, index) in orderStatusList"
+              v-bind:key="index"
+              v-bind:label="item.name"
+            ></Radio>
+          </RadioGroup>
+        </FormItem>
+        <FormItem label="有无司机：" class="driver-existence">
+          <!-- <span>有无司机：</span> -->
+          <RadioGroup v-model="formItem.driver_existence_check">
+            <Radio
+              v-for="(item, index) in driverExistenceList"
+              v-bind:key="index"
+              v-bind:label="item.name"
+            ></Radio>
+          </RadioGroup>
+        </FormItem>
+        <FormItem label="时间查询：" class="time">
+          <!-- <span>时间查询：</span> -->
+          <RadioGroup
+            v-model="formItem.time_check"
+            @on-change="handleCalDuration1"
+          >
+            <Radio
+              v-for="(item, index) in timeList"
+              v-bind:key="index"
+              v-bind:label="item"
+            ></Radio>
+          </RadioGroup>
+          <div class="custom-time">
+            <DatePicker
+              format="yyyy-MM-dd HH:mm:ss"
+              v-model="formItem.time_start"
+              @on-change="handleCalDurationS"
+              type="date"
+              placeholder="开始时间"
+              style="width: 200px"
+            ></DatePicker>
+            <DatePicker
+              format="yyyy-MM-dd HH:mm:ss"
+              v-model="formItem.time_end"
+              @on-change="handleCalDurationE"
+              type="date"
+              placeholder="结束时间"
+              style="width: 200px"
+            ></DatePicker>
+          </div>
+        </FormItem>
+        <FormItem label="订单编号：">
+          <!-- <span>订单编号：</span> -->
+          <Input
+            v-model="formItem.order_no"
+            placeholder="请输入订单编号"
             style="width: 200px"
-          ></DatePicker>
-          <DatePicker
-            format="yyyy-MM-dd HH:mm:ss"
-            v-model="time_end"
-            @on-change="handleCalDurationE"
-            type="date"
-            placeholder="结束时间"
+          />
+        </FormItem>
+        <FormItem label="车牌号：">
+          <!-- <span>车牌号：</span> -->
+          <Input
+            v-model="formItem.plate_num"
+            placeholder="请输入车牌号"
             style="width: 200px"
-          ></DatePicker>
+          />
+        </FormItem>
+        <div>
+          <FormItem label="用户查询：">
+            <!-- <span>用户查询：</span> -->
+            <Input
+              v-model="formItem.key"
+              placeholder="请输入手机号、昵称"
+              style="width: 200px"
+            />
+          </FormItem>
+          <FormItem>
+            <Button type="primary" @click="handleSearch">查询</Button>
+            <Button style="margin-left: 8px" @click="handleReset">重置</Button>
+          </FormItem>
         </div>
-      </div>
-      <Form :model="formItem" inline class="form-container">
-        <FormItem>
-          <span>订单编号：</span>
-          <Input v-model="formItem.order_no" placeholder="请输入订单编号" style="width: 200px" />
-        </FormItem>
-        <FormItem>
-          <span>车牌号：</span>
-          <Input v-model="formItem.plate_num" placeholder="请输入车牌号" style="width: 200px" />
-        </FormItem>
-        <FormItem>
-          <span>用户查询：</span>
-          <Input v-model="formItem.key" placeholder="请输入手机号、昵称" style="width: 200px" />
-        </FormItem>
-        <FormItem>
-          <Button type="primary" @click="handleSearch">查询</Button>
-          <Button style="margin-left: 8px" @click="handleReset">重置</Button>
-        </FormItem>
       </Form>
     </div>
     <div class="content-container">
-      <div v-if="orderData.length <= 0" style="text-align: center;">～ 没有更多了 ～</div>
-      <div class="item-container" v-for="(item, index) in orderData" v-bind:key="index">
+      <div v-if="orderData.length <= 0" style="text-align: center;">
+        ～ 没有更多了 ～
+      </div>
+      <div
+        class="item-container"
+        v-for="(item, index) in orderData"
+        v-bind:key="index"
+      >
         <div class="item-header">
-          <span>下单时间：{{item.time_create}}</span>
-          <span style="padding-left: 15px;">订单编号：{{item.order_no}}</span>
+          <span>下单时间：{{ item.time_create }}</span>
+          <span style="padding-left: 15px;">订单编号：{{ item.order_no }}</span>
           <!-- <span style="padding-left: 15px;">司机：王大伟</span> -->
         </div>
         <div class="item-content">
@@ -81,58 +108,63 @@
               />
             </div>
             <div style="padding-left: 10px;">
-              <div>{{item.plate_num}}</div>
-              <div>{{item.model_name}}</div>
-              <div>￥{{item.price_unit}}/日均</div>
+              <div>{{ item.plate_num }}</div>
+              <div>{{ item.model_name }}</div>
+              <div>￥{{ item.price_unit }}/日均</div>
             </div>
           </div>
           <div class="string"></div>
           <div class="col-item" style="text-align: center;">
-            <div>{{item.telephone}}</div>
-            <div>微信：{{item.nick_name}}</div>
+            <div>{{ item.telephone }}</div>
+            <div>微信：{{ item.nick_name }}</div>
           </div>
           <div class="string"></div>
           <div class="col-item duration">
             <div class="start">
-              <div>{{item.time_start.split(' ')[0]}}</div>
-              <div>{{item.time_start.split(' ')[1]}}</div>
+              <div>{{ item.time_start.split(' ')[0] }}</div>
+              <div>{{ item.time_start.split(' ')[1] }}</div>
             </div>
             <div class="time">
-              <div>{{item.days}}</div>
+              <div>{{ item.days }}</div>
             </div>
             <div class="end">
-              <div>{{item.time_end.split(' ')[0]}}</div>
-              <div>{{item.time_end.split(' ')[1]}}</div>
+              <div>{{ item.time_end.split(' ')[0] }}</div>
+              <div>{{ item.time_end.split(' ')[1] }}</div>
             </div>
           </div>
           <div class="string"></div>
           <div class="col-item address">
             <div class="fetch">
-              <span>{{item.store_pick_up_name}}</span>
+              <span>{{ item.store_pick_up_name }}</span>
               <div>取</div>
             </div>
             <div class="return">
-              <span>{{item.store_drop_off_name}}</span>
+              <span>{{ item.store_drop_off_name }}</span>
               <div>还</div>
             </div>
           </div>
           <div class="string"></div>
           <div class="col-item">
-            <div>共计：¥{{item.price_total}}</div>
+            <div>共计：¥{{ item.price_total }}</div>
           </div>
           <div class="string"></div>
           <div class="col-item">
             <div>
-              <Tag color="warning">{{orderStatusList[haneleIndexByStatus(item.status)].name}}</Tag>
+              <Tag color="warning">{{
+                orderStatusList[haneleIndexByStatus(item.status)].name
+              }}</Tag>
             </div>
           </div>
           <div class="string"></div>
           <div class="col-item" style="width: 170px; text-align:center;">
-            <a @click="handleOperate(index, 'refund')" v-if="item.status === 1">退款</a>
+            <a @click="handleOperate(index, 'refund')" v-if="item.status === 1"
+              >退款</a
+            >
             <a
               @click="handleOperate(index)"
               v-if="item.status === 1 || item.status === 3"
-            >{{getOperateText(index)}}</a>
+              >{{ getOperateText(index) }}</a
+            >
             <a @click="show(index)">订单详情</a>
           </div>
         </div>
@@ -160,20 +192,20 @@ export default {
   name: 'MgOrder',
   data: function() {
     return {
-      orderStatusCheck: '全部',
       orderStatusList: [],
-      driverExistenceCheck: '全部',
       driverExistenceList: [
         { name: '全部', value: -2 },
         { name: '无', value: 0 },
         { name: '有', value: 1 }
       ],
-      timeCheck: '全部',
       timeList: ['全部', '今日', '近7天', '近一个月', '近三个月'],
       time_start: '',
       time_end: '',
       duration: null,
       formItem: {
+        order_status_check: '全部',
+        driver_existence_check: '全部',
+        time_check: '全部',
         order_no: '',
         plate_num: '',
         key: ''
@@ -455,7 +487,7 @@ export default {
       let nowDate = this.$moment(new Date()).format('YYYY-MM-DD HH:mm:ss');
       let timeStartTemp = '';
       let timeEndTemp = '';
-      this.timeCheck = '全部';
+      this.formItem.time_check = '全部';
       timeStartTemp = this.$moment(this.time_start).format(
         'YYYY-MM-DD HH:mm:ss'
       );
@@ -476,7 +508,7 @@ export default {
       let nowDate = this.$moment(new Date()).format('YYYY-MM-DD HH:mm:ss');
       let timeStartTemp = '';
       let timeEndTemp = '';
-      this.timeCheck = '全部';
+      this.formItem.time_check = '全部';
       if (this.time_end) {
         timeStartTemp = nowDate;
         timeEndTemp = this.$moment(this.time_end).format('YYYY-MM-DD HH:mm:ss');
@@ -515,9 +547,15 @@ export default {
     },
     // 查询
     handleSearch() {
-      let indexTemp = this.handleSelected(this.orderStatusCheck, 'status');
+      let indexTemp = this.handleSelected(
+        this.formItem.order_status_check,
+        'status'
+      );
       let statusTemp = this.orderStatusList[indexTemp].status;
-      indexTemp = this.handleSelected(this.driverExistenceCheck, 'with_driver');
+      indexTemp = this.handleSelected(
+        this.formItem.driver_existence_check,
+        'with_driver'
+      );
       let withDriverTemp = this.driverExistenceList[indexTemp].value;
       let strTemp = '';
       if (statusTemp !== -2) {
@@ -582,9 +620,9 @@ export default {
       for (let item in this.formItem) {
         this.formItem[item] = '';
       }
-      this.orderStatusCheck = '全部';
-      this.driverExistenceCheck = '全部';
-      this.timeCheck = '今日';
+      this.formItem.order_status_check = '全部';
+      this.formItem.driver_existence_check = '全部';
+      this.formItem.time_check = '今日';
     },
     // 车型详情
     show(index) {
@@ -595,9 +633,15 @@ export default {
     },
     // 页码改变
     handlePageChange(e) {
-      let indexTemp = this.handleSelected(this.orderStatusCheck, 'status');
+      let indexTemp = this.handleSelected(
+        this.formItem.order_status_check,
+        'status'
+      );
       let statusTemp = this.orderStatusList[indexTemp].status;
-      indexTemp = this.handleSelected(this.driverExistenceCheck, 'with_driver');
+      indexTemp = this.handleSelected(
+        this.formItem.driver_existence_check,
+        'with_driver'
+      );
       let withDriverTemp = this.driverExistenceList[indexTemp].value;
       let strTemp = '';
       if (statusTemp !== -2) {
@@ -657,9 +701,15 @@ export default {
     },
     // 每页条数改变
     handlePageSizeChange(e) {
-      let indexTemp = this.handleSelected(this.orderStatusCheck, 'status');
+      let indexTemp = this.handleSelected(
+        this.formItem.order_status_check,
+        'status'
+      );
       let statusTemp = this.orderStatusList[indexTemp].status;
-      indexTemp = this.handleSelected(this.driverExistenceCheck, 'with_driver');
+      indexTemp = this.handleSelected(
+        this.formItem.driver_existence_check,
+        'with_driver'
+      );
       let withDriverTemp = this.driverExistenceList[indexTemp].value;
       let strTemp = '';
       if (statusTemp !== -2) {
@@ -721,6 +771,6 @@ export default {
   components: {}
 };
 </script>
-<style lang='scss' scoped>
+<style lang="scss" scoped>
 @import './Index.scss';
 </style>
