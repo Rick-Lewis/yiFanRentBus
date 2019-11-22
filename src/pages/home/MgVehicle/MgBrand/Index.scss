@@ -4,7 +4,7 @@
   position: relative;
   .filtrate-container {
     background-color: #fff;
-    padding: 20px 20px 0 20px;
+    padding: 20px;
   }
   .content-container {
     background-color: #fff;
@@ -26,4 +26,9 @@
       margin-top: 20px;
     }
   }
+}
+
+.ivu-form-item {
+  margin-bottom: 0px;
+  padding: 8px;
 }

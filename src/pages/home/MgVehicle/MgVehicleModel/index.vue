@@ -1,7 +1,7 @@
 <template>
   <div class="vehicle-model-container">
     <div class="filtrate-container">
-      <Form :model="formItem" class="form-container">
+      <Form :model="formItem">
         <FormItem label="所属品牌：" class="from-brand">
           <!-- <span>所属品牌：</span> -->
           <RadioGroup v-model="formItem.from_brand_check">
@@ -32,7 +32,7 @@
             ></Radio>
           </RadioGroup>
         </FormItem>
-        <div>
+        <div class="input-container">
           <FormItem label="车型名称：">
             <!-- <span>车型名称：</span> -->
             <Input

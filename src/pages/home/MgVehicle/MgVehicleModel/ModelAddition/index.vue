@@ -2,8 +2,8 @@
   <div class="model-addition-container">
     <div class="basic-info-container">
       <div class="header">基础信息</div>
-      <Form :model="basicInfoForm" class="content">
-        <FormItem label="车型名称：" style="margin-left: 0;">
+      <Form :model="basicInfoForm" class="content" :label-width="120">
+        <FormItem label="车型名称：">
           <!-- <span>车型名称：</span> -->
           <Input
             v-model="basicInfoForm.name"
@@ -111,7 +111,7 @@
     </div>
     <div class="conf-info-container">
       <div class="header">配置信息</div>
-      <Form class="content" :model="confInfoForm">
+      <Form class="content" :model="confInfoForm" :label-width="120">
         <div class="left">
           <FormItem label="发动机：">
             <!-- <span style="padding-right: 14px;">发动机：</span> -->
@@ -223,7 +223,7 @@
     </div>
     <div class="price-info-container">
       <div class="header">价格信息</div>
-      <Form class="content" :model="priceInfoForm">
+      <Form class="content" :model="priceInfoForm" :label-width="120">
         <FormItem label="押金：">
           <!-- <span>押金：</span> -->
           <Input
@@ -274,7 +274,8 @@ export default {
         vehicle_type_check: '其他',
         energy_types_check: '其他',
         vehicle_status_check: '全部',
-        name: ''
+        name: '',
+        upload_list: []
       },
       confInfoForm: {
         oil_type: '',
@@ -286,8 +287,7 @@ export default {
         backup_camera: '有',
         door_count: '',
         let_litre: '',
-        body_construction: '',
-        upload_list: []
+        body_construction: ''
       },
       priceInfoForm: {
         price: ''

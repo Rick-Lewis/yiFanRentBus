@@ -72,6 +72,7 @@ export default {
               res
             );
             if (res.data.code === 0) {
+              window.localStorage.setItem('username', this.username);
               this.$router.push('/home/brand');
             } else {
               this.$Message.error({

@@ -1,7 +1,7 @@
 <template>
   <div class="vehicle-container">
     <div class="filtrate-container">
-      <Form :model="formItem" class="form-container">
+      <Form :model="formItem">
       <FormItem label="车辆状态：" class="vehicle-status">
         <!-- <span>车辆状态：</span> -->
         <RadioGroup v-model="formItem.vehicle_status_check">
@@ -12,7 +12,7 @@
           ></Radio>
         </RadioGroup>
       </FormItem>
-      <div>
+      <div class="input-container">
         <FormItem label="车牌号：">
           <!-- <span>车牌号：</span> -->
           <Input v-model="formItem.plate_num" placeholder="请输入车牌号" style="width: 200px" />

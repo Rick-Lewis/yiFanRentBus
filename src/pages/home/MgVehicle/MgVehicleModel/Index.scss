@@ -4,7 +4,14 @@
   position: relative;
   .filtrate-container {
     background-color: #fff;
-    padding: 20px 20px 0 20px;
+    padding: 20px;
+    .input-container {
+      display: flex;
+
+      /deep/ .ivu-form-item-content {
+        float: left;
+      }
+    }
     .from-brand {
       padding: 10px 8px;
     }
@@ -13,9 +20,6 @@
     }
     .vehicle-status {
       padding: 10px 8px;
-    }
-    .form-container {
-      padding: 10px 8px 0 8px;
     }
   }
   .content-container {
@@ -28,4 +32,9 @@
       margin-top: 20px;
     }
   }
+}
+
+.ivu-form-item {
+  margin-bottom: 0px;
+  padding: 8px;
 }

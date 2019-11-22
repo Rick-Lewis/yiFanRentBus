@@ -1,13 +1,7 @@
 <template>
   <div class="layout">
     <Layout class="container">
-      <Sider
-        ref="side1"
-        hide-trigger
-        collapsible
-        :collapsed-width="78"
-        v-model="isCollapsed"
-      >
+      <Sider ref="side1" hide-trigger collapsible :collapsed-width="78" v-model="isCollapsed">
         <Header :class="headerClasses">
           <!-- <img class="layout-logo" src="../../assets/logo.jpg" /> -->
           <div class="layout-logo"></div>
@@ -20,9 +14,20 @@
           @on-select="handleSelect"
           :class="menuitemClasses"
         >
+          <Submenu name="activity-center">
+            <template slot="title">
+              <Icon type="ios-paper" />
+              <span>活动中心</span>
+            </template>
+            <MenuItem name="mg-ad">
+              <Icon type="ios-paper" />
+              <span>首页广告</span>
+            </MenuItem>
+          </Submenu>
           <Submenu name="vehicle">
             <template slot="title">
-              <Icon type="ios-navigate"></Icon>车辆管理
+              <Icon type="ios-navigate"></Icon>
+              <span>车辆管理</span>
             </template>
             <MenuItem name="mg-brand">
               <Icon type="ios-navigate"></Icon>
@@ -39,7 +44,8 @@
           </Submenu>
           <Submenu name="order">
             <template slot="title">
-              <Icon type="ios-search"></Icon>订单管理
+              <Icon type="ios-search"></Icon>
+              <span>订单管理</span>
             </template>
             <MenuItem name="mg-order">
               <Icon type="ios-search"></Icon>
@@ -54,7 +60,7 @@
             <Icon
               @click.native="collapsedSider"
               :class="rotateIcon"
-              :style="{ margin: '0 20px' }"
+              :style="{ margin: '0 20px 0 0' }"
               type="md-menu"
               size="24"
             ></Icon>
@@ -63,15 +69,14 @@
                 v-for="(item, index) in breadcrumbList"
                 v-bind:key="index"
                 :to="item.path + (!item.query ? '' : item.query)"
-                >{{ item.text }}</BreadcrumbItem
-              >
+              >{{ item.text }}</BreadcrumbItem>
             </Breadcrumb>
           </div>
           <div class="right">
             <Avatar icon="ios-person" />
             <Dropdown @on-click="handleDropdown" placement="top">
               <span style="padding-left: 10px">
-                Rick
+                {{userInfo && userInfo.username}}
                 <Icon type="ios-arrow-down"></Icon>
               </span>
               <DropdownMenu slot="list">
@@ -94,7 +99,8 @@ export default {
   name: 'home',
   data: function() {
     return {
-      isCollapsed: false
+      isCollapsed: false,
+      userInfo: null
     };
   },
   created() {
@@ -111,6 +117,9 @@ export default {
       }
     );
     this.$store.dispatch('homeStore/initBreadcrumbList', window.location.href);
+    this.userInfo = {
+      username: window.localStorage.getItem('username')
+    };
   },
   // 重要信息：当多次访问路由时，
   // 避免在客户端重复注册模块。
@@ -120,6 +129,9 @@ export default {
     this.$store.unregisterModule('myOrderStore');
   },
   computed: {
+    rotateIcon() {
+      return ['menu-icon', this.isCollapsed ? 'rotate-icon' : ''];
+    },
     headerClasses() {
       return ['header', this.isCollapsed ? 'collapsed-header' : ''];
     },
@@ -138,6 +150,11 @@ export default {
         this.matchUrl(window.location.href, '/home/orderDetail')
       ) {
         result = 'order';
+      } else if (
+        this.matchUrl(window.location.href, '/home/ad') ||
+        this.matchUrl(window.location.href, '/home/adDetail')
+      ) {
+        result = 'activity-center';
       }
       return result;
     },
@@ -160,6 +177,11 @@ export default {
         this.matchUrl(window.location.href, '/home/orderDetail')
       ) {
         result = 'mg-order';
+      } else if (
+        this.matchUrl(window.location.href, '/home/ad') ||
+        this.matchUrl(window.location.href, '/home/adDetail')
+      ) {
+        result = 'mg-ad';
       }
       return result;
     },
@@ -203,6 +225,11 @@ export default {
         case 'mg-order':
           if (!this.matchUrl(window.location.href, '/home/mgOrder')) {
             this.$router.push('/home/mgOrder');
+          }
+          break;
+        case 'mg-ad':
+          if (!this.matchUrl(window.location.href, '/home/ad')) {
+            this.$router.push('/home/ad');
           }
           break;
       }

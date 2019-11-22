@@ -1,7 +1,7 @@
 <template>
   <div class="order-container">
     <div class="filtrate-container">
-      <Form :model="formItem" class="form-container">
+      <Form :model="formItem">
         <FormItem label="订单状态：" class="order-status">
           <!-- <span>订单状态：</span> -->
           <RadioGroup v-model="formItem.order_status_check">
@@ -24,15 +24,8 @@
         </FormItem>
         <FormItem label="时间查询：" class="time">
           <!-- <span>时间查询：</span> -->
-          <RadioGroup
-            v-model="formItem.time_check"
-            @on-change="handleCalDuration1"
-          >
-            <Radio
-              v-for="(item, index) in timeList"
-              v-bind:key="index"
-              v-bind:label="item"
-            ></Radio>
+          <RadioGroup v-model="formItem.time_check" @on-change="handleCalDuration1">
+            <Radio v-for="(item, index) in timeList" v-bind:key="index" v-bind:label="item"></Radio>
           </RadioGroup>
           <div class="custom-time">
             <DatePicker
@@ -53,30 +46,18 @@
             ></DatePicker>
           </div>
         </FormItem>
-        <FormItem label="订单编号：">
-          <!-- <span>订单编号：</span> -->
-          <Input
-            v-model="formItem.order_no"
-            placeholder="请输入订单编号"
-            style="width: 200px"
-          />
-        </FormItem>
-        <FormItem label="车牌号：">
-          <!-- <span>车牌号：</span> -->
-          <Input
-            v-model="formItem.plate_num"
-            placeholder="请输入车牌号"
-            style="width: 200px"
-          />
-        </FormItem>
-        <div>
+        <div class="input-container">
+          <FormItem label="订单编号：">
+            <!-- <span>订单编号：</span> -->
+            <Input v-model="formItem.order_no" placeholder="请输入订单编号" style="width: 200px" />
+          </FormItem>
+          <FormItem label="车牌号：">
+            <!-- <span>车牌号：</span> -->
+            <Input v-model="formItem.plate_num" placeholder="请输入车牌号" style="width: 200px" />
+          </FormItem>
           <FormItem label="用户查询：">
             <!-- <span>用户查询：</span> -->
-            <Input
-              v-model="formItem.key"
-              placeholder="请输入手机号、昵称"
-              style="width: 200px"
-            />
+            <Input v-model="formItem.key" placeholder="请输入手机号、昵称" style="width: 200px" />
           </FormItem>
           <FormItem>
             <Button type="primary" @click="handleSearch">查询</Button>
@@ -86,14 +67,8 @@
       </Form>
     </div>
     <div class="content-container">
-      <div v-if="orderData.length <= 0" style="text-align: center;">
-        ～ 没有更多了 ～
-      </div>
-      <div
-        class="item-container"
-        v-for="(item, index) in orderData"
-        v-bind:key="index"
-      >
+      <div v-if="orderData.length <= 0" style="text-align: center;">～ 没有更多了 ～</div>
+      <div class="item-container" v-for="(item, index) in orderData" v-bind:key="index">
         <div class="item-header">
           <span>下单时间：{{ item.time_create }}</span>
           <span style="padding-left: 15px;">订单编号：{{ item.order_no }}</span>
@@ -150,21 +125,20 @@
           <div class="string"></div>
           <div class="col-item">
             <div>
-              <Tag color="warning">{{
+              <Tag color="warning">
+                {{
                 orderStatusList[haneleIndexByStatus(item.status)].name
-              }}</Tag>
+                }}
+              </Tag>
             </div>
           </div>
           <div class="string"></div>
           <div class="col-item" style="width: 170px; text-align:center;">
-            <a @click="handleOperate(index, 'refund')" v-if="item.status === 1"
-              >退款</a
-            >
+            <a @click="handleOperate(index, 'refund')" v-if="item.status === 1">退款</a>
             <a
               @click="handleOperate(index)"
               v-if="item.status === 1 || item.status === 3"
-              >{{ getOperateText(index) }}</a
-            >
+            >{{ getOperateText(index) }}</a>
             <a @click="show(index)">订单详情</a>
           </div>
         </div>

@@ -2,7 +2,7 @@
   <div class="vehicle-addition-container">
     <div class="basic-info-container">
       <div class="header">基础信息</div>
-      <Form :model="basicInfoForm" class="content">
+      <Form :model="basicInfoForm" class="content" :label-width="120">
         <FormItem label="车牌号：" style="margin-left: 0;">
           <!-- <span>车牌号：</span> -->
           <Input v-model="basicInfoForm.plate_num" placeholder="请输入车牌号" style="width: 200px" />

@@ -1,9 +1,20 @@
 /** @Author: xu.long
  * @Date: 2019-09-20 09:30:54
  * @Last Modified by: xu.long
- * @Last Modified time: 2019-11-19 22:15:01
+ * @Last Modified time: 2019-11-21 22:04:59
  */
 let BREADCRUMB = {
+  '/home/ad': [
+    {
+      path: '',
+      text: '活动中心'
+    },
+    {
+      path: '/home/ad',
+      text: '首页广告',
+      query: ''
+    }
+  ],
   '/home/brand': [
     {
       path: '',

@@ -13,6 +13,7 @@ import ModelAddition from '@/pages/home/MgVehicle/MgVehicleModel/ModelAddition';
 import ModelDetail from '@/pages/home/MgVehicle/MgVehicleModel/ModelDetail';
 import MgOrder from '@/pages/home/OrderCenter/MgOrder';
 import OrderDetail from '@/pages/home/OrderCenter/MgOrder/OrderDetail';
+import MgAd from '@/pages/home/ActivityCenter/MgAd';
 
 Vue.use(Router);
 
@@ -41,6 +42,22 @@ export default new Router({
       name: 'Home',
       component: Home,
       children: [
+        {
+          path: 'ad',
+          component: MgAd,
+          meta: {
+            breadcrumb: [
+              {
+                path: '',
+                text: '活动中心'
+              },
+              {
+                path: '/home/ad',
+                text: '首页广告位'
+              }
+            ]
+          }
+        },
         {
           path: 'brand',
           component: MgBrand,

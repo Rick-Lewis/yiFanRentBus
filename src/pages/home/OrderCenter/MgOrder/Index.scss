@@ -2,51 +2,69 @@
   margin: 20px;
   min-height: 260px;
   position: relative;
+
   .filtrate-container {
     background-color: #fff;
-    padding: 20px 20px 0 20px;
+    padding: 20px;
+
+    .input-container {
+      display: flex;
+
+      /deep/ .ivu-form-item-content {
+        float: left;
+      }
+    }
+
     .order-status {
       padding: 10px 8px;
     }
+
     .driver-existence {
       padding: 10px 8px;
     }
+
     .time {
       padding: 10px 8px;
+
       .custom-time {
         display: inline-block;
       }
     }
-    .form-container {
-      padding: 10px 8px 0 8px;
-    }
   }
+
   .content-container {
     margin-top: 15px;
     position: relative;
+
     .item-container {
       margin-bottom: 10px;
       background-color: #fff;
+
       .item-header {
         border-bottom: 1px solid #e4e4e4;
         padding: 5px 28px 5px 28px;
       }
+
       .item-content {
         display: flex;
         align-items: center;
         justify-content: space-between;
         padding: 5px 28px 5px 28px;
+
         .info {
           display: flex;
           align-items: center;
         }
+
         .duration {
           display: flex;
           align-items: center;
+
           .start {
             margin-right: 10px;
             text-align: center;
           }
+
           .time {
             div {
               border-bottom: 1px solid #e4e4e4;
@@ -55,16 +73,19 @@
               margin-bottom: 10px;
             }
           }
+
           .end {
             margin-left: 10px;
             text-align: center;
           }
         }
+
         .address {
           .fetch {
             display: flex;
             position: relative;
             align-items: center;
+
             &::before {
               content: '';
               width: 7px;
@@ -76,9 +97,11 @@
               bottom: 0;
               margin: auto 0;
             }
+
             span {
               padding-left: 10px;
             }
+
             div {
               width: 16px;
               height: 16px;
@@ -92,10 +115,12 @@
               margin-left: 5px;
             }
           }
+
           .return {
             display: flex;
             position: relative;
             align-items: center;
+
             &::before {
               content: '';
               width: 7px;
@@ -107,9 +132,11 @@
               bottom: 0;
               margin: auto 0;
             }
+
             span {
               padding-left: 10px;
             }
+
             div {
               width: 16px;
               height: 16px;
@@ -124,6 +151,7 @@
             }
           }
         }
+
         .string {
           width: 1px;
           height: 20px;
@@ -131,9 +159,15 @@
         }
       }
     }
+
     .page-container {
       text-align: right;
       margin-top: 20px;
     }
   }
+}
+
+.ivu-form-item {
+  margin-bottom: 0px;
+  padding: 8px;
 }
