@@ -186,13 +186,73 @@ export default {
         .find(item => item.status === status);
       return objTemp.name;
     },
+    handleSelected(e, type) {
+      console.log('MgAd index.vue handleRadioChange', e, type);
+      let indexTemp = -1;
+      switch (type) {
+        case 'status':
+          indexTemp = this.statusList.findIndex(item => item.name === e);
+          break;
+        case 'type':
+          indexTemp = this.typeList.findIndex(item => item.name === e);
+          break;
+      }
+      return indexTemp;
+    },
     // 查询
-    handleSearch() {},
+    handleSearch() {
+      let indexTemp = this.handleSelected(this.formItem.typeName, 'type');
+      let statusTemp = this.typeList[indexTemp].value;
+      let strTemp = '&title=' + this.formItem.title;
+      if (statusTemp !== -2) {
+        strTemp = strTemp + '&type=' + statusTemp;
+      }
+      indexTemp = this.handleSelected(this.formItem.statusName, 'status');
+      statusTemp = this.statusList[indexTemp].status;
+      if (statusTemp !== -2) {
+        strTemp = strTemp + '&status=' + statusTemp;
+      }
+      this.spinShow = true;
+      this.axios({
+        url:
+          this.global_.path.baseUrl +
+          '/rentalcars/banner/page?pageIndex=' +
+          this.currentPage +
+          '&pageSize=' +
+          this.currentPageSize +
+          strTemp,
+        method: 'get',
+        headers: { 'Content-Type': 'application/json' }
+      }).then(
+        res => {
+          console.log('MgAd Index.vue created axios /banner success', res);
+          if (res.data.code === 0) {
+            this.adData.length = 0;
+            this.adData.push(...res.data.data.data);
+            this.total = res.data.data.total;
+          } else {
+            this.$Message.error({
+              content: '广告数据请求失败'
+            });
+          }
+          this.spinShow = false;
+        },
+        err => {
+          console.log('MgAd Index.vue created axios /banner success', err);
+          this.$Message.error({
+            content: '广告数据请求失败'
+          });
+          this.spinShow = false;
+        }
+      );
+    },
     // 重置
     handleReset() {
+      for (let item in this.formItem) {
+        this.formItem[item] = '';
+      }
       this.formItem.statusName = '全部';
       this.formItem.typeName = '广告';
-      this.formItem.title = '';
     },
     // 删除行
     remove(index) {

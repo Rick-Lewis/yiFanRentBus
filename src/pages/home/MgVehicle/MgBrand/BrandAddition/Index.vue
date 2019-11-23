@@ -2,7 +2,7 @@
   <div class="brand-addition-container">
     <div class="basic-info-container">
       <div class="header">基础信息</div>
-      <Form ref="formDynamic" :model="basicInfoForm" class="content" :rules="ruleValidate">
+      <Form ref="formDynamic" :model="basicInfoForm" class="content" :rules="ruleValidate" :label-width="120">
         <FormItem label="品牌名称：" prop="brand_name">
           <!-- <span>品牌名称：</span> -->
           <Input v-model="basicInfoForm.brand_name" placeholder="请输入品牌名称" style="width: 200px" />
@@ -225,12 +225,6 @@ export default {
         });
       }
       return check;
-    },
-    handleModelBrandChange(param) {
-      console.log(
-        'BrandAddition index.vue methods handleModelBrandChange',
-        param
-      );
     },
     // 提交
     handleSubmit(name) {
