@@ -194,7 +194,7 @@ export default {
   created() {
     console.log('MgOrder Index.vue created', this.$store);
     // this.$store.registerModule('myOrderStore', myOrderStore);
-    this.$store.dispatch('homeStore/initBreadcrumbList', window.location.href);
+    // this.$store.dispatch('homeStore/initBreadcrumbList', window.location.href);
     let p1 = this.axios({
       url: this.global_.path.baseUrl + '/rentalcars/status/order',
       method: 'get',
@@ -206,7 +206,7 @@ export default {
           res
         );
         this.orderStatusList.push({ name: '全部', status: -2 }, ...res.data);
-        this.$store.dispatch('myOrderStore/init', res.data);
+        this.$store.dispatch('myOrderStore/initrOderStatusList', res.data);
       },
       err => {
         console.log(

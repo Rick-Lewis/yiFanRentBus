@@ -125,7 +125,7 @@ export default {
   },
   created() {
     console.log('BrandAddition Index.vue created', this.$route.query);
-    this.$store.dispatch('homeStore/initBreadcrumbList', window.location.href);
+    // this.$store.dispatch('homeStore/initBreadcrumbList', window.location.href);
     if (this.$route.query.action === 'edit') {
       this.axios({
         method: 'get',

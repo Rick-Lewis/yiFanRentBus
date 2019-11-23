@@ -320,7 +320,7 @@ export default {
   },
   created() {
     console.log('ModelAddition Index.vue created', this.$store);
-    this.$store.dispatch('homeStore/initBreadcrumbList', window.location.href);
+    // this.$store.dispatch('homeStore/initBreadcrumbList', window.location.href);
     if (this.$route.query.action === 'edit') {
       this.axios({
         url:

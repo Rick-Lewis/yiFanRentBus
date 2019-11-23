@@ -154,7 +154,7 @@ export default {
   },
   created() {
     console.log('MgVehicleModel index.vue created');
-    this.$store.dispatch('homeStore/initBreadcrumbList', window.location.href);
+    // this.$store.dispatch('homeStore/initBreadcrumbList', window.location.href);
     let p1 = this.axios({
       url: this.global_.path.baseUrl + '/rentalcars/vehicle/category/page',
       method: 'get',

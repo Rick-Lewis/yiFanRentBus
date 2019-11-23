@@ -1,6 +1,5 @@
 import Vue from 'vue';
 import Router from 'vue-router';
-import HelloWorld from '@/components/HelloWorld';
 import Login from '@/pages/login';
 import Home from '@/pages/home';
 import MgVehicle from '@/pages/home/MgVehicle/MgVehicle';
@@ -33,11 +32,6 @@ export default new Router({
       }
     },
     {
-      path: '/welcome',
-      name: 'HelloWorld',
-      component: HelloWorld
-    },
-    {
       path: '/home',
       name: 'Home',
       component: Home,
@@ -52,6 +46,8 @@ export default new Router({
                 text: '活动中心'
               },
               {
+                submenuName: 'activity-center',
+                menuItemName: 'mg-ad',
                 path: '/home/ad',
                 text: '首页广告位'
               }
@@ -68,6 +64,8 @@ export default new Router({
                 text: '车辆管理'
               },
               {
+                submenuName: 'vehicle',
+                menuItemName: 'mg-brand',
                 path: '/home/brand',
                 text: '品牌管理'
               }
@@ -88,6 +86,8 @@ export default new Router({
                 text: '品牌管理'
               },
               {
+                submenuName: 'vehicle',
+                menuItemName: 'mg-brand',
                 path: '/home/brandAddition',
                 text: '新增品牌'
               }
@@ -106,6 +106,8 @@ export default new Router({
                 text: '车辆管理'
               },
               {
+                submenuName: 'vehicle',
+                menuItemName: 'mg-vehicle',
                 path: '/home/vehicle',
                 text: '车辆管理'
               }
@@ -126,6 +128,8 @@ export default new Router({
                 text: '车辆管理'
               },
               {
+                submenuName: 'vehicle',
+                menuItemName: 'mg-vehicle',
                 path: '/home/vehicleAddition',
                 text: '新增车辆'
               }
@@ -146,6 +150,8 @@ export default new Router({
                 text: '车辆管理'
               },
               {
+                submenuName: 'vehicle',
+                menuItemName: 'mg-vehicle',
                 path: '/home/vehicleDetail',
                 text: '车辆详情'
               }
@@ -162,6 +168,8 @@ export default new Router({
                 text: '车辆管理'
               },
               {
+                submenuName: 'vehicle',
+                menuItemName: 'mg-vehicle-model',
                 path: '/home/vehicleModel',
                 text: '车型管理'
               }
@@ -182,6 +190,8 @@ export default new Router({
                 text: '车型管理'
               },
               {
+                submenuName: 'vehicle',
+                menuItemName: 'mg-vehicle-model',
                 path: '/home/modelAddition',
                 text: '新增车型'
               }
@@ -202,6 +212,8 @@ export default new Router({
                 text: '车型管理'
               },
               {
+                submenuName: 'vehicle',
+                menuItemName: 'mg-vehicle-model',
                 path: '/home/modelDetail',
                 text: '车型详情'
               }
@@ -218,6 +230,8 @@ export default new Router({
                 text: '订单管理'
               },
               {
+                submenuName: 'order',
+                menuItemName: 'mg-order',
                 path: '/home/mgOrder',
                 text: '订单管理'
               }
@@ -238,6 +252,8 @@ export default new Router({
                 text: '订单管理'
               },
               {
+                submenuName: 'order',
+                menuItemName: 'mg-order',
                 path: '/home/orderDetail',
                 text: '订单详情'
               }

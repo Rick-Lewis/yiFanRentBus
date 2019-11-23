@@ -9,12 +9,12 @@ export default {
   // 重要信息：state 必须是一个函数，
   // 因此可以创建多个实例化该模块
   state: () => ({
-    orderStatusList: []
+    vehicleStatusList: []
   }),
   actions: {
-    initrOderStatusList: ({ commit }, data) => commit('initrOderStatusList', data)
+    initStatusList: ({ commit }, data) => commit('initStatusList', data)
   },
   mutations: {
-    initrOderStatusList: (state, data) => state.orderStatusList.push(...data)
+    initStatusList: (state, data) => state.vehicleStatusList.push(...data)
   }
 };

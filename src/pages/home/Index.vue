@@ -93,7 +93,7 @@
   </div>
 </template>
 <script>
-import homeStore from '../../store/home/index';
+// import homeStore from '../../store/home/index';
 import myOrderStore from '../../store/home/OrderCenter/MyOrder/index';
 export default {
   name: 'home',
@@ -105,7 +105,7 @@ export default {
   },
   created() {
     console.log('home Index.vue created', this.$store);
-    this.$store.registerModule('homeStore', homeStore);
+    // this.$store.registerModule('homeStore', homeStore);
     this.$store.registerModule('myOrderStore', myOrderStore);
     let urlTemp = '';
     this.axios.get(urlTemp).then(
@@ -116,7 +116,7 @@ export default {
         console.log('home Index.vue created axios /login success', err);
       }
     );
-    this.$store.dispatch('homeStore/initBreadcrumbList', window.location.href);
+    // this.$store.dispatch('homeStore/initBreadcrumbList', window.location.href);
     this.userInfo = {
       username: window.localStorage.getItem('username')
     };
@@ -125,7 +125,7 @@ export default {
   // 避免在客户端重复注册模块。
   destroyed() {
     console.log('home Index.vue destroyed');
-    this.$store.unregisterModule('homeStore');
+    // this.$store.unregisterModule('homeStore');
     this.$store.unregisterModule('myOrderStore');
   },
   computed: {
@@ -139,65 +139,68 @@ export default {
       return ['menu-item', this.isCollapsed ? 'collapsed-menu' : ''];
     },
     activeMenu() {
-      let result = 'vehicle';
-      if (
-        this.matchUrl(window.location.href, '/home/vehicle') ||
-        this.matchUrl(window.location.href, '/home/vehicleModel')
-      ) {
-        result = 'vehicle';
-      } else if (
-        this.matchUrl(window.location.href, '/home/mgOrder') ||
-        this.matchUrl(window.location.href, '/home/orderDetail')
-      ) {
-        result = 'order';
-      } else if (
-        this.matchUrl(window.location.href, '/home/ad') ||
-        this.matchUrl(window.location.href, '/home/adDetail')
-      ) {
-        result = 'activity-center';
-      }
+      let temp = this.$route.matched[1].meta.breadcrumb;
+      let result = temp[temp.length - 1].submenuName;
+      // let result = 'vehicle';
+      // if (
+      //   this.matchUrl(window.location.href, '/home/vehicle') ||
+      //   this.matchUrl(window.location.href, '/home/vehicleModel')
+      // ) {
+      //   result = 'vehicle';
+      // } else if (
+      //   this.matchUrl(window.location.href, '/home/mgOrder') ||
+      //   this.matchUrl(window.location.href, '/home/orderDetail')
+      // ) {
+      //   result = 'order';
+      // } else if (
+      //   this.matchUrl(window.location.href, '/home/ad') ||
+      //   this.matchUrl(window.location.href, '/home/adDetail')
+      // ) {
+      //   result = 'activity-center';
+      // }
       return result;
     },
     activeMenuItem() {
-      let result = 'mg-brand';
-      if (
-        this.matchUrl(window.location.href, '/home/vehicle') ||
-        this.matchUrl(window.location.href, '/home/vehicleAddition') ||
-        this.matchUrl(window.location.href, '/home/vehicleDetail')
-      ) {
-        result = 'mg-vehicle';
-      } else if (
-        this.matchUrl(window.location.href, '/home/vehicleModel') ||
-        this.matchUrl(window.location.href, '/home/modelAddition') ||
-        this.matchUrl(window.location.href, '/home/modelDetail')
-      ) {
-        result = 'mg-vehicle-model';
-      } else if (
-        this.matchUrl(window.location.href, '/home/mgOrder') ||
-        this.matchUrl(window.location.href, '/home/orderDetail')
-      ) {
-        result = 'mg-order';
-      } else if (
-        this.matchUrl(window.location.href, '/home/ad') ||
-        this.matchUrl(window.location.href, '/home/adDetail')
-      ) {
-        result = 'mg-ad';
-      }
+      let temp = this.$route.matched[1].meta.breadcrumb;
+      let result = temp[temp.length - 1].menuItemName;
+      // let result = 'my-brand';
+      // if (
+      //   this.matchUrl(window.location.href, '/home/vehicle') ||
+      //   this.matchUrl(window.location.href, '/home/vehicleAddition') ||
+      //   this.matchUrl(window.location.href, '/home/vehicleDetail')
+      // ) {
+      //   result = 'mg-vehicle';
+      // } else if (
+      //   this.matchUrl(window.location.href, '/home/vehicleModel') ||
+      //   this.matchUrl(window.location.href, '/home/modelAddition') ||
+      //   this.matchUrl(window.location.href, '/home/modelDetail')
+      // ) {
+      //   result = 'mg-vehicle-model';
+      // } else if (
+      //   this.matchUrl(window.location.href, '/home/mgOrder') ||
+      //   this.matchUrl(window.location.href, '/home/orderDetail')
+      // ) {
+      //   result = 'mg-order';
+      // } else if (
+      //   this.matchUrl(window.location.href, '/home/ad') ||
+      //   this.matchUrl(window.location.href, '/home/adDetail')
+      // ) {
+      //   result = 'mg-ad';
+      // }
       return result;
     },
     breadcrumbList: {
-      // getter
-      get: function() {
-        console.log(
-          'home index.vue computed breadcrumbList',
-          this.$store.state.homeStore.breadcrumbList
-        );
-        return this.$store.state.homeStore.breadcrumbList;
-      }
-      // setter
-      // set: function(newValue) {
-      //   this.breadcrumbList = newValue;
+      // // getter
+      // get: function() {
+      //   console.log(
+      //     'home index.vue computed breadcrumbList',
+      //     this.$store.state.homeStore.breadcrumbList
+      //   );
+      //   return this.$store.state.homeStore.breadcrumbList;
       // }
+      get() {
+        return this.$route.matched[1].meta.breadcrumb;
+      }
     }
   },
   methods: {
@@ -233,10 +236,10 @@ export default {
           }
           break;
       }
-      this.$store.dispatch(
-        'homeStore/initBreadcrumbList',
-        window.location.href
-      );
+      // this.$store.dispatch(
+      //   'homeStore/initBreadcrumbList',
+      //   window.location.href
+      // );
     },
     matchUrl(url, targetStr) {
       let temp = url.split('?')[0].split('/');

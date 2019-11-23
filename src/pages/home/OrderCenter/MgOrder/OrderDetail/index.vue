@@ -190,7 +190,7 @@ export default {
   },
   created() {
     console.log('OrderDetail Index.vue created');
-    this.$store.dispatch('homeStore/initBreadcrumbList', window.location.href);
+    // this.$store.dispatch('homeStore/initBreadcrumbList', window.location.href);
     this.axios({
       url:
         this.global_.path.baseUrl +

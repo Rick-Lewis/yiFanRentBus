@@ -79,7 +79,7 @@ export default {
   },
   created() {
     console.log('MgBrand Index.vue created');
-    this.$store.dispatch('homeStore/initBreadcrumbList', window.location.href);
+    // this.$store.dispatch('homeStore/initBreadcrumbList', window.location.href);
     this.axios({
       url:
         this.global_.path.baseUrl +
