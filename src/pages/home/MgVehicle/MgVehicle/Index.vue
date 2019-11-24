@@ -245,7 +245,7 @@ export default {
         '&engine_no=' +
         this.formItem.engine_no;
       if (statusTemp !== -2) {
-        strTemp = strTemp + '&status=' + statusTemp;
+        strTemp = strTemp + '&state=' + statusTemp;
       }
       console.log('MgVehicle index.vue handleSearch');
       this.spinShow = true;
