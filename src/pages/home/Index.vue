@@ -14,6 +14,10 @@
           @on-select="handleSelect"
           :class="menuitemClasses"
         >
+          <MenuItem name="workspace">
+            <Icon type="ios-albums" style="margin-right: 8px;" />
+            <span>工作台</span>
+          </MenuItem>
           <Submenu name="activity-center">
             <template slot="title">
               <Icon type="ios-paper" />
@@ -233,6 +237,11 @@ export default {
         case 'mg-ad':
           if (!this.matchUrl(window.location.href, '/home/ad')) {
             this.$router.push('/home/ad');
+          }
+          break;
+        case 'workspace':
+          if (!this.matchUrl(window.location.href, '/home/workspace')) {
+            this.$router.push('/home/workspace');
           }
           break;
       }

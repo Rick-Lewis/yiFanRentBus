@@ -26,13 +26,16 @@
     <div class="content-container">
       <Button type="primary" style="margin-bottom: 10px;" @click="add">+新增</Button>
       <Table border :columns="adColumns" :data="adData" stripe>
-        <template v-slot:image="{ row, index }">
+        <template v-slot:pic="{ row, index }">
           <div class="image-container">
-            <img :src="global_.path.baseUrl + row.image" />
+            <img :src="global_.path.baseUrl + row.pic" />
           </div>
         </template>
-        <template v-slot:state="{ row }">
-          <div :class="statusColor[row.state]">{{getStatusNameByValue(row.state)}}</div>
+        <template v-slot:type="{ row }">
+          <div>{{getTypeNameByValue(row.type)}}</div>
+        </template>
+        <template v-slot:status="{ row }">
+          <div :class="statusColor[row.status]">{{getStatusNameByValue(row.status)}}</div>
         </template>
         <template v-slot:action="{ row, index }">
           <Button
@@ -83,20 +86,11 @@ export default {
         { name: '营销活动', value: 0 },
         { name: '广告', value: 1 }
       ],
-      adData: [
-        {
-          image: '',
-          title: '国庆租车大礼包',
-          url: 'https://www.baidu.com',
-          type: '营销活动',
-          state: 0,
-          create_time: '2016-09-21  08:50:08'
-        }
-      ],
+      adData: [],
       adColumns: [
         {
           title: '图片',
-          slot: 'image'
+          slot: 'pic'
         },
         {
           title: '标题',
@@ -109,15 +103,15 @@ export default {
         },
         {
           title: '类型',
-          key: 'type'
+          slot: 'type'
         },
         {
           title: '状态',
-          slot: 'state'
+          slot: 'status'
         },
         {
           title: '新增时间',
-          key: 'create_time',
+          key: 'time_create',
           width: 170
         },
         {
@@ -175,6 +169,10 @@ export default {
     );
   },
   methods: {
+    getTypeNameByValue(type) {
+      let objTemp = this.typeList.slice().find(item => item.value === type);
+      return objTemp.name;
+    },
     getStatusNameByValue(status) {
       console.log(
         'MgAd index.vue getStatusNameByValue',
@@ -258,7 +256,7 @@ export default {
     remove(index) {
       console.log('MgAd index.vue remove', index);
       this.$Modal.confirm({
-        title: `确定删除${this.adData[index].name}广告吗？`,
+        title: `确定删除${this.adData[index].title}广告吗？`,
         content: '',
         onOk: () => {
           this.spinShow = true;
@@ -302,7 +300,7 @@ export default {
         }
       });
     },
-    // 编辑行
+    // 上下架
     toggleStatus(index) {},
     // 新增
     add() {

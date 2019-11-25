@@ -2,6 +2,7 @@ import Vue from 'vue';
 import Router from 'vue-router';
 import Login from '@/pages/login';
 import Home from '@/pages/home';
+import Workspace from '@/pages/home/Workspace';
 import MgVehicle from '@/pages/home/MgVehicle/MgVehicle';
 import VehicleAddition from '@/pages/home/MgVehicle/MgVehicle/VehicleAddition';
 import VehicleDetail from '@/pages/home/MgVehicle/MgVehicle/VehicleDetail';
@@ -37,6 +38,20 @@ export default new Router({
       name: 'Home',
       component: Home,
       children: [
+        {
+          path: 'workspace',
+          component: Workspace,
+          meta: {
+            breadcrumb: [
+              {
+                submenuName: '',
+                menuItemName: 'workspace',
+                path: '/home/workspace',
+                text: '工作台'
+              }
+            ]
+          }
+        },
         {
           path: 'ad',
           component: MgAd,
