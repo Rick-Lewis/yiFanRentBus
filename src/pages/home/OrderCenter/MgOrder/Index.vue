@@ -598,7 +598,7 @@ export default {
       this.formItem.driver_existence_check = '全部';
       this.formItem.time_check = '今日';
     },
-    // 车型详情
+    // 订单详情
     show(index) {
       console.log('MgOrder Index.vue show', this.orderData[index]);
       this.$router.push(

@@ -73,7 +73,7 @@ export default {
             );
             if (res.data.code === 0) {
               window.localStorage.setItem('username', this.username);
-              this.$router.push('/home/brand');
+              this.$router.push('/home/workspace');
             } else {
               this.$Message.error({
                 content: '账号或密码错误'

@@ -43,6 +43,11 @@
     .shop-mg {
         margin-bottom: 10px;
 
+        &>.header {
+            display: flex;
+            justify-content: space-between
+        }
+
         &>.content {
             padding: 20px;
             margin-top: 1px;
@@ -59,11 +64,8 @@
                 .item-container {
                     margin-bottom: 10px;
                     background-color: #fff;
-
-                    .item-header {
-                        border-bottom: 1px solid #e4e4e4;
-                        padding: 5px 28px 5px 28px;
-                    }
+                    border: 1px solid #ddd;
+                    border-radius: 4px;
 
                     .item-content {
                         display: flex;
@@ -145,7 +147,151 @@
         }
     }
 
-    // .vehicle-online {
-    //     padding: 20px;
-    // }
+    .vehicle-online {
+        .content {
+            max-height: 580px;
+            background-color: #fff;
+            padding: 20px;
+            margin-top: 1px;
+
+            .main-container {
+                border-radius: 4px;
+                border: 1px solid #ddd;
+
+                .item-container {
+                    margin-bottom: 10px;
+                    background-color: #fff;
+
+                    &:first-child {
+                        border-top-left-radius: 4px;
+                        border-top-right-radius: 4px;
+                    }
+
+                    &:not(:first-child) {
+                        border-top: 1px solid #ddd;
+                    }
+
+                    .item-header {
+                        border-bottom: 1px solid #e4e4e4;
+                        padding: 5px 28px 5px 28px;
+                    }
+
+                    .item-content {
+                        display: flex;
+                        align-items: center;
+                        justify-content: space-between;
+                        padding: 5px 28px 5px 28px;
+
+                        .info {
+                            display: flex;
+                            align-items: center;
+                        }
+
+                        .duration {
+                            display: flex;
+                            align-items: center;
+
+                            .start {
+                                margin-right: 10px;
+                                text-align: center;
+                            }
+
+                            .time {
+                                div {
+                                    border-bottom: 1px solid #e4e4e4;
+                                    width: 50px;
+                                    text-align: center;
+                                    margin-bottom: 10px;
+                                }
+                            }
+
+                            .end {
+                                margin-left: 10px;
+                                text-align: center;
+                            }
+                        }
+
+                        .address {
+                            .fetch {
+                                display: flex;
+                                position: relative;
+                                align-items: center;
+
+                                &::before {
+                                    content: '';
+                                    width: 7px;
+                                    height: 7px;
+                                    border-radius: 3.5px;
+                                    background-color: rgba(105, 189, 131, 1);
+                                    position: absolute;
+                                    top: 0;
+                                    bottom: 0;
+                                    margin: auto 0;
+                                }
+
+                                span {
+                                    padding-left: 10px;
+                                }
+
+                                div {
+                                    width: 16px;
+                                    height: 16px;
+                                    background-color: #fff;
+                                    border-radius: 50%;
+                                    border: 2px solid rgba(105, 189, 131, 1);
+                                    line-height: 12px;
+                                    text-align: center;
+                                    color: rgba(105, 189, 131, 1);
+                                    font-size: 9px;
+                                    margin-left: 5px;
+                                }
+                            }
+
+                            .return {
+                                display: flex;
+                                position: relative;
+                                align-items: center;
+
+                                &::before {
+                                    content: '';
+                                    width: 7px;
+                                    height: 7px;
+                                    border-radius: 3.5px;
+                                    background-color: rgba(105, 189, 131, 1);
+                                    position: absolute;
+                                    top: 0;
+                                    bottom: 0;
+                                    margin: auto 0;
+                                }
+
+                                span {
+                                    padding-left: 10px;
+                                }
+
+                                div {
+                                    width: 16px;
+                                    height: 16px;
+                                    background-color: #fff;
+                                    border-radius: 50%;
+                                    border: 2px solid rgba(104, 104, 104, 1);
+                                    line-height: 12px;
+                                    text-align: center;
+                                    color: rgba(104, 104, 104, 1);
+                                    font-size: 9px;
+                                    margin-left: 5px;
+                                }
+                            }
+                        }
+
+                        .string {
+                            width: 1px;
+                            height: 20px;
+                            background-color: #e4e4e4;
+                        }
+                    }
+                }
+            }
+
+        }
+    }
 }

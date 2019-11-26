@@ -22,7 +22,7 @@ export default new Router({
   routes: [
     {
       path: '/',
-      redirect: '/home/brand'
+      redirect: '/home/workspace'
     },
     {
       path: '/login',
