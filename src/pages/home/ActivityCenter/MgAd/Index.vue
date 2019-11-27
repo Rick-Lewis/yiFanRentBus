@@ -35,7 +35,7 @@
           <div>{{getTypeNameByValue(row.type)}}</div>
         </template>
         <template v-slot:status="{ row }">
-          <div :class="statusColor[row.status]">{{getStatusNameByValue(row.status)}}</div>
+          <div :class="statusColor[row.status]">{{getStatusNameByValue(row.status, 'status')}}</div>
         </template>
         <template v-slot:action="{ row, index }">
           <Button
@@ -43,9 +43,9 @@
             size="small"
             style="margin-right: 5px"
             @click="toggleStatus(index)"
-          >上架</Button>
+          >{{getStatusNameByValue(row.status, 'action')}}</Button>
           <Button type="error" size="small" @click="remove(index)">删除</Button>
-          <Button type="primary" size="small" @click="show(index)">详情</Button>
+          <Button type="primary" size="small" @click="edit(index)">编辑</Button>
         </template>
       </Table>
       <div class="page-container">
@@ -169,20 +169,32 @@ export default {
     );
   },
   methods: {
+    edit(index) {
+      this.$router.push(
+        '/home/adAddition?action=edit&id=' + this.adData[index].id
+      );
+    },
     getTypeNameByValue(type) {
       let objTemp = this.typeList.slice().find(item => item.value === type);
       return objTemp.name;
     },
-    getStatusNameByValue(status) {
+    getStatusNameByValue(status, type = '') {
       console.log(
         'MgAd index.vue getStatusNameByValue',
         status,
         this.statusList.slice()
       );
+
       let objTemp = this.statusList
         .slice()
         .find(item => item.status === status);
-      return objTemp.name;
+      let result = objTemp.name;
+      if (type === 'action') {
+        let temp = status === 1 ? -1 : 1;
+        objTemp = this.statusList.slice().find(item => item.status === temp);
+        result = objTemp.name.substr(1);
+      }
+      return result;
     },
     handleSelected(e, type) {
       console.log('MgAd index.vue handleRadioChange', e, type);
@@ -250,7 +262,7 @@ export default {
         this.formItem[item] = '';
       }
       this.formItem.statusName = '全部';
-      this.formItem.typeName = '广告';
+      this.formItem.typeName = '全部';
     },
     // 删除行
     remove(index) {
@@ -301,7 +313,46 @@ export default {
       });
     },
     // 上下架
-    toggleStatus(index) {},
+    toggleStatus(index) {
+      this.spinShow = true;
+      let urlTemp = '';
+      if (this.adData[index].status === 1) {
+        urlTemp =
+          this.global_.path.baseUrl +
+          '/rentalcars/banner/on?ids=' +
+          this.adData[index].id;
+      } else {
+        urlTemp =
+          this.global_.path.baseUrl +
+          '/rentalcars/banner/off?ids=' +
+          this.adData[index].id;
+      }
+      this.axios({
+        url: urlTemp,
+        method: 'get',
+        headers: { 'Content-Type': 'application/json' }
+      }).then(
+        res => {
+          console.log('MgAd Index.vue created axios /banner/{} success', res);
+          if (res.data.code === 0) {
+            this.$Message.info('操作成功');
+            this.adData[index].status = -this.adData[index].status;
+          } else {
+            this.$Message.error({
+              content: '操作失败'
+            });
+          }
+          this.spinShow = false;
+        },
+        err => {
+          console.log('MgAd Index.vue created axios /banner/{} failure', err);
+          this.$Message.error({
+            content: '操作失败'
+          });
+          this.spinShow = false;
+        }
+      );
+    },
     // 新增
     add() {
       this.$router.push('/home/adAddition?action=add');

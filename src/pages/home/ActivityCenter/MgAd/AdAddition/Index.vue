@@ -86,7 +86,8 @@ export default {
         title: '',
         upload_list: [],
         type_check: '其他',
-        status_check: '是'
+        status_check: '是',
+        url: ''
       },
       ruleValidate: {
         title: [
@@ -127,24 +128,25 @@ export default {
         method: 'get',
         url:
           this.global_.path.baseUrl +
-          '/rentalcars/vehicle/banner/detail/' +
+          '/rentalcars/banner/' +
           this.$route.query.id,
         headers: { 'Content-Type': 'application/json' }
       }).then(
         res => {
-          console.log(
-            'AdAddition Index.vue created /banner/detail/{id} success',
-            res
-          );
+          console.log('AdAddition Index.vue created /banner/{id} success', res);
           if (res.data.code === 0) {
-            this.basicInfoForm = {
-              brand_name: res.data.data.name,
-              brand_en: res.data.data.name_en
-            };
-            if (res.data.data.logo) {
+            let temp1 = this.typeList.find(item => item.value === res.data.data.type);
+            let temp2 = this.statusList.find(item => item.status === res.data.data.status);
+            this.basicInfoForm = Object.assign({}, this.basicInfoForm, {
+              title: res.data.data.title,
+              type_check: temp1.name,
+              status_check: temp2.name,
+              url: res.data.data.url
+            });
+            if (res.data.data.pic) {
               this.basicInfoForm.upload_list.push({
-                name: res.data.data.logo,
-                url: this.global_.path.baseUrl + '/' + res.data.data.logo,
+                name: res.data.data.pic,
+                url: this.global_.path.baseUrl + '/' + res.data.data.pic,
                 status: 'finished'
               });
             }
@@ -155,10 +157,7 @@ export default {
           }
         },
         err => {
-          console.log(
-            'AdAddition Index.vue created /banner/detail/{id} failure',
-            err
-          );
+          console.log('AdAddition Index.vue created /banner/{id} failure', err);
           this.$Message.error({
             content: '操作失败'
           });

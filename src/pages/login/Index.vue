@@ -1,34 +1,37 @@
 <template>
   <div class="login-container">
-    <div class="header-container">
-      <img src="@/assets/logo.jpg" />
-      <span>一帆租车企业管理平台</span>
-    </div>
-    <div class="content-container">
-      <div class="left-container"></div>
-      <div class="right-container">
-        <div class="form-container">
-          <div class="header">欢迎使用</div>
-          <div class="main">
-            <Input v-model="username" type="text" placeholder="账号" style="width: 300px" />
-            <Input
-              v-model="password"
-              type="password"
-              placeholder="密码"
-              style="width: 300px; margin-top: 20px;"
-            />
-          </div>
-          <div class="other">
-            <Checkbox v-model="isRemember" @on-change="handleRemember">记住账号密码</Checkbox>
-          </div>
-          <div class="btn-container">
-            <Button type="warning" @click="handleLogin" long>登录</Button>
+    <div class="bg-container"></div>
+    <div class="cover-container">
+      <div class="header-container">
+        <img src="@/assets/logo.jpg" />
+        <span>一帆租车企业管理平台</span>
+      </div>
+      <div class="content-container">
+        <div class="left-container"></div>
+        <div class="right-container">
+          <div class="form-container">
+            <div class="header">欢迎使用</div>
+            <div class="main">
+              <Input v-model="username" type="text" placeholder="账号" style="width: 300px" />
+              <Input
+                v-model="password"
+                type="password"
+                placeholder="密码"
+                style="width: 300px; margin-top: 20px;"
+              />
+            </div>
+            <div class="other">
+              <Checkbox v-model="isRemember" @on-change="handleRemember">记住账号密码</Checkbox>
+            </div>
+            <div class="btn-container">
+              <Button type="warning" @click="handleLogin" long>登录</Button>
+            </div>
           </div>
         </div>
       </div>
-    </div>
-    <div class="footer-container">
-      <span>copyright 2019 云帆科技出品</span>
+      <div class="footer-container">
+        <span>copyright 2019 云帆科技出品</span>
+      </div>
     </div>
   </div>
 </template>

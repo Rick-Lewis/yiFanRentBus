@@ -20,12 +20,19 @@
     <div class="shop-mg">
       <div class="header">
         <span>门店管理</span>
-        <Select v-model="currentCity" style="width:200px">
-          <Option v-for="item in cityList" :value="item.value" :key="item.value">{{ item.label }}</Option>
+        <Select
+          v-model="storeCheck"
+          @on-change="handleStoreChange"
+          style="width:200px;font-weight: 400;"
+        >
+          <Option v-for="(item, index) in storeList" :value="item.id" :key="index">{{ item.name }}</Option>
         </Select>
       </div>
       <div class="content">
         <div class="left">
+          <div class="search-container">
+            <Input search enter-button="搜索" placeholder="请输入用户手机号" @on-search="handleSearchByTel" />
+          </div>
           <Tabs :animated="false" style="padding:10px;" @on-click="handleTabChange">
             <TabPane :label="h => label(h, todayVehicle.fetch.total, 'fetch')" name="fetch">
               <div v-if="todayVehicle.fetch.list.length <= 0" style="text-align: center;">～ 没有更多了 ～</div>
@@ -159,7 +166,12 @@
       </div>
     </div>
     <div class="vehicle-online">
-      <div class="header">在租车辆</div>
+      <div class="header">
+        <span>在租车辆</span>
+        <div class="search-container">
+          <Input search enter-button="搜索" placeholder="请输入用户手机号" @on-search="handleSearchByTel1" />
+        </div>
+      </div>
       <div class="content">
         <div class="main-container">
           <div v-if="vehicleOnline.list.length <= 0" style="text-align: center;">～ 没有更多了 ～</div>
@@ -268,57 +280,11 @@ export default {
         total: 0
       },
       orderStatusList: [],
-      cityList: [
-        {
-          value: '古丈县政府店',
-          label: '古丈县政府店'
-        }
-      ],
-      currentCity: '古丈县政府店'
+      storeList: [],
+      storeCheck: ''
     };
   },
   created() {
-    let timeStartTemp = '';
-    let timeEndTemp = this.$moment(new Date()).format('YYYY-MM-DD 23:59:59');
-    let strTemp = '';
-    if (this.activeTabName === 'fetch') {
-      strTemp = strTemp + '?status=1';
-    } else {
-      strTemp = strTemp + '?status=3';
-    }
-    strTemp =
-      strTemp + '&time_start=' + timeStartTemp + '&time_end=' + timeEndTemp;
-    console.log('Workspace Index.vue created', strTemp);
-    this.axios({
-      url:
-        this.global_.path.baseUrl + '/rentalcars/order/rental/page' + strTemp,
-      method: 'get',
-      headers: { 'Content-Type': 'application/json' }
-    }).then(
-      res => {
-        console.log(
-          'Workspace Index.vue created axios /order/rental success',
-          res
-        );
-        if (res.data.code === 0) {
-          this.todayVehicle.fetch.list.push(...res.data.data.data);
-          this.todayVehicle.fetch.total = res.data.data.total;
-        } else {
-          this.$Message.error({
-            content: '操作失败'
-          });
-        }
-      },
-      err => {
-        console.log(
-          'Workspace Index.vue created axios /order/rental failure',
-          err
-        );
-        this.$Message.error({
-          content: '操作失败'
-        });
-      }
-    );
     this.axios({
       url: this.global_.path.baseUrl + '/rentalcars/order/rental/page',
       method: 'get',
@@ -370,8 +336,177 @@ export default {
         });
       }
     );
+    this.axios({
+      url: this.global_.path.baseUrl + '/rentalcars/store/page',
+      method: 'get',
+      headers: { 'Content-Type': 'application/json' }
+    }).then(
+      res => {
+        console.log(
+          'Workspace Index.vue created axios /store/page success',
+          res
+        );
+        if (res.data.code === 0) {
+          this.storeCheck = res.data.data.data[0].id;
+          this.storeList.push(...res.data.data.data);
+
+          let timeStartTemp = '';
+          let timeEndTemp = this.$moment(new Date()).format(
+            'YYYY-MM-DD 23:59:59'
+          );
+          let strTemp = '';
+          if (this.activeTabName === 'fetch') {
+            strTemp = strTemp + '?status=1';
+          } else {
+            strTemp = strTemp + '?status=3';
+          }
+          strTemp =
+            strTemp +
+            '&time_start=' +
+            timeStartTemp +
+            '&time_end=' +
+            timeEndTemp;
+          console.log('Workspace Index.vue created', strTemp);
+          this.axios({
+            url:
+              this.global_.path.baseUrl +
+              '/rentalcars/order/rental/page' +
+              strTemp,
+            method: 'get',
+            headers: { 'Content-Type': 'application/json' }
+          }).then(
+            res => {
+              console.log(
+                'Workspace Index.vue created axios /order/rental success',
+                res
+              );
+              if (res.data.code === 0) {
+                this.todayVehicle.fetch.list.push(...res.data.data.data);
+                this.todayVehicle.fetch.total = res.data.data.total;
+              } else {
+                this.$Message.error({
+                  content: '操作失败'
+                });
+              }
+            },
+            err => {
+              console.log(
+                'Workspace Index.vue created axios /order/rental failure',
+                err
+              );
+              this.$Message.error({
+                content: '操作失败'
+              });
+            }
+          );
+        } else {
+          this.$Message.error({
+            content: '操作失败'
+          });
+        }
+      },
+      err => {
+        console.log(
+          'Workspace Index.vue created axios /store/page failure',
+          err
+        );
+        this.$Message.error({
+          content: '门店数据请求失败'
+        });
+      }
+    );
   },
   methods: {
+    handleSearchByTel1(val) {
+      let temp = val ? '?telephone=' + val : '';
+      this.axios({
+        url: this.global_.path.baseUrl + '/rentalcars/order/rental/page' + temp,
+        method: 'get',
+        headers: { 'Content-Type': 'application/json' }
+      }).then(
+        res => {
+          console.log(
+            'Workspace Index.vue created axios /order/rental success',
+            res
+          );
+          if (res.data.code === 0) {
+            this.vehicleOnline.list.length = 0;
+            this.vehicleOnline.list.push(...res.data.data.data);
+            this.vehicleOnline.total = res.data.data.total;
+          } else {
+            this.$Message.error({
+              content: '操作失败'
+            });
+          }
+        },
+        err => {
+          console.log(
+            'Workspace Index.vue created axios /order/rental failure',
+            err
+          );
+          this.$Message.error({
+            content: '操作失败'
+          });
+        }
+      );
+    },
+    handleSearchByTel(val) {
+      console.log('Workspace Index.vue handleSearchByTel', val);
+      let timeStartTemp = '';
+      let timeEndTemp = this.$moment(new Date()).format('YYYY-MM-DD 23:59:59');
+      let strTemp = '';
+      if (this.activeTabName === 'fetch') {
+        strTemp = strTemp + '?status=1';
+      } else {
+        strTemp = strTemp + '?status=3';
+      }
+      strTemp =
+        strTemp + '&time_start=' + timeStartTemp + '&time_end=' + timeEndTemp;
+      if (val) {
+        strTemp = strTemp + '&telephone=' + val;
+      }
+      console.log('Workspace Index.vue created', strTemp);
+      this.axios({
+        url:
+          this.global_.path.baseUrl + '/rentalcars/order/rental/page' + strTemp,
+        method: 'get',
+        headers: { 'Content-Type': 'application/json' }
+      }).then(
+        res => {
+          console.log(
+            'Workspace Index.vue created axios /order/rental success',
+            res
+          );
+          if (res.data.code === 0) {
+            if (this.activeTabName === 'fetch') {
+              this.todayVehicle.fetch.list.length = 0;
+              this.todayVehicle.fetch.list.push(...res.data.data.data);
+              this.todayVehicle.fetch.total = res.data.data.total;
+            } else {
+              this.todayVehicle.return.list.length = 0;
+              this.todayVehicle.return.list.push(...res.data.data.data);
+              this.todayVehicle.return.total = res.data.data.total;
+            }
+          } else {
+            this.$Message.error({
+              content: '操作失败'
+            });
+          }
+        },
+        err => {
+          console.log(
+            'Workspace Index.vue created axios /order/rental failure',
+            err
+          );
+          this.$Message.error({
+            content: '操作失败'
+          });
+        }
+      );
+    },
+    handleStoreChange(val) {
+      console.log('Workspace Index.vue handleStoreChange', val);
+    },
     // 订单详情
     show(index) {
       console.log('Workspace Index.vue show', this.vehicleOnline.list[index]);

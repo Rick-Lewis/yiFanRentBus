@@ -55,9 +55,9 @@
             <!-- <span>车牌号：</span> -->
             <Input v-model="formItem.plate_num" placeholder="请输入车牌号" style="width: 200px" />
           </FormItem>
-          <FormItem label="用户查询：">
+          <FormItem label="手机号查询：">
             <!-- <span>用户查询：</span> -->
-            <Input v-model="formItem.key" placeholder="请输入手机号、昵称" style="width: 200px" />
+            <Input v-model="formItem.key" placeholder="请输入手机号" style="width: 200px" />
           </FormItem>
           <FormItem>
             <Button type="primary" @click="handleSearch">查询</Button>
@@ -532,6 +532,12 @@ export default {
       );
       let withDriverTemp = this.driverExistenceList[indexTemp].value;
       let strTemp = '';
+      if (this.formItem.order_no) {
+        strTemp = strTemp + '&order_no=' + this.formItem.order_no;
+      }
+      if (this.formItem.plate_num) {
+        strTemp = strTemp + '&plate_num=' + this.formItem.plate_num;
+      }
       if (statusTemp !== -2) {
         strTemp = strTemp + '&status=' + statusTemp;
       }
@@ -546,18 +552,17 @@ export default {
           '&time_end=' +
           this.duration.timeEnd;
       }
+      if (this.formItem.key) {
+        strTemp = strTemp + '&telephone=' + this.formItem.key;
+      }
+      if (strTemp) {
+        strTemp = '?' + strTemp.substr(1);
+      }
       console.log('MgOrder index.vue handleSearch');
       this.spinShow = true;
       this.axios({
         url:
-          this.global_.path.baseUrl +
-          '/rentalcars/order/rental/page?order_no=' +
-          this.formItem.order_no +
-          '&plate_num=' +
-          this.formItem.plate_num +
-          '&key=' +
-          this.formItem.key +
-          strTemp,
+          this.global_.path.baseUrl + '/rentalcars/order/rental/page' + strTemp,
         method: 'get',
         headers: { 'Content-Type': 'application/json' }
       }).then(
