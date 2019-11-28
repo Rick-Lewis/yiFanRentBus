@@ -60,12 +60,12 @@
         </FormItem>
         <FormItem label="类型：">
           <RadioGroup v-model="basicInfoForm.type_check">
-            <Radio v-for="(item, index) in typeList" v-bind:key="index" v-bind:label="item.name"></Radio>
+            <Radio v-for="(item, index) in typeList" v-bind:key="index" v-bind:label="item.name" border></Radio>
           </RadioGroup>
         </FormItem>
         <FormItem label="立即上架：">
           <RadioGroup v-model="basicInfoForm.status_check">
-            <Radio v-for="(item, index) in statusList" v-bind:key="index" v-bind:label="item.name"></Radio>
+            <Radio v-for="(item, index) in statusList" v-bind:key="index" v-bind:label="item.name" border></Radio>
           </RadioGroup>
         </FormItem>
       </Form>

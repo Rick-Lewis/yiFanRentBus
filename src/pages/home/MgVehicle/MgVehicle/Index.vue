@@ -9,6 +9,7 @@
             v-for="(item, index) in vehicleStatusList"
             v-bind:key="index"
             v-bind:label="item.name"
+            border
           ></Radio>
         </RadioGroup>
       </FormItem>

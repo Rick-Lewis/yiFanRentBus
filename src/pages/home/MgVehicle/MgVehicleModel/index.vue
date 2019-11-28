@@ -9,6 +9,7 @@
               v-for="(item, index) in fromBrandList"
               v-bind:key="index"
               v-bind:label="item.name"
+              border
             ></Radio>
           </RadioGroup>
         </FormItem>
@@ -19,6 +20,7 @@
               v-for="(item, index) in vehicleTypeList"
               v-bind:key="index"
               v-bind:label="item.name"
+              border
             ></Radio>
           </RadioGroup>
         </FormItem>
@@ -29,6 +31,7 @@
               v-for="(item, index) in vehicleModelStatusList"
               v-bind:key="index"
               v-bind:label="item.name"
+              border
             ></Radio>
           </RadioGroup>
         </FormItem>

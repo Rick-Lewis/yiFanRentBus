@@ -9,6 +9,7 @@
               v-for="(item, index) in orderStatusList"
               v-bind:key="index"
               v-bind:label="item.name"
+              border
             ></Radio>
           </RadioGroup>
         </FormItem>
@@ -19,13 +20,14 @@
               v-for="(item, index) in driverExistenceList"
               v-bind:key="index"
               v-bind:label="item.name"
+              border
             ></Radio>
           </RadioGroup>
         </FormItem>
         <FormItem label="时间查询：" class="time">
           <!-- <span>时间查询：</span> -->
           <RadioGroup v-model="formItem.time_check" @on-change="handleCalDuration1">
-            <Radio v-for="(item, index) in timeList" v-bind:key="index" v-bind:label="item"></Radio>
+            <Radio v-for="(item, index) in timeList" v-bind:key="index" v-bind:label="item" border></Radio>
           </RadioGroup>
           <div class="custom-time">
             <DatePicker

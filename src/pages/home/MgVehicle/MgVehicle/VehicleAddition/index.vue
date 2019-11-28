@@ -14,6 +14,7 @@
               v-for="(item, index) in vehicleModelList"
               v-bind:key="index"
               v-bind:label="item.name"
+              border
             ></Radio>
           </RadioGroup>
         </FormItem>
@@ -86,7 +87,7 @@
         <FormItem label="所属门店：">
           <!-- <span>所属门店：</span> -->
           <RadioGroup v-model="shopCheck">
-            <Radio v-for="(item, index) in shopList" v-bind:key="index" v-bind:label="item.name"></Radio>
+            <Radio v-for="(item, index) in shopList" v-bind:key="index" v-bind:label="item.name" border></Radio>
           </RadioGroup>
         </FormItem>
       </Form>

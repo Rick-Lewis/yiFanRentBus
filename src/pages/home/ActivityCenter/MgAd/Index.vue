@@ -4,12 +4,12 @@
       <Form :model="formItem">
         <FormItem label="状态：">
           <RadioGroup v-model="formItem.statusName">
-            <Radio v-for="(item, index) in statusList" v-bind:key="index" v-bind:label="item.name"></Radio>
+            <Radio v-for="(item, index) in statusList" v-bind:key="index" v-bind:label="item.name" border></Radio>
           </RadioGroup>
         </FormItem>
         <FormItem label="类型：">
           <RadioGroup v-model="formItem.typeName">
-            <Radio v-for="(item, index) in typeList" v-bind:key="index" v-bind:label="item.name"></Radio>
+            <Radio v-for="(item, index) in typeList" v-bind:key="index" v-bind:label="item.name" border></Radio>
           </RadioGroup>
         </FormItem>
         <div class="input-container">

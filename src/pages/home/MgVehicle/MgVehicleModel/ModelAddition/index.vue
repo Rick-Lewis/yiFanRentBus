@@ -74,6 +74,7 @@
               v-for="(item, index) in fromBrandList"
               v-bind:key="index"
               v-bind:label="item.name"
+              border
             ></Radio>
           </RadioGroup>
         </FormItem>
@@ -84,6 +85,7 @@
               v-for="(item, index) in vehicleTypeList"
               v-bind:key="index"
               v-bind:label="item.name"
+              border
             ></Radio>
           </RadioGroup>
         </FormItem>
@@ -94,6 +96,7 @@
               v-for="(item, index) in energyTypesList"
               v-bind:key="index"
               v-bind:label="item"
+              border
             ></Radio>
           </RadioGroup>
         </FormItem>
@@ -104,6 +107,7 @@
               v-for="(item, index) in vehicleStatusList"
               v-bind:key="index"
               v-bind:label="item.name"
+              border
             ></Radio>
           </RadioGroup>
         </FormItem>
@@ -163,6 +167,7 @@
                 v-for="(item, index) in radarList"
                 v-bind:key="index"
                 v-bind:label="item.name"
+                border
               ></Checkbox>
             </CheckboxGroup>
           </FormItem>
@@ -215,6 +220,7 @@
                 v-for="(item, index) in backupCameraList"
                 v-bind:key="index"
                 v-bind:label="item.name"
+                border
               ></Radio>
             </RadioGroup>
           </FormItem>
