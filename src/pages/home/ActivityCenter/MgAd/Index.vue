@@ -329,7 +329,7 @@ export default {
       }
       this.axios({
         url: urlTemp,
-        method: 'get',
+        method: 'post',
         headers: { 'Content-Type': 'application/json' }
       }).then(
         res => {

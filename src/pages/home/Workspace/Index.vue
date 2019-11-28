@@ -25,17 +25,40 @@
           @on-change="handleStoreChange"
           style="width:200px;font-weight: 400;"
         >
-          <Option v-for="(item, index) in storeList" :value="item.id" :key="index">{{ item.name }}</Option>
+          <Option
+            v-for="(item, index) in storeList"
+            :value="item.id"
+            :key="index"
+            >{{ item.name }}</Option
+          >
         </Select>
       </div>
       <div class="content">
         <div class="left">
           <div class="search-container">
-            <Input search enter-button="搜索" placeholder="请输入用户手机号" @on-search="handleSearchByTel" />
+            <Input
+              search
+              enter-button="搜索"
+              placeholder="请输入用户手机号"
+              v-model="telephone"
+              @on-search="handleSearchByTel"
+            />
           </div>
-          <Tabs :animated="false" style="padding:10px;" @on-click="handleTabChange">
-            <TabPane :label="h => label(h, todayVehicle.fetch.total, 'fetch')" name="fetch">
-              <div v-if="todayVehicle.fetch.list.length <= 0" style="text-align: center;">～ 没有更多了 ～</div>
+          <Tabs
+            :animated="false"
+            style="padding:10px;"
+            @on-click="handleTabChange"
+          >
+            <TabPane
+              :label="h => label(h, todayVehicle.fetch.total, 'fetch')"
+              name="fetch"
+            >
+              <div
+                v-if="todayVehicle.fetch.list.length <= 0"
+                style="text-align: center;"
+              >
+                ～ 没有更多了 ～
+              </div>
               <div
                 class="item-container"
                 v-for="(item, index) in todayVehicle.fetch.list"
@@ -89,8 +112,16 @@
                 </div>
               </div>
             </TabPane>
-            <TabPane :label="h => label(h, todayVehicle.return.total, 'return')" name="return">
-              <div v-if="todayVehicle.return.list.length <= 0" style="text-align: center;">～ 没有更多了 ～</div>
+            <TabPane
+              :label="h => label(h, todayVehicle.return.total, 'return')"
+              name="return"
+            >
+              <div
+                v-if="todayVehicle.return.list.length <= 0"
+                style="text-align: center;"
+              >
+                ～ 没有更多了 ～
+              </div>
               <div
                 class="item-container"
                 v-for="(item, index) in todayVehicle.return.list"
@@ -169,12 +200,22 @@
       <div class="header">
         <span>在租车辆</span>
         <div class="search-container">
-          <Input search enter-button="搜索" placeholder="请输入用户手机号" @on-search="handleSearchByTel1" />
+          <Input
+            search
+            enter-button="搜索"
+            placeholder="请输入用户手机号"
+            @on-search="handleSearchByTel1"
+          />
         </div>
       </div>
       <div class="content">
         <div class="main-container">
-          <div v-if="vehicleOnline.list.length <= 0" style="text-align: center;">～ 没有更多了 ～</div>
+          <div
+            v-if="vehicleOnline.list.length <= 0"
+            style="text-align: center;"
+          >
+            ～ 没有更多了 ～
+          </div>
           <div
             class="item-container"
             v-for="(item, index) in vehicleOnline.list"
@@ -182,7 +223,9 @@
           >
             <div class="item-header">
               <span>下单时间：{{ item.time_create }}</span>
-              <span style="padding-left: 15px;">订单编号：{{ item.order_no }}</span>
+              <span style="padding-left: 15px;"
+                >订单编号：{{ item.order_no }}</span
+              >
               <!-- <span style="padding-left: 15px;">司机：王大伟</span> -->
             </div>
             <div class="item-content">
@@ -237,19 +280,22 @@
               <div class="col-item">
                 <div>
                   <Tag color="warning">
-                    {{
-                    orderStatusList[haneleIndexByStatus(item.status)].name
-                    }}
+                    {{ orderStatusList[haneleIndexByStatus(item.status)].name }}
                   </Tag>
                 </div>
               </div>
               <div class="string"></div>
               <div class="col-item" style="width: 170px; text-align:center;">
-                <a @click="handleOperate(index, 'refund')" v-if="item.status === 1">退款</a>
+                <a
+                  @click="handleOperate(index, 'refund')"
+                  v-if="item.status === 1"
+                  >退款</a
+                >
                 <a
                   @click="handleOperate(index)"
                   v-if="item.status === 1 || item.status === 3"
-                >{{ getOperateText(index) }}</a>
+                  >{{ getOperateText(index) }}</a
+                >
                 <a @click="show(index)">订单详情</a>
               </div>
             </div>
@@ -281,7 +327,8 @@ export default {
       },
       orderStatusList: [],
       storeList: [],
-      storeCheck: ''
+      storeCheck: '',
+      telephone: ''
     };
   },
   created() {
@@ -366,6 +413,9 @@ export default {
             timeStartTemp +
             '&time_end=' +
             timeEndTemp;
+          if (this.storeCheck) {
+            strTemp = strTemp + '&store_id=' + this.storeCheck;
+          }
           console.log('Workspace Index.vue created', strTemp);
           this.axios({
             url:
@@ -465,6 +515,9 @@ export default {
       if (val) {
         strTemp = strTemp + '&telephone=' + val;
       }
+      if (this.storeCheck) {
+        strTemp = strTemp + '&store_id=' + this.storeCheck;
+      }
       console.log('Workspace Index.vue created', strTemp);
       this.axios({
         url:
@@ -505,7 +558,60 @@ export default {
       );
     },
     handleStoreChange(val) {
+      let timeStartTemp = '';
+      let timeEndTemp = this.$moment(new Date()).format('YYYY-MM-DD 23:59:59');
+      let strTemp = '';
+      if (this.activeTabName === 'fetch') {
+        strTemp = strTemp + '?status=1';
+      } else {
+        strTemp = strTemp + '?status=3';
+      }
+      strTemp =
+        strTemp + '&time_start=' + timeStartTemp + '&time_end=' + timeEndTemp;
+      if (this.telephone) {
+        strTemp = strTemp + '&telephone=' + this.telephone;
+      }
+      if (val) {
+        strTemp = strTemp + '&store_id=' + val;
+      }
       console.log('Workspace Index.vue handleStoreChange', val);
+      this.axios({
+        url:
+          this.global_.path.baseUrl + '/rentalcars/order/rental/page' + strTemp,
+        method: 'get',
+        headers: { 'Content-Type': 'application/json' }
+      }).then(
+        res => {
+          console.log(
+            'Workspace Index.vue created axios /order/rental success',
+            res
+          );
+          if (res.data.code === 0) {
+            if (this.activeTabName === 'fetch') {
+              this.todayVehicle.fetch.list.length = 0;
+              this.todayVehicle.fetch.list.push(...res.data.data.data);
+              this.todayVehicle.fetch.total = res.data.data.total;
+            } else {
+              this.todayVehicle.return.list.length = 0;
+              this.todayVehicle.return.list.push(...res.data.data.data);
+              this.todayVehicle.return.total = res.data.data.total;
+            }
+          } else {
+            this.$Message.error({
+              content: '操作失败'
+            });
+          }
+        },
+        err => {
+          console.log(
+            'Workspace Index.vue created axios /order/rental failure',
+            err
+          );
+          this.$Message.error({
+            content: '操作失败'
+          });
+        }
+      );
     },
     // 订单详情
     show(index) {
@@ -767,6 +873,12 @@ export default {
         let strTemp = '?status=1';
         strTemp =
           strTemp + '&time_start=' + timeStartTemp + '&time_end=' + timeEndTemp;
+        if (this.telephone) {
+          strTemp = strTemp + '&telephone=' + this.telephone;
+        }
+        if (this.storeCheck) {
+          strTemp = strTemp + '&store_id=' + this.storeCheck;
+        }
         console.log('Workspace Index.vue handleTabChange', strTemp);
         this.axios({
           url:
@@ -809,8 +921,14 @@ export default {
           'YYYY-MM-DD 23:59:59'
         );
         let strTemp = '?status=3';
+        if (this.telephone) {
+          strTemp = strTemp + '&telephone=' + this.telephone;
+        }
         strTemp =
           strTemp + '&time_start=' + timeStartTemp + '&time_end=' + timeEndTemp;
+        if (this.storeCheck) {
+          strTemp = strTemp + '&store_id=' + this.storeCheck;
+        }
         console.log('Workspace Index.vue handleTabChange', strTemp);
         this.axios({
           url:
