@@ -1,100 +1,119 @@
 <template>
   <div class="vehicle-addition-container">
-    <div class="basic-info-container">
-      <div class="header">基础信息</div>
-      <Form :model="basicInfoForm" class="content" :label-width="120">
-        <FormItem label="车牌号：" style="margin-left: 0;">
-          <!-- <span>车牌号：</span> -->
-          <Input v-model="basicInfoForm.plate_num" placeholder="请输入车牌号" style="width: 200px" />
-        </FormItem>
-        <FormItem label="车型名称：">
-          <!-- <span>车型名称：</span> -->
-          <RadioGroup v-model="vehicleModelCheck">
-            <Radio
-              v-for="(item, index) in vehicleModelList"
+    <div>
+      <div class="basic-info-container">
+        <div class="header">基础信息</div>
+        <Form :model="basicInfoForm" class="content" :label-width="120">
+          <FormItem label="车牌号：" style="margin-left: 0;">
+            <!-- <span>车牌号：</span> -->
+            <Input v-model="basicInfoForm.plate_num" placeholder="请输入车牌号" style="width: 200px" />
+          </FormItem>
+          <FormItem label="车型名称：">
+            <!-- <span>车型名称：</span> -->
+            <RadioGroup v-model="vehicleModelCheck">
+              <Radio
+                v-for="(item, index) in vehicleModelList"
+                v-bind:key="index"
+                v-bind:label="item.name"
+                border
+              ></Radio>
+            </RadioGroup>
+          </FormItem>
+          <FormItem label="车辆识别代码：" style="margin-left: 0;">
+            <!-- <span>车辆识别代码：</span> -->
+            <Input v-model="basicInfoForm.vin" placeholder="请输入车辆识别代码" style="width: 200px" />
+          </FormItem>
+          <FormItem label="发动机号：" style="margin-left: 0;">
+            <!-- <span>发动机号：</span> -->
+            <Input v-model="basicInfoForm.engine_no" placeholder="请输入发动机号" style="width: 200px" />
+          </FormItem>
+          <FormItem label="车辆图片：">
+            <!-- <span>车辆图片：</span> -->
+            <div
+              class="upload-list"
+              v-for="(item, index) in basicInfoForm.upload_list"
               v-bind:key="index"
-              v-bind:label="item.name"
-              border
-            ></Radio>
-          </RadioGroup>
-        </FormItem>
-        <FormItem label="车辆识别代码：" style="margin-left: 0;">
-          <!-- <span>车辆识别代码：</span> -->
-          <Input v-model="basicInfoForm.vin" placeholder="请输入车辆识别代码" style="width: 200px" />
-        </FormItem>
-        <FormItem label="发动机号：" style="margin-left: 0;">
-          <!-- <span>发动机号：</span> -->
-          <Input v-model="basicInfoForm.engine_no" placeholder="请输入发动机号" style="width: 200px" />
-        </FormItem>
-        <FormItem label="车辆图片：">
-          <!-- <span>车辆图片：</span> -->
-          <div class="upload-list" v-for="(item, index) in basicInfoForm.upload_list" v-bind:key="index">
-            <template v-if="item.status === 'finished'">
-              <img :src="item.url" />
-              <div class="upload-list-cover">
-                <Icon type="ios-eye-outline" @click.native="handleView(item)"></Icon>
-                <Icon type="ios-trash-outline" @click.native="handleRemove(item)"></Icon>
-              </div>
-            </template>
-            <template v-else>
-              <Progress v-if="item.showProgress" :percent="item.percentage" hide-info></Progress>
-            </template>
-          </div>
-          <Upload
-            ref="upload"
-            :show-upload-list="false"
-            :on-success="handleSuccess"
-            :on-error="handleError"
-            :format="['jpg','jpeg','png']"
-            :max-size="2048"
-            name="image"
-            :on-format-error="handleFormatError"
-            :on-exceeded-size="handleMaxSize"
-            :before-upload="handleBeforeUpload"
-            type="drag"
-            :action="uploadUrl"
-            style="display: inline-block;width:58px;"
-            :style="basicInfoForm.upload_list.length === 0 ? {} : {visibility: 'hidden'}"
-          >
-            <div style="width: 58px;height:58px;line-height: 58px;">
-              <Icon type="ios-camera" size="20"></Icon>
+            >
+              <template v-if="item.status === 'finished'">
+                <img :src="item.url" />
+                <div class="upload-list-cover">
+                  <Icon type="ios-eye-outline" @click.native="handleView(item)"></Icon>
+                  <Icon type="ios-trash-outline" @click.native="handleRemove(item)"></Icon>
+                </div>
+              </template>
+              <template v-else>
+                <Progress v-if="item.showProgress" :percent="item.percentage" hide-info></Progress>
+              </template>
             </div>
-          </Upload>
-          <Modal title="View Image" v-model="visible">
-            <img
-              :src="'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png'"
-              v-if="visible"
-              style="width: 100%"
+            <Upload
+              ref="upload"
+              :show-upload-list="false"
+              :on-success="handleSuccess"
+              :on-error="handleError"
+              :format="['jpg','jpeg','png']"
+              :max-size="2048"
+              name="image"
+              :on-format-error="handleFormatError"
+              :on-exceeded-size="handleMaxSize"
+              :before-upload="handleBeforeUpload"
+              type="drag"
+              :action="uploadUrl"
+              style="display: inline-block;width:58px;"
+              :style="basicInfoForm.upload_list.length === 0 ? {} : {visibility: 'hidden'}"
+            >
+              <div style="width: 58px;height:58px;line-height: 58px;">
+                <Icon type="ios-camera" size="20"></Icon>
+              </div>
+            </Upload>
+            <Modal title="View Image" v-model="visible">
+              <img
+                :src="'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png'"
+                v-if="visible"
+                style="width: 100%"
+              />
+            </Modal>
+          </FormItem>
+          <FormItem label="颜色：">
+            <!-- <span>颜色：</span> -->
+            <Input v-model="basicInfoForm.color" placeholder="请输入颜色" style="width: 200px" />
+          </FormItem>
+          <FormItem label="出厂时间：" style="margin-left: 0;">
+            <!-- <span>出厂时间：</span> -->
+            <Input v-model="basicInfoForm.product_date" placeholder="请输入出厂时间" style="width: 200px" />
+          </FormItem>
+          <FormItem label="购买日期：" style="margin-left: 0;">
+            <!-- <span>购买日期：</span> -->
+            <Input
+              v-model="basicInfoForm.purchase_date"
+              placeholder="请输入购买日期"
+              style="width: 200px"
             />
-          </Modal>
-        </FormItem>
-        <FormItem label="颜色：">
-          <!-- <span>颜色：</span> -->
-          <Input v-model="basicInfoForm.color" placeholder="请输入颜色" style="width: 200px" />
-        </FormItem>
-        <FormItem label="出厂时间：" style="margin-left: 0;">
-          <!-- <span>出厂时间：</span> -->
-          <Input v-model="basicInfoForm.product_date" placeholder="请输入出厂时间" style="width: 200px" />
-        </FormItem>
-        <FormItem label="购买日期：" style="margin-left: 0;">
-          <!-- <span>购买日期：</span> -->
-          <Input v-model="basicInfoForm.purchase_date" placeholder="请输入购买日期" style="width: 200px" />
-        </FormItem>
-        <FormItem label="购买价格：" style="margin-left: 0;">
-          <!-- <span>购买价格：</span> -->
-          <Input v-model="basicInfoForm.purchase_price" placeholder="请输入购买价格" style="width: 200px" />
-        </FormItem>
-        <FormItem label="所属门店：">
-          <!-- <span>所属门店：</span> -->
-          <RadioGroup v-model="shopCheck">
-            <Radio v-for="(item, index) in shopList" v-bind:key="index" v-bind:label="item.name" border></Radio>
-          </RadioGroup>
-        </FormItem>
-      </Form>
-    </div>
-    <div class="btn-container">
-      <Button type="primary" @click="handleSubmit">提交</Button>
-      <Button style="margin-left: 8px" @click="handleCancel">取消</Button>
+          </FormItem>
+          <FormItem label="购买价格：" style="margin-left: 0;">
+            <!-- <span>购买价格：</span> -->
+            <Input
+              v-model="basicInfoForm.purchase_price"
+              placeholder="请输入购买价格"
+              style="width: 200px"
+            />
+          </FormItem>
+          <FormItem label="所属门店：">
+            <!-- <span>所属门店：</span> -->
+            <RadioGroup v-model="shopCheck">
+              <Radio
+                v-for="(item, index) in shopList"
+                v-bind:key="index"
+                v-bind:label="item.name"
+                border
+              ></Radio>
+            </RadioGroup>
+          </FormItem>
+        </Form>
+      </div>
+      <div class="btn-container">
+        <Button type="primary" @click="handleSubmit">提交</Button>
+        <Button style="margin-left: 8px" @click="handleCancel">取消</Button>
+      </div>
     </div>
   </div>
 </template>

@@ -1,80 +1,92 @@
 <template>
   <div class="ad-addtion-container">
-    <div class="basic-info-container">
-      <div class="header">基础信息</div>
-      <Form
-        ref="formDynamic"
-        :model="basicInfoForm"
-        class="content"
-        :rules="ruleValidate"
-        :label-width="120"
-      >
-        <FormItem label="标题：" prop="title">
-          <Input v-model="basicInfoForm.title" placeholder="请输入广告标题" style="width: 200px" />
-        </FormItem>
-        <FormItem label="图片：" prop="upload_list">
-          <div
-            class="upload-list"
-            v-for="(item, index) in basicInfoForm.upload_list"
-            v-bind:key="index"
-          >
-            <template v-if="item.status === 'finished'">
-              <img :src="item.url" />
-              <div class="upload-list-cover">
-                <Icon type="ios-eye-outline" @click.native="handleView(item)"></Icon>
-                <Icon type="ios-trash-outline" @click.native="handleRemove(item)"></Icon>
-              </div>
-            </template>
-            <template v-else>
-              <Progress v-if="item.showProgress" :percent="item.percentage" hide-info></Progress>
-            </template>
-          </div>
-          <Upload
-            ref="upload"
-            :show-upload-list="false"
-            :on-success="handleSuccess"
-            :on-error="handleError"
-            :format="['jpg','jpeg','png']"
-            :max-size="2048"
-            name="image"
-            :on-format-error="handleFormatError"
-            :on-exceeded-size="handleMaxSize"
-            :before-upload="handleBeforeUpload"
-            multiple
-            type="drag"
-            :action="uploadUrl"
-            style="display:inline-block; width: 200px;"
-            :style="basicInfoForm.upload_list.length === 0 ? {} : {display: 'none'}"
-          >
-            <div style="width:200px; height:100px; line-height:100px;">
-              <Icon type="ios-camera" size="20"></Icon>
+    <div>
+      <div class="basic-info-container">
+        <div class="header">基础信息</div>
+        <Form
+          ref="formDynamic"
+          :model="basicInfoForm"
+          class="content"
+          :rules="ruleValidate"
+          :label-width="120"
+        >
+          <FormItem label="标题：" prop="title">
+            <Input v-model="basicInfoForm.title" placeholder="请输入广告标题" style="width: 200px" />
+          </FormItem>
+          <FormItem label="图片：" prop="upload_list">
+            <div
+              class="upload-list"
+              v-for="(item, index) in basicInfoForm.upload_list"
+              v-bind:key="index"
+            >
+              <template v-if="item.status === 'finished'">
+                <img :src="item.url" />
+                <div class="upload-list-cover">
+                  <Icon type="ios-eye-outline" @click.native="handleView(item)"></Icon>
+                  <Icon type="ios-trash-outline" @click.native="handleRemove(item)"></Icon>
+                </div>
+              </template>
+              <template v-else>
+                <Progress v-if="item.showProgress" :percent="item.percentage" hide-info></Progress>
+              </template>
             </div>
-          </Upload>
-          <span style="margin-left: 10px;">请上传分辨率为375*100，png、jpg格式的图片，大小不超过500KB</span>
-          <Modal title="View Image" v-model="visible">
-            <img :src="this.imgUrl" v-if="visible" style="width: 100%" />
-          </Modal>
-        </FormItem>
-        <FormItem label="跳转链接：" prop="url">
-          <Input v-model="basicInfoForm.url" placeholder="请输入跳转链接" style="width: 200px" />
-        </FormItem>
-        <FormItem label="类型：">
-          <RadioGroup v-model="basicInfoForm.type_check">
-            <Radio v-for="(item, index) in typeList" v-bind:key="index" v-bind:label="item.name" border></Radio>
-          </RadioGroup>
-        </FormItem>
-        <FormItem label="立即上架：">
-          <RadioGroup v-model="basicInfoForm.status_check">
-            <Radio v-for="(item, index) in statusList" v-bind:key="index" v-bind:label="item.name" border></Radio>
-          </RadioGroup>
-        </FormItem>
-      </Form>
+            <Upload
+              ref="upload"
+              :show-upload-list="false"
+              :on-success="handleSuccess"
+              :on-error="handleError"
+              :format="['jpg','jpeg','png']"
+              :max-size="2048"
+              name="image"
+              :on-format-error="handleFormatError"
+              :on-exceeded-size="handleMaxSize"
+              :before-upload="handleBeforeUpload"
+              multiple
+              type="drag"
+              :action="uploadUrl"
+              style="display:inline-block; width: 200px;"
+              :style="basicInfoForm.upload_list.length === 0 ? {} : {display: 'none'}"
+            >
+              <div style="width:200px; height:100px; line-height:100px;">
+                <Icon type="ios-camera" size="20"></Icon>
+              </div>
+            </Upload>
+            <span style="margin-left: 10px;">请上传分辨率为375*100，png、jpg格式的图片，大小不超过500KB</span>
+            <Modal title="View Image" v-model="visible">
+              <img :src="this.imgUrl" v-if="visible" style="width: 100%" />
+            </Modal>
+          </FormItem>
+          <FormItem label="跳转链接：" prop="url">
+            <Input v-model="basicInfoForm.url" placeholder="请输入跳转链接" style="width: 200px" />
+          </FormItem>
+          <FormItem label="类型：" required>
+            <RadioGroup v-model="basicInfoForm.type_check">
+              <Radio
+                v-for="(item, index) in typeList"
+                v-bind:key="index"
+                v-bind:label="item.name"
+                border
+              ></Radio>
+            </RadioGroup>
+          </FormItem>
+          <FormItem label="立即上架：" required>
+            <RadioGroup v-model="basicInfoForm.status_check">
+              <Radio
+                v-for="(item, index) in statusList"
+                v-bind:key="index"
+                v-bind:label="item.name"
+                border
+              ></Radio>
+            </RadioGroup>
+          </FormItem>
+        </Form>
+      </div>
+      <div class="btn-container">
+        <Button type="primary" @click="handleSubmit('formDynamic')">提交</Button>
+        <Button style="margin-left: 8px" @click="handleCancel()">取消</Button>
+      </div>
+      <Spin size="large" fix v-if="spinShow"></Spin>
     </div>
-    <div class="btn-container">
-      <Button type="primary" @click="handleSubmit('formDynamic')">提交</Button>
-      <Button style="margin-left: 8px" @click="handleCancel()">取消</Button>
-    </div>
-    <Spin size="large" fix v-if="spinShow"></Spin>
   </div>
 </template>
 <script>
@@ -135,8 +147,12 @@ export default {
         res => {
           console.log('AdAddition Index.vue created /banner/{id} success', res);
           if (res.data.code === 0) {
-            let temp1 = this.typeList.find(item => item.value === res.data.data.type);
-            let temp2 = this.statusList.find(item => item.status === res.data.data.status);
+            let temp1 = this.typeList.find(
+              item => item.value === res.data.data.type
+            );
+            let temp2 = this.statusList.find(
+              item => item.status === res.data.data.status
+            );
             this.basicInfoForm = Object.assign({}, this.basicInfoForm, {
               title: res.data.data.title,
               type_check: temp1.name,

@@ -4,6 +4,8 @@
     margin: 20px;
     min-height: 260px;
     position: relative;
+    display: flex;
+    justify-content: center;
 
     .header {
         font-size: 18px;
@@ -58,6 +60,6 @@
     }
 
     .btn-container {
-        padding-left: 55px;
+        padding-left: 120px;
     }
 }

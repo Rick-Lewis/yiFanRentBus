@@ -1,272 +1,219 @@
 <template>
   <div class="model-addition-container">
-    <div class="basic-info-container">
-      <div class="header">基础信息</div>
-      <Form :model="basicInfoForm" class="content" :label-width="120">
-        <FormItem label="车型名称：">
-          <!-- <span>车型名称：</span> -->
-          <Input
-            v-model="basicInfoForm.name"
-            placeholder="请输入车型名称"
-            style="width: 200px"
-          />
-        </FormItem>
-        <FormItem label="车型图片：">
-          <!-- <span>车型图片：</span> -->
-          <div
-            class="upload-list"
-            v-for="(item, index) in basicInfoForm.upload_list"
-            v-bind:key="index"
-          >
-            <template v-if="item.status === 'finished'">
-              <img :src="item.url" />
-              <div class="upload-list-cover">
-                <Icon
-                  type="ios-eye-outline"
-                  @click.native="handleView(item)"
-                ></Icon>
-                <Icon
-                  type="ios-trash-outline"
-                  @click.native="handleRemove(item)"
-                ></Icon>
-              </div>
-            </template>
-            <template v-else>
-              <Progress
-                v-if="item.showProgress"
-                :percent="item.percentage"
-                hide-info
-              ></Progress>
-            </template>
-          </div>
-          <Upload
-            ref="upload"
-            :show-upload-list="false"
-            :on-success="handleSuccess"
-            :on-error="handleError"
-            :format="['jpg', 'jpeg', 'png']"
-            :max-size="2048"
-            name="image"
-            :on-format-error="handleFormatError"
-            :on-exceeded-size="handleMaxSize"
-            :before-upload="handleBeforeUpload"
-            type="drag"
-            :action="uploadUrl"
-            style="display: inline-block;width:58px;"
-            :style="
+    <div>
+      <div class="basic-info-container">
+        <div class="header">基础信息</div>
+        <Form :model="basicInfoForm" class="content" :label-width="120">
+          <FormItem label="车型名称：">
+            <!-- <span>车型名称：</span> -->
+            <Input v-model="basicInfoForm.name" placeholder="请输入车型名称" style="width: 200px" />
+          </FormItem>
+          <FormItem label="车型图片：">
+            <!-- <span>车型图片：</span> -->
+            <div
+              class="upload-list"
+              v-for="(item, index) in basicInfoForm.upload_list"
+              v-bind:key="index"
+            >
+              <template v-if="item.status === 'finished'">
+                <img :src="item.url" />
+                <div class="upload-list-cover">
+                  <Icon type="ios-eye-outline" @click.native="handleView(item)"></Icon>
+                  <Icon type="ios-trash-outline" @click.native="handleRemove(item)"></Icon>
+                </div>
+              </template>
+              <template v-else>
+                <Progress v-if="item.showProgress" :percent="item.percentage" hide-info></Progress>
+              </template>
+            </div>
+            <Upload
+              ref="upload"
+              :show-upload-list="false"
+              :on-success="handleSuccess"
+              :on-error="handleError"
+              :format="['jpg', 'jpeg', 'png']"
+              :max-size="2048"
+              name="image"
+              :on-format-error="handleFormatError"
+              :on-exceeded-size="handleMaxSize"
+              :before-upload="handleBeforeUpload"
+              type="drag"
+              :action="uploadUrl"
+              style="display: inline-block;width:58px;"
+              :style="
               basicInfoForm.upload_list.length === 0
                 ? {}
                 : { visibility: 'hidden' }
             "
-          >
-            <div style="width: 58px;height:58px;line-height: 58px;">
-              <Icon type="ios-camera" size="20"></Icon>
-            </div>
-          </Upload>
-          <Modal title="View Image" v-model="visible">
-            <img :src="this.imgUrl" v-if="visible" style="width: 100%" />
-          </Modal>
-        </FormItem>
-        <FormItem label="车型品牌：">
-          <!-- <span>车型品牌：</span> -->
-          <RadioGroup v-model="basicInfoForm.from_brand_check">
-            <Radio
-              v-for="(item, index) in fromBrandList"
-              v-bind:key="index"
-              v-bind:label="item.name"
-              border
-            ></Radio>
-          </RadioGroup>
-        </FormItem>
-        <FormItem label="车辆类型：">
-          <!-- <span>车辆类型：</span> -->
-          <RadioGroup v-model="basicInfoForm.vehicle_type_check">
-            <Radio
-              v-for="(item, index) in vehicleTypeList"
-              v-bind:key="index"
-              v-bind:label="item.name"
-              border
-            ></Radio>
-          </RadioGroup>
-        </FormItem>
-        <FormItem label="能源类型：">
-          <!-- <span>能源类型：</span> -->
-          <RadioGroup v-model="basicInfoForm.energy_types_check">
-            <Radio
-              v-for="(item, index) in energyTypesList"
-              v-bind:key="index"
-              v-bind:label="item"
-              border
-            ></Radio>
-          </RadioGroup>
-        </FormItem>
-        <FormItem label="车辆状态：">
-          <!-- <span>车辆状态：</span> -->
-          <RadioGroup v-model="basicInfoForm.vehicle_status_check">
-            <Radio
-              v-for="(item, index) in vehicleStatusList"
-              v-bind:key="index"
-              v-bind:label="item.name"
-              border
-            ></Radio>
-          </RadioGroup>
-        </FormItem>
-      </Form>
-    </div>
-    <div class="conf-info-container">
-      <div class="header">配置信息</div>
-      <Form class="content" :model="confInfoForm" :label-width="120">
-        <div class="left">
-          <FormItem label="发动机：">
-            <!-- <span style="padding-right: 14px;">发动机：</span> -->
-            <Input
-              v-model="confInfoForm.let_litre"
-              placeholder="请输入发动机"
-              style="width: 200px"
             >
-              <div class="suffix" slot="suffix">T</div>
-            </Input>
-          </FormItem>
-          <FormItem label="汽油规格：">
-            <!-- <span>汽油规格：</span> -->
-            <Input
-              v-model="confInfoForm.oil_type"
-              placeholder="请输入汽油规格"
-              style="width: 200px"
-            >
-              <div class="suffix" slot="suffix">#</div>
-            </Input>
-          </FormItem>
-          <FormItem label="座位数：">
-            <!-- <span style="padding-right: 14px;">座位数：</span> -->
-            <Input
-              v-model="confInfoForm.seat_count"
-              placeholder="请输入座位数"
-              style="width: 200px"
-            >
-              <div class="suffix" slot="suffix">座</div>
-            </Input>
-          </FormItem>
-          <FormItem label="车门数：">
-            <!-- <span style="padding-right: 14px;">车门数：</span> -->
-            <Input
-              v-model="confInfoForm.door_count"
-              placeholder="请输入车门数"
-              style="width: 200px"
-            >
-              <div class="suffix" slot="suffix">门</div>
-            </Input>
-          </FormItem>
-          <FormItem label="前后雷达：">
-            <!-- <span>前后雷达：</span> -->
-            <CheckboxGroup
-              v-model="confInfoForm.radar"
-              style="display: inline;"
-            >
-              <Checkbox
-                v-for="(item, index) in radarList"
-                v-bind:key="index"
-                v-bind:label="item.name"
-                border
-              ></Checkbox>
-            </CheckboxGroup>
-          </FormItem>
-        </div>
-        <div class="right">
-          <FormItem label="变速箱：">
-            <!-- <span style="padding-right: 14px;">变速箱：</span> -->
-            <Input
-              v-model="confInfoForm.gearbox"
-              placeholder="请输入变速箱"
-              style="width: 200px"
-            />
-          </FormItem>
-          <FormItem label="油箱容量：">
-            <!-- <span>油箱容量：</span> -->
-            <Input
-              v-model="confInfoForm.oil_volume"
-              placeholder="请输入油箱容量"
-              style="width: 200px"
-            >
-              <div class="suffix" slot="suffix">L</div>
-            </Input>
-          </FormItem>
-          <FormItem label="综合油耗：">
-            <!-- <span>综合油耗：</span> -->
-            <Input
-              v-model="confInfoForm.oil_litre"
-              placeholder="请输入综合油耗"
-              style="width: 200px"
-            >
-              <div class="suffix" slot="suffix" style="padding-right: 30px;">
-                L/100km
+              <div style="width: 58px;height:58px;line-height: 58px;">
+                <Icon type="ios-camera" size="20"></Icon>
               </div>
-            </Input>
+            </Upload>
+            <Modal title="View Image" v-model="visible">
+              <img :src="this.imgUrl" v-if="visible" style="width: 100%" />
+            </Modal>
           </FormItem>
-          <FormItem label="车厢：">
-            <!-- <span>车厢：</span> -->
-            <Input
-              v-model="confInfoForm.body_construction"
-              placeholder="请输入几厢车"
-              style="width: 200px"
-            >
-              <div class="suffix" slot="suffix">厢</div>
-            </Input>
-          </FormItem>
-          <FormItem label="倒车影像：">
-            <!-- <span>倒车影像：</span> -->
-            <RadioGroup v-model="confInfoForm.backup_camera">
+          <FormItem label="车型品牌：">
+            <!-- <span>车型品牌：</span> -->
+            <RadioGroup v-model="basicInfoForm.from_brand_check">
               <Radio
-                v-for="(item, index) in backupCameraList"
+                v-for="(item, index) in fromBrandList"
                 v-bind:key="index"
                 v-bind:label="item.name"
                 border
               ></Radio>
             </RadioGroup>
           </FormItem>
-        </div>
-      </Form>
+          <FormItem label="车辆类型：">
+            <!-- <span>车辆类型：</span> -->
+            <RadioGroup v-model="basicInfoForm.vehicle_type_check">
+              <Radio
+                v-for="(item, index) in vehicleTypeList"
+                v-bind:key="index"
+                v-bind:label="item.name"
+                border
+              ></Radio>
+            </RadioGroup>
+          </FormItem>
+          <FormItem label="能源类型：">
+            <!-- <span>能源类型：</span> -->
+            <RadioGroup v-model="basicInfoForm.energy_types_check">
+              <Radio
+                v-for="(item, index) in energyTypesList"
+                v-bind:key="index"
+                v-bind:label="item"
+                border
+              ></Radio>
+            </RadioGroup>
+          </FormItem>
+          <FormItem label="车辆状态：">
+            <!-- <span>车辆状态：</span> -->
+            <RadioGroup v-model="basicInfoForm.vehicle_status_check">
+              <Radio
+                v-for="(item, index) in vehicleStatusList"
+                v-bind:key="index"
+                v-bind:label="item.name"
+                border
+              ></Radio>
+            </RadioGroup>
+          </FormItem>
+        </Form>
+      </div>
+      <div class="conf-info-container">
+        <div class="header">配置信息</div>
+        <Form class="content" :model="confInfoForm" :label-width="120">
+          <div class="left">
+            <FormItem label="发动机：">
+              <!-- <span style="padding-right: 14px;">发动机：</span> -->
+              <Input v-model="confInfoForm.let_litre" placeholder="请输入发动机" style="width: 200px">
+                <div class="suffix" slot="suffix">T</div>
+              </Input>
+            </FormItem>
+            <FormItem label="汽油规格：">
+              <!-- <span>汽油规格：</span> -->
+              <Input v-model="confInfoForm.oil_type" placeholder="请输入汽油规格" style="width: 200px">
+                <div class="suffix" slot="suffix">#</div>
+              </Input>
+            </FormItem>
+            <FormItem label="座位数：">
+              <!-- <span style="padding-right: 14px;">座位数：</span> -->
+              <Input v-model="confInfoForm.seat_count" placeholder="请输入座位数" style="width: 200px">
+                <div class="suffix" slot="suffix">座</div>
+              </Input>
+            </FormItem>
+            <FormItem label="车门数：">
+              <!-- <span style="padding-right: 14px;">车门数：</span> -->
+              <Input v-model="confInfoForm.door_count" placeholder="请输入车门数" style="width: 200px">
+                <div class="suffix" slot="suffix">门</div>
+              </Input>
+            </FormItem>
+            <FormItem label="前后雷达：">
+              <!-- <span>前后雷达：</span> -->
+              <CheckboxGroup v-model="confInfoForm.radar" style="display: inline;">
+                <Checkbox
+                  v-for="(item, index) in radarList"
+                  v-bind:key="index"
+                  v-bind:label="item.name"
+                  border
+                ></Checkbox>
+              </CheckboxGroup>
+            </FormItem>
+          </div>
+          <div class="right">
+            <FormItem label="变速箱：">
+              <!-- <span style="padding-right: 14px;">变速箱：</span> -->
+              <Input v-model="confInfoForm.gearbox" placeholder="请输入变速箱" style="width: 200px" />
+            </FormItem>
+            <FormItem label="油箱容量：">
+              <!-- <span>油箱容量：</span> -->
+              <Input v-model="confInfoForm.oil_volume" placeholder="请输入油箱容量" style="width: 200px">
+                <div class="suffix" slot="suffix">L</div>
+              </Input>
+            </FormItem>
+            <FormItem label="综合油耗：">
+              <!-- <span>综合油耗：</span> -->
+              <Input v-model="confInfoForm.oil_litre" placeholder="请输入综合油耗" style="width: 200px">
+                <div class="suffix" slot="suffix" style="padding-right: 30px;">L/100km</div>
+              </Input>
+            </FormItem>
+            <FormItem label="车厢：">
+              <!-- <span>车厢：</span> -->
+              <Input
+                v-model="confInfoForm.body_construction"
+                placeholder="请输入几厢车"
+                style="width: 200px"
+              >
+                <div class="suffix" slot="suffix">厢</div>
+              </Input>
+            </FormItem>
+            <FormItem label="倒车影像：">
+              <!-- <span>倒车影像：</span> -->
+              <RadioGroup v-model="confInfoForm.backup_camera">
+                <Radio
+                  v-for="(item, index) in backupCameraList"
+                  v-bind:key="index"
+                  v-bind:label="item.name"
+                  border
+                ></Radio>
+              </RadioGroup>
+            </FormItem>
+          </div>
+        </Form>
+      </div>
+      <div class="price-info-container">
+        <div class="header">价格信息</div>
+        <Form class="content" :model="priceInfoForm" :label-width="120">
+          <FormItem label="押金：">
+            <!-- <span>押金：</span> -->
+            <Input v-model="priceInfoForm.deposit" placeholder="请输入押金" style="width: 200px">
+              <div class="suffix" slot="suffix">元</div>
+            </Input>
+          </FormItem>
+          <FormItem label="基础险：">
+            <!-- <span>基础险：</span> -->
+            <Input
+              v-model="priceInfoForm.basic_insurance"
+              placeholder="请输入基础险"
+              style="width: 200px"
+            >
+              <div class="suffix" slot="suffix">元</div>
+            </Input>
+          </FormItem>
+          <FormItem label="基础价格：">
+            <!-- <span>基础价格：</span> -->
+            <Input v-model="priceInfoForm.price" placeholder="请输入基础价格" style="width: 200px">
+              <div class="suffix" slot="suffix">元</div>
+            </Input>
+          </FormItem>
+        </Form>
+      </div>
+      <div class="btn-container">
+        <Button type="primary" @click="handleSubmit">提交</Button>
+        <Button style="margin-left: 8px" @click="handleCancel">取消</Button>
+      </div>
+      <Spin size="large" fix v-if="spinShow"></Spin>
     </div>
-    <div class="price-info-container">
-      <div class="header">价格信息</div>
-      <Form class="content" :model="priceInfoForm" :label-width="120">
-        <FormItem label="押金：">
-          <!-- <span>押金：</span> -->
-          <Input
-            v-model="priceInfoForm.deposit"
-            placeholder="请输入押金"
-            style="width: 200px"
-          >
-            <div class="suffix" slot="suffix">元</div>
-          </Input>
-        </FormItem>
-        <FormItem label="基础险：">
-          <!-- <span>基础险：</span> -->
-          <Input
-            v-model="priceInfoForm.basic_insurance"
-            placeholder="请输入基础险"
-            style="width: 200px"
-          >
-            <div class="suffix" slot="suffix">元</div>
-          </Input>
-        </FormItem>
-        <FormItem label="基础价格：">
-          <!-- <span>基础价格：</span> -->
-          <Input
-            v-model="priceInfoForm.price"
-            placeholder="请输入基础价格"
-            style="width: 200px"
-          >
-            <div class="suffix" slot="suffix">元</div>
-          </Input>
-        </FormItem>
-      </Form>
-    </div>
-    <div class="btn-container">
-      <Button type="primary" @click="handleSubmit">提交</Button>
-      <Button style="margin-left: 8px" @click="handleCancel">取消</Button>
-    </div>
-    <Spin size="large" fix v-if="spinShow"></Spin>
   </div>
 </template>
 
@@ -317,10 +264,7 @@ export default {
         { en: 'radar_head', name: '前雷达' },
         { en: 'radar_tail', name: '后雷达' }
       ],
-      backupCameraList: [
-        { name: '有', state: 1 },
-        { name: '无', state: 0 }
-      ],
+      backupCameraList: [{ name: '有', state: 1 }, { name: '无', state: 0 }],
       spinShow: true
     };
   },
