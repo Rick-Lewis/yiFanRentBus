@@ -26,7 +26,7 @@
           style="width:200px;font-weight: 400;"
         >
           <Option
-            v-for="(item, index) in storeList"
+            v-for="(item, index) in mgStore"
             :value="item.id"
             :key="index"
             >{{ item.name }}</Option
@@ -326,7 +326,7 @@ export default {
         total: 0
       },
       orderStatusList: [],
-      storeList: [],
+      mgStore: [],
       storeCheck: '',
       telephone: ''
     };
@@ -395,7 +395,7 @@ export default {
         );
         if (res.data.code === 0) {
           this.storeCheck = res.data.data.data[0].id;
-          this.storeList.push(...res.data.data.data);
+          this.mgStore.push(...res.data.data.data);
 
           let timeStartTemp = '';
           let timeEndTemp = this.$moment(new Date()).format(

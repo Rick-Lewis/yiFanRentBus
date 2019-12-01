@@ -1,14 +1,20 @@
 <template>
   <div class="brand-container">
     <div class="filtrate-container">
-      <Form :model="formItem" :label-width="85" inline>
-        <FormItem label="品牌名称：">
+      <Form
+        :model="formItem"
+        :label-width="85"
+        inline
+        label-colon
+        style="display: flex; align-items: center;"
+      >
+        <FormItem label="品牌名称">
           <Input v-model="formItem.brand_name" placeholder="请输入品牌名称" style="width: 200px" />
         </FormItem>
-        <FormItem>
+        <div>
           <Button type="primary" @click="handleSearch">查询</Button>
-          <Button style="margin-left: 8px" @click="handleReset">重置</Button>
-        </FormItem>
+          <Button style="margin-left: 8px;" @click="handleReset">重置</Button>
+        </div>
       </Form>
     </div>
     <div class="content-container">

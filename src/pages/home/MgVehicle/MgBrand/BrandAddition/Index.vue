@@ -9,16 +9,17 @@
           class="content"
           :rules="ruleValidate"
           :label-width="120"
+          label-colon
         >
-          <FormItem label="品牌名称：" prop="brand_name">
+          <FormItem label="品牌名称" prop="brand_name">
             <!-- <span>品牌名称：</span> -->
             <Input v-model="basicInfoForm.brand_name" placeholder="请输入品牌名称" style="width: 200px" />
           </FormItem>
-          <FormItem label="英文名称：" prop="brand_en">
+          <FormItem label="英文名称" prop="brand_en">
             <!-- <span>英文名称：</span> -->
             <Input v-model="basicInfoForm.brand_en" placeholder="请输入英文名称" style="width: 200px" />
           </FormItem>
-          <FormItem label="品牌LOGO：" prop="upload_list">
+          <FormItem label="品牌LOGO" prop="upload_list">
             <!-- <span>品牌LOGO：</span> -->
             <div
               class="upload-list"

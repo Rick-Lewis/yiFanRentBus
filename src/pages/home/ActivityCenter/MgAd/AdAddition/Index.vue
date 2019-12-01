@@ -9,11 +9,12 @@
           class="content"
           :rules="ruleValidate"
           :label-width="120"
+          label-colon
         >
-          <FormItem label="标题：" prop="title">
+          <FormItem label="标题" prop="title">
             <Input v-model="basicInfoForm.title" placeholder="请输入广告标题" style="width: 200px" />
           </FormItem>
-          <FormItem label="图片：" prop="upload_list">
+          <FormItem label="图片" prop="upload_list">
             <div
               class="upload-list"
               v-for="(item, index) in basicInfoForm.upload_list"
@@ -56,10 +57,10 @@
               <img :src="this.imgUrl" v-if="visible" style="width: 100%" />
             </Modal>
           </FormItem>
-          <FormItem label="跳转链接：" prop="url">
+          <FormItem label="跳转链接" prop="url">
             <Input v-model="basicInfoForm.url" placeholder="请输入跳转链接" style="width: 200px" />
           </FormItem>
-          <FormItem label="类型：" required>
+          <FormItem label="类型" required>
             <RadioGroup v-model="basicInfoForm.type_check">
               <Radio
                 v-for="(item, index) in typeList"
@@ -69,7 +70,7 @@
               ></Radio>
             </RadioGroup>
           </FormItem>
-          <FormItem label="立即上架：" required>
+          <FormItem label="立即上架" required>
             <RadioGroup v-model="basicInfoForm.status_check">
               <Radio
                 v-for="(item, index) in statusList"
@@ -123,7 +124,7 @@ export default {
       uploadUrl:
         this.global_.path.baseUrl +
         '/rentalcars/upload/image?image&folderName=banner',
-      spinShow: false,
+      spinShow: true,
       statusList: [{ name: '是', status: 1 }, { name: '否', status: 0 }],
       typeList: [
         { name: '营销活动', value: 0 },
@@ -171,14 +172,18 @@ export default {
               content: '操作失败'
             });
           }
+          this.spinShow = false;
         },
         err => {
           console.log('AdAddition Index.vue created /banner/{id} failure', err);
           this.$Message.error({
             content: '操作失败'
           });
+          this.spinShow = false;
         }
       );
+    } else {
+      this.spinShow = false;
     }
   },
   mounted() {

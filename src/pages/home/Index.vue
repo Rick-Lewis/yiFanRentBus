@@ -56,6 +56,16 @@
               <span>订单管理</span>
             </MenuItem>
           </Submenu>
+          <Submenu name="store">
+            <template slot="title">
+              <Icon type="ios-search"></Icon>
+              <span>门店管理</span>
+            </template>
+            <MenuItem name="mg-store">
+              <Icon type="ios-search"></Icon>
+              <span>门店列表</span>
+            </MenuItem>
+          </Submenu>
         </Menu>
       </Sider>
       <Layout>
@@ -242,6 +252,11 @@ export default {
         case 'workspace':
           if (!this.matchUrl(window.location.href, '/home/workspace')) {
             this.$router.push('/home/workspace');
+          }
+          break;
+        case 'mg-store':
+          if (!this.matchUrl(window.location.href, '/home/mgStore')) {
+            this.$router.push('/home/mgStore');
           }
           break;
       }

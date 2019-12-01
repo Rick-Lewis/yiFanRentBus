@@ -1,8 +1,8 @@
 <template>
   <div class="order-container">
     <div class="filtrate-container">
-      <Form :model="formItem">
-        <FormItem label="订单状态：" class="order-status">
+      <Form :model="formItem" label-colon>
+        <FormItem label="订单状态" class="order-status">
           <!-- <span>订单状态：</span> -->
           <RadioGroup v-model="formItem.order_status_check">
             <Radio
@@ -13,7 +13,7 @@
             ></Radio>
           </RadioGroup>
         </FormItem>
-        <FormItem label="有无司机：" class="driver-existence">
+        <FormItem label="有无司机" class="driver-existence">
           <!-- <span>有无司机：</span> -->
           <RadioGroup v-model="formItem.driver_existence_check">
             <Radio
@@ -24,7 +24,7 @@
             ></Radio>
           </RadioGroup>
         </FormItem>
-        <FormItem label="时间查询：" class="time">
+        <FormItem label="时间查询" class="time">
           <!-- <span>时间查询：</span> -->
           <RadioGroup v-model="formItem.time_check" @on-change="handleCalDuration1">
             <Radio v-for="(item, index) in timeList" v-bind:key="index" v-bind:label="item" border></Radio>
@@ -49,15 +49,15 @@
           </div>
         </FormItem>
         <div class="input-container">
-          <FormItem label="订单编号：">
+          <FormItem label="订单编号">
             <!-- <span>订单编号：</span> -->
             <Input v-model="formItem.order_no" placeholder="请输入订单编号" style="width: 200px" />
           </FormItem>
-          <FormItem label="车牌号：">
+          <FormItem label="车牌号">
             <!-- <span>车牌号：</span> -->
             <Input v-model="formItem.plate_num" placeholder="请输入车牌号" style="width: 200px" />
           </FormItem>
-          <FormItem label="手机号查询：">
+          <FormItem label="手机号查询">
             <!-- <span>用户查询：</span> -->
             <Input v-model="formItem.key" placeholder="请输入手机号" style="width: 200px" />
           </FormItem>

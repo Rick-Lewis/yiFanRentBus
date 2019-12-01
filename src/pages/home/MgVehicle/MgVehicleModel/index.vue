@@ -1,8 +1,8 @@
 <template>
   <div class="vehicle-model-container">
     <div class="filtrate-container">
-      <Form :model="formItem">
-        <FormItem label="所属品牌：" class="from-brand">
+      <Form :model="formItem" label-colon>
+        <FormItem label="所属品牌" class="from-brand">
           <!-- <span>所属品牌：</span> -->
           <RadioGroup v-model="formItem.from_brand_check">
             <Radio
@@ -13,7 +13,7 @@
             ></Radio>
           </RadioGroup>
         </FormItem>
-        <FormItem label="车型类型：" class="vehicle-type">
+        <FormItem label="车型类型" class="vehicle-type">
           <!-- <span>车型类型：</span> -->
           <RadioGroup v-model="formItem.vehicle_type_check">
             <Radio
@@ -24,7 +24,7 @@
             ></Radio>
           </RadioGroup>
         </FormItem>
-        <FormItem label="车型状态：" class="vehicle-status">
+        <FormItem label="车型状态" class="vehicle-status">
           <!-- <span>车型状态：</span> -->
           <RadioGroup v-model="formItem.vehicle_model_status_check">
             <Radio
@@ -36,7 +36,7 @@
           </RadioGroup>
         </FormItem>
         <div class="input-container">
-          <FormItem label="车型名称：">
+          <FormItem label="车型名称">
             <!-- <span>车型名称：</span> -->
             <Input
               v-model="formItem.vehicle_model_name"

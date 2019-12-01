@@ -1,42 +1,41 @@
 <template>
   <div class="vehicle-container">
     <div class="filtrate-container">
-      <Form :model="formItem">
-      <FormItem label="车辆状态：" class="vehicle-status">
-        <!-- <span>车辆状态：</span> -->
-        <RadioGroup v-model="formItem.vehicle_status_check">
-          <Radio
-            v-for="(item, index) in vehicleStatusList"
-            v-bind:key="index"
-            v-bind:label="item.name"
-            border
-          ></Radio>
-        </RadioGroup>
-      </FormItem>
-      <div class="input-container">
-        <FormItem label="车牌号：">
-          <!-- <span>车牌号：</span> -->
-          <Input v-model="formItem.plate_num" placeholder="请输入车牌号" style="width: 200px" />
+      <Form :model="formItem" label-colon>
+        <FormItem label="车辆状态" class="vehicle-status">
+          <!-- <span>车辆状态：</span> -->
+          <RadioGroup v-model="formItem.vehicle_status_check">
+            <Radio
+              v-for="(item, index) in vehicleStatusList"
+              v-bind:key="index"
+              v-bind:label="item.name"
+              border
+            ></Radio>
+          </RadioGroup>
         </FormItem>
-        <FormItem label="车辆识别代码：">
-          <!-- <span>车辆识别代码：</span> -->
-          <Input v-model="formItem.vin" placeholder="请输入车辆识别代码" style="width: 200px" />
-        </FormItem>
-        <FormItem label="发动机号：">
-          <!-- <span>发动机号：</span> -->
-          <Input v-model="formItem.engine_no" placeholder="请输入发动机号" style="width: 200px" />
-        </FormItem>
-        <FormItem>
-          <Button type="primary" @click="handleSearch">查询</Button>
-          <Button style="margin-left: 8px" @click="handleReset">重置</Button>
-        </FormItem>
-      </div>
+        <div class="input-container">
+          <FormItem label="车牌号">
+            <!-- <span>车牌号：</span> -->
+            <Input v-model="formItem.plate_num" placeholder="请输入车牌号" style="width: 200px" />
+          </FormItem>
+          <FormItem label="车辆识别代码">
+            <!-- <span>车辆识别代码：</span> -->
+            <Input v-model="formItem.vin" placeholder="请输入车辆识别代码" style="width: 200px" />
+          </FormItem>
+          <FormItem label="发动机号">
+            <!-- <span>发动机号：</span> -->
+            <Input v-model="formItem.engine_no" placeholder="请输入发动机号" style="width: 200px" />
+          </FormItem>
+          <FormItem>
+            <Button type="primary" @click="handleSearch">查询</Button>
+            <Button style="margin-left: 8px" @click="handleReset">重置</Button>
+          </FormItem>
+        </div>
       </Form>
     </div>
     <div class="content-container">
       <div class="btn-container">
         <Button type="primary" @click="add">+新增</Button>
-        <Button type="primary" @click="maintain">送维保</Button>
       </div>
       <Table border :columns="vehicleColumns" :data="vehicleData" stripe>
         <template v-slot:state="{ row }">
@@ -236,7 +235,10 @@ export default {
     },
     // 查询
     handleSearch() {
-      let indexTemp = this.handleSelected(this.formItem.vehicle_status_check, 'status');
+      let indexTemp = this.handleSelected(
+        this.formItem.vehicle_status_check,
+        'status'
+      );
       let statusTemp = this.vehicleStatusList[indexTemp].status;
       let strTemp =
         '?plate_num=' +
@@ -407,10 +409,6 @@ export default {
     // 新增
     add() {
       this.$router.push('/home/vehicleAddition?action=add');
-    },
-    // 维保
-    maintain() {
-      this.$router.push('/home/modelAddition');
     },
     // 页码改变
     handlePageChange(e) {

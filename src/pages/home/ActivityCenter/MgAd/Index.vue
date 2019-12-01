@@ -1,19 +1,19 @@
 <template>
   <div class="ad-container">
     <div class="filtrate-container">
-      <Form :model="formItem">
-        <FormItem label="状态：">
+      <Form :model="formItem" label-colon>
+        <FormItem label="状态">
           <RadioGroup v-model="formItem.statusName">
             <Radio v-for="(item, index) in statusList" v-bind:key="index" v-bind:label="item.name" border></Radio>
           </RadioGroup>
         </FormItem>
-        <FormItem label="类型：">
+        <FormItem label="类型">
           <RadioGroup v-model="formItem.typeName">
             <Radio v-for="(item, index) in typeList" v-bind:key="index" v-bind:label="item.name" border></Radio>
           </RadioGroup>
         </FormItem>
         <div class="input-container">
-          <FormItem label="标题：">
+          <FormItem label="标题">
             <Input v-model="formItem.title" placeholder="请输入标题" style="width: 200px;" />
           </FormItem>
           <FormItem style="margin-left: 15px;">
@@ -44,7 +44,7 @@
             style="margin-right: 5px"
             @click="toggleStatus(index)"
           >{{getStatusNameByValue(row.status, 'action')}}</Button>
-          <Button type="error" size="small" @click="remove(index)">删除</Button>
+          <Button v-if="row.status === 0" type="error" size="small" @click="remove(index)">删除</Button>
           <Button type="primary" size="small" @click="edit(index)">编辑</Button>
         </template>
       </Table>
@@ -125,7 +125,7 @@ export default {
         '-1': 'invalid',
         '0': 'storage',
         '1': 'ready',
-        '2': 'reserve',
+        '2': 'storage',
         '3': 'rent',
         '4': 'maintenance'
       },
@@ -319,12 +319,12 @@ export default {
       if (this.adData[index].status === 1) {
         urlTemp =
           this.global_.path.baseUrl +
-          '/rentalcars/banner/on?ids=' +
+          '/rentalcars/banner/off?ids=' +
           this.adData[index].id;
       } else {
         urlTemp =
           this.global_.path.baseUrl +
-          '/rentalcars/banner/off?ids=' +
+          '/rentalcars/banner/on?ids=' +
           this.adData[index].id;
       }
       this.axios({

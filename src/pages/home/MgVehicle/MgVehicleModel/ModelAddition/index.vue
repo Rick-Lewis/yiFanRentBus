@@ -3,12 +3,12 @@
     <div>
       <div class="basic-info-container">
         <div class="header">基础信息</div>
-        <Form :model="basicInfoForm" class="content" :label-width="120">
-          <FormItem label="车型名称：">
+        <Form :model="basicInfoForm" class="content" :label-width="120" label-colon>
+          <FormItem label="车型名称">
             <!-- <span>车型名称：</span> -->
             <Input v-model="basicInfoForm.name" placeholder="请输入车型名称" style="width: 200px" />
           </FormItem>
-          <FormItem label="车型图片：">
+          <FormItem label="车型图片">
             <!-- <span>车型图片：</span> -->
             <div
               class="upload-list"
@@ -54,7 +54,7 @@
               <img :src="this.imgUrl" v-if="visible" style="width: 100%" />
             </Modal>
           </FormItem>
-          <FormItem label="车型品牌：">
+          <FormItem label="车型品牌">
             <!-- <span>车型品牌：</span> -->
             <RadioGroup v-model="basicInfoForm.from_brand_check">
               <Radio
@@ -65,7 +65,7 @@
               ></Radio>
             </RadioGroup>
           </FormItem>
-          <FormItem label="车辆类型：">
+          <FormItem label="车辆类型">
             <!-- <span>车辆类型：</span> -->
             <RadioGroup v-model="basicInfoForm.vehicle_type_check">
               <Radio
@@ -76,7 +76,7 @@
               ></Radio>
             </RadioGroup>
           </FormItem>
-          <FormItem label="能源类型：">
+          <FormItem label="能源类型">
             <!-- <span>能源类型：</span> -->
             <RadioGroup v-model="basicInfoForm.energy_types_check">
               <Radio
@@ -87,7 +87,7 @@
               ></Radio>
             </RadioGroup>
           </FormItem>
-          <FormItem label="车辆状态：">
+          <FormItem label="车辆状态">
             <!-- <span>车辆状态：</span> -->
             <RadioGroup v-model="basicInfoForm.vehicle_status_check">
               <Radio
@@ -102,33 +102,33 @@
       </div>
       <div class="conf-info-container">
         <div class="header">配置信息</div>
-        <Form class="content" :model="confInfoForm" :label-width="120">
+        <Form class="content" :model="confInfoForm" :label-width="120" label-colon>
           <div class="left">
-            <FormItem label="发动机：">
+            <FormItem label="发动机">
               <!-- <span style="padding-right: 14px;">发动机：</span> -->
               <Input v-model="confInfoForm.let_litre" placeholder="请输入发动机" style="width: 200px">
                 <div class="suffix" slot="suffix">T</div>
               </Input>
             </FormItem>
-            <FormItem label="汽油规格：">
+            <FormItem label="汽油规格">
               <!-- <span>汽油规格：</span> -->
               <Input v-model="confInfoForm.oil_type" placeholder="请输入汽油规格" style="width: 200px">
                 <div class="suffix" slot="suffix">#</div>
               </Input>
             </FormItem>
-            <FormItem label="座位数：">
+            <FormItem label="座位数">
               <!-- <span style="padding-right: 14px;">座位数：</span> -->
               <Input v-model="confInfoForm.seat_count" placeholder="请输入座位数" style="width: 200px">
                 <div class="suffix" slot="suffix">座</div>
               </Input>
             </FormItem>
-            <FormItem label="车门数：">
+            <FormItem label="车门数">
               <!-- <span style="padding-right: 14px;">车门数：</span> -->
               <Input v-model="confInfoForm.door_count" placeholder="请输入车门数" style="width: 200px">
                 <div class="suffix" slot="suffix">门</div>
               </Input>
             </FormItem>
-            <FormItem label="前后雷达：">
+            <FormItem label="前后雷达">
               <!-- <span>前后雷达：</span> -->
               <CheckboxGroup v-model="confInfoForm.radar" style="display: inline;">
                 <Checkbox
@@ -141,23 +141,23 @@
             </FormItem>
           </div>
           <div class="right">
-            <FormItem label="变速箱：">
+            <FormItem label="变速箱">
               <!-- <span style="padding-right: 14px;">变速箱：</span> -->
               <Input v-model="confInfoForm.gearbox" placeholder="请输入变速箱" style="width: 200px" />
             </FormItem>
-            <FormItem label="油箱容量：">
+            <FormItem label="油箱容量">
               <!-- <span>油箱容量：</span> -->
               <Input v-model="confInfoForm.oil_volume" placeholder="请输入油箱容量" style="width: 200px">
                 <div class="suffix" slot="suffix">L</div>
               </Input>
             </FormItem>
-            <FormItem label="综合油耗：">
+            <FormItem label="综合油耗">
               <!-- <span>综合油耗：</span> -->
               <Input v-model="confInfoForm.oil_litre" placeholder="请输入综合油耗" style="width: 200px">
                 <div class="suffix" slot="suffix" style="padding-right: 30px;">L/100km</div>
               </Input>
             </FormItem>
-            <FormItem label="车厢：">
+            <FormItem label="车厢">
               <!-- <span>车厢：</span> -->
               <Input
                 v-model="confInfoForm.body_construction"
@@ -167,7 +167,7 @@
                 <div class="suffix" slot="suffix">厢</div>
               </Input>
             </FormItem>
-            <FormItem label="倒车影像：">
+            <FormItem label="倒车影像">
               <!-- <span>倒车影像：</span> -->
               <RadioGroup v-model="confInfoForm.backup_camera">
                 <Radio
@@ -183,14 +183,14 @@
       </div>
       <div class="price-info-container">
         <div class="header">价格信息</div>
-        <Form class="content" :model="priceInfoForm" :label-width="120">
-          <FormItem label="押金：">
+        <Form class="content" :model="priceInfoForm" :label-width="120" label-colon>
+          <FormItem label="押金">
             <!-- <span>押金：</span> -->
             <Input v-model="priceInfoForm.deposit" placeholder="请输入押金" style="width: 200px">
               <div class="suffix" slot="suffix">元</div>
             </Input>
           </FormItem>
-          <FormItem label="基础险：">
+          <FormItem label="基础险">
             <!-- <span>基础险：</span> -->
             <Input
               v-model="priceInfoForm.basic_insurance"
@@ -200,7 +200,7 @@
               <div class="suffix" slot="suffix">元</div>
             </Input>
           </FormItem>
-          <FormItem label="基础价格：">
+          <FormItem label="基础价格">
             <!-- <span>基础价格：</span> -->
             <Input v-model="priceInfoForm.price" placeholder="请输入基础价格" style="width: 200px">
               <div class="suffix" slot="suffix">元</div>

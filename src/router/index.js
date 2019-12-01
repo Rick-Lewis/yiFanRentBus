@@ -15,6 +15,9 @@ import MgOrder from '@/pages/home/OrderCenter/MgOrder';
 import OrderDetail from '@/pages/home/OrderCenter/MgOrder/OrderDetail';
 import MgAd from '@/pages/home/ActivityCenter/MgAd';
 import AdAddition from '@/pages/home/ActivityCenter/MgAd/AdAddition';
+import MgStore from '@/pages/home/MgStore/MgStore';
+import StoreAddition from '@/pages/home/MgStore/StoreAddition';
+import StoreDetail from '@/pages/home/MgStore/StoreDetail';
 
 Vue.use(Router);
 
@@ -294,6 +297,68 @@ export default new Router({
                 menuItemName: 'mg-order',
                 path: '/home/orderDetail',
                 text: '订单详情'
+              }
+            ]
+          }
+        },
+        {
+          path: 'mgStore',
+          component: MgStore,
+          meta: {
+            breadcrumb: [
+              {
+                path: '',
+                text: '门店管理'
+              },
+              {
+                submenuName: 'store',
+                menuItemName: 'mg-store',
+                path: '/home/mgStore',
+                text: '门店列表'
+              }
+            ]
+          }
+        },
+        {
+          path: 'storeAddition',
+          component: StoreAddition,
+          meta: {
+            breadcrumb: [
+              {
+                path: '',
+                text: '门店管理'
+              },
+              {
+                path: '/home/mgStore',
+                text: '门店列表'
+              },
+              {
+                submenuName: 'store',
+                menuItemName: 'mg-store',
+                path: '/home/storeAddition',
+                text: '新增门店'
+              }
+            ]
+          }
+        },
+        {
+          path: 'storeDetail',
+          component: StoreDetail,
+          meta: {
+            breadcrumb: [
+              {
+                path: '',
+                text: '门店管理'
+              },
+              {
+                path: '/home/mgStore',
+                text: '门店列表'
+              },
+              {
+                submenuName: 'store',
+                menuItemName: 'mg-store',
+                path: '/home/storeDetail',
+                text: '门店详情'
               }
             ]
           }
