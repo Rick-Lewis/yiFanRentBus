@@ -16,8 +16,8 @@ import OrderDetail from '@/pages/home/OrderCenter/MgOrder/OrderDetail';
 import MgAd from '@/pages/home/ActivityCenter/MgAd';
 import AdAddition from '@/pages/home/ActivityCenter/MgAd/AdAddition';
 import MgStore from '@/pages/home/MgStore/MgStore';
-import StoreAddition from '@/pages/home/MgStore/StoreAddition';
-import StoreDetail from '@/pages/home/MgStore/StoreDetail';
+import StoreAddition from '@/pages/home/MgStore/MgStore/StoreAddition';
+import StoreDetail from '@/pages/home/MgStore/MgStore/StoreDetail';
 
 Vue.use(Router);
 
