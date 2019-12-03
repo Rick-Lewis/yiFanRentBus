@@ -26,9 +26,9 @@ export default {
 //     color: #fff;
 //   }
 // }
-.ivu-radio-group-item {
-  & > .ivu-radio {
-    display: none;
-  }
-}
+// .ivu-radio-group-item {
+//   & > .ivu-radio {
+//     display: none;
+//   }
+// }
 </style>

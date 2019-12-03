@@ -30,13 +30,24 @@ axios.interceptors.request.use(
 axios.interceptors.response.use(
   function(response) {
     // 对响应数据做点什么
-    console.log('axios.interceptors.response response', response, global_.path.baseUrl);
-    if (response.config.url && response.config.url.indexOf(global_.path.baseUrl) !== -1) {
+    console.log(
+      'axios.interceptors.response response',
+      response,
+      global_.path.baseUrl
+    );
+    if (
+      response.config.url &&
+      response.config.url.indexOf(global_.path.baseUrl) !== -1
+    ) {
       if (
         response.data.code === -1 &&
         response.data.data === '登录超时，请重新登陆'
       ) {
-        window.location.assign(window.location.origin + '/#/login');
+        if (router.mode === 'history') {
+          window.location.assign(window.location.origin + '/login');
+        } else {
+          window.location.assign(window.location.origin + '/#/login');
+        }
       } else {
         return response;
       }

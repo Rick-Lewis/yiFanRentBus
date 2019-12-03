@@ -304,7 +304,7 @@ export default {
         '/home/vehicleAddition?action=edit&id=' + this.vehicleData[index].id
       );
     },
-    // 编辑
+    // 检查
     check(index) {
       let temp = {
         plate_nums: this.vehicleData[index].plate_num,

@@ -1,0 +1,66 @@
+.maintenance-order-container {
+  margin: 20px;
+  min-height: 260px;
+  position: relative;
+
+  .filtrate-container {
+    background-color: #fff;
+    padding: 20px;
+
+    .input-container {
+      display: flex;
+
+      /deep/ .ivu-form-item-content {
+        float: left;
+      }
+    }
+  }
+  .content-container {
+    background-color: #fff;
+    margin-top: 20px;
+    padding: 20px;
+    position: relative;
+    .btn-container {
+      margin-bottom: 10px;
+      & > button:last-child {
+        margin-left: 25px;
+      }
+    }
+    $status: 'storage', 'ready', 'rent', 'maintenance';
+    @each $item in $status {
+      .#{$item} {
+        position: relative;
+        padding-left: 15px;
+        &::before {
+          content: '';
+          position: absolute;
+          top: 0;
+          bottom: 0;
+          left: 0;
+          margin: auto 0;
+          width: 10px;
+          height: 10px;
+          border-radius: 10px;
+          @if $item == 'storage' {
+            background-color: #b2b2b2;
+          } @else if $item == 'ready' {
+            background-color: #249b31;
+          } @else if $item == 'rent' {
+            background-color: #1563c9;
+          } @else {
+            background-color: #e42726;
+          }
+        }
+      }
+    }
+    .page-container {
+      text-align: right;
+      margin-top: 20px;
+    }
+  }
+}
+
+.ivu-form-item {
+  margin-bottom: 0px;
+  padding: 8px;
+}
