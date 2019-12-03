@@ -1,0 +1,22 @@
+.maintenance-detail-container {
+    margin-top: 5px;
+    min-height: 260px;
+    position: relative;
+
+    .basic-info-container {
+        padding: 16px;
+        background-color: #fff;
+
+        .header {
+            padding-bottom: 10px;
+
+            span:first-child {
+                font-size: 20px;
+            }
+
+            span:last-child {
+                margin-left: 10px;
+            }
+        }
+    }
+}

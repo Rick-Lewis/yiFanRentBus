@@ -45,6 +45,10 @@
               <Icon type="ios-navigate"></Icon>
               <span>车辆管理</span>
             </MenuItem>
+            <MenuItem name="mg-maintenance">
+              <Icon type="ios-navigate"></Icon>
+              <span>维修管理</span>
+            </MenuItem>
           </Submenu>
           <Submenu name="order">
             <template slot="title">
@@ -121,15 +125,15 @@ export default {
     console.log('home Index.vue created', this.$store);
     // this.$store.registerModule('homeStore', homeStore);
     this.$store.registerModule('myOrderStore', myOrderStore);
-    let urlTemp = '';
-    this.axios.get(urlTemp).then(
-      res => {
-        console.log('home Index.vue created axios /login success', res);
-      },
-      err => {
-        console.log('home Index.vue created axios /login success', err);
-      }
-    );
+    // let urlTemp = '';
+    // this.axios.get(urlTemp).then(
+    //   res => {
+    //     console.log('home Index.vue created axios /login success', res);
+    //   },
+    //   err => {
+    //     console.log('home Index.vue created axios /login success', err);
+    //   }
+    // );
     // this.$store.dispatch('homeStore/initBreadcrumbList', window.location.href);
     this.userInfo = {
       username: window.localStorage.getItem('username')
@@ -155,63 +159,14 @@ export default {
     activeMenu() {
       let temp = this.$route.matched[1].meta.breadcrumb;
       let result = temp[temp.length - 1].submenuName;
-      // let result = 'vehicle';
-      // if (
-      //   this.matchUrl(window.location.href, '/home/vehicle') ||
-      //   this.matchUrl(window.location.href, '/home/vehicleModel')
-      // ) {
-      //   result = 'vehicle';
-      // } else if (
-      //   this.matchUrl(window.location.href, '/home/mgOrder') ||
-      //   this.matchUrl(window.location.href, '/home/orderDetail')
-      // ) {
-      //   result = 'order';
-      // } else if (
-      //   this.matchUrl(window.location.href, '/home/ad') ||
-      //   this.matchUrl(window.location.href, '/home/adDetail')
-      // ) {
-      //   result = 'activity-center';
-      // }
       return result;
     },
     activeMenuItem() {
       let temp = this.$route.matched[1].meta.breadcrumb;
       let result = temp[temp.length - 1].menuItemName;
-      // let result = 'my-brand';
-      // if (
-      //   this.matchUrl(window.location.href, '/home/vehicle') ||
-      //   this.matchUrl(window.location.href, '/home/vehicleAddition') ||
-      //   this.matchUrl(window.location.href, '/home/vehicleDetail')
-      // ) {
-      //   result = 'mg-vehicle';
-      // } else if (
-      //   this.matchUrl(window.location.href, '/home/vehicleModel') ||
-      //   this.matchUrl(window.location.href, '/home/modelAddition') ||
-      //   this.matchUrl(window.location.href, '/home/modelDetail')
-      // ) {
-      //   result = 'mg-vehicle-model';
-      // } else if (
-      //   this.matchUrl(window.location.href, '/home/mgOrder') ||
-      //   this.matchUrl(window.location.href, '/home/orderDetail')
-      // ) {
-      //   result = 'mg-order';
-      // } else if (
-      //   this.matchUrl(window.location.href, '/home/ad') ||
-      //   this.matchUrl(window.location.href, '/home/adDetail')
-      // ) {
-      //   result = 'mg-ad';
-      // }
       return result;
     },
     breadcrumbList: {
-      // // getter
-      // get: function() {
-      //   console.log(
-      //     'home index.vue computed breadcrumbList',
-      //     this.$store.state.homeStore.breadcrumbList
-      //   );
-      //   return this.$store.state.homeStore.breadcrumbList;
-      // }
       get() {
         return this.$route.matched[1].meta.breadcrumb;
       }
@@ -257,6 +212,11 @@ export default {
         case 'mg-store':
           if (!this.matchUrl(window.location.href, '/home/mgStore')) {
             this.$router.push('/home/mgStore');
+          }
+          break;
+        case 'mg-maintenance':
+          if (!this.matchUrl(window.location.href, '/home/mgMaintenance')) {
+            this.$router.push('/home/mgMaintenance');
           }
           break;
       }

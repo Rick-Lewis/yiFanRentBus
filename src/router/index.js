@@ -11,6 +11,9 @@ import BrandAddition from '@/pages/home/MgVehicle/MgBrand/BrandAddition';
 import MgVehicleModel from '@/pages/home/MgVehicle/MgVehicleModel';
 import ModelAddition from '@/pages/home/MgVehicle/MgVehicleModel/ModelAddition';
 import ModelDetail from '@/pages/home/MgVehicle/MgVehicleModel/ModelDetail';
+import MgMaintenance from '@/pages/home/MgVehicle/MgMaintenance';
+import MaintenanceAddition from '@/pages/home/MgVehicle/MgMaintenance/MaintenanceAddition';
+import MaintenanceDetail from '@/pages/home/MgVehicle/MgMaintenance/MaintenanceDetail';
 import MgOrder from '@/pages/home/OrderCenter/MgOrder';
 import OrderDetail from '@/pages/home/OrderCenter/MgOrder/OrderDetail';
 import MgAd from '@/pages/home/ActivityCenter/MgAd';
@@ -258,6 +261,72 @@ export default new Router({
                 menuItemName: 'mg-vehicle-model',
                 path: '/home/modelDetail',
                 text: '车型详情'
+              }
+            ]
+          }
+        },
+        {
+          path: 'mgMaintenance',
+          component: MgMaintenance,
+          meta: {
+            breadcrumb: [
+              {
+                path: '',
+                text: '车辆管理'
+              },
+              {
+                submenuName: 'vehicle',
+                menuItemName: 'mg-maintenance',
+                path: '/home/mgMaintenance',
+                text: '维保工单'
+              }
+            ]
+          }
+        },
+        {
+          path: 'maintenanceAddition',
+          component: MaintenanceAddition,
+          meta: {
+            breadcrumb: [
+              {
+                path: '',
+                text: '车辆管理'
+              },
+              {
+                submenuName: 'vehicle',
+                menuItemName: 'mg-maintenance',
+                path: '/home/mgMaintenance',
+                text: '维保工单'
+              },
+              {
+                submenuName: 'vehicle',
+                menuItemName: 'mg-maintenance',
+                path: '/home/maintenanceAddition',
+                text: '新增工单'
+              }
+            ]
+          }
+        },
+        {
+          path: 'maintenanceDetail',
+          component: MaintenanceDetail,
+          meta: {
+            breadcrumb: [
+              {
+                path: '',
+                text: '车辆管理'
+              },
+              {
+                submenuName: 'vehicle',
+                menuItemName: 'mg-maintenance',
+                path: '/home/mgMaintenance',
+                text: '维保工单'
+              },
+              {
+                submenuName: 'vehicle',
+                menuItemName: 'mg-maintenance',
+                path: '/home/maintenanceDetail',
+                text: '工单详情'
               }
             ]
           }

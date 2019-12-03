@@ -1,9 +1,9 @@
 <template>
-  <div class="maintenance-order-container">
+  <div class="mg-maintenance-container">
     <div class="filtrate-container">
       <Form :model="formItem" label-colon>
         <FormItem label="工单类型">
-          <RadioGroup v-model="formItem.type">
+          <RadioGroup v-model="formItem.type_check">
             <Radio
               v-for="(item, index) in typeList"
               v-bind:key="index"
@@ -14,25 +14,13 @@
         </FormItem>
         <div class="input-container">
           <FormItem label="工单编号">
-            <Input
-              v-model="formItem.order_no"
-              placeholder="请输入工单编号"
-              style="width: 200px"
-            />
+            <Input v-model="formItem.order_no" placeholder="请输入工单编号" style="width: 200px" />
           </FormItem>
           <FormItem label="车牌号">
-            <Input
-              v-model="formItem.plate_num"
-              placeholder="请输入车牌号"
-              style="width: 200px"
-            />
+            <Input v-model="formItem.plate_num" placeholder="请输入车牌号" style="width: 200px" />
           </FormItem>
           <FormItem label="填单人">
-            <Input
-              v-model="formItem.key"
-              placeholder="请输入填单人"
-              style="width: 200px"
-            />
+            <Input v-model="formItem.key" placeholder="请输入填单人" style="width: 200px" />
           </FormItem>
           <FormItem>
             <Button type="primary" @click="handleSearch">查询</Button>
@@ -47,22 +35,12 @@
       </div>
       <Table border :columns="mOrderColumns" :data="mOrderData" stripe>
         <template v-slot:state="{ row }">
-          <div :class="statusColor[row.state]">
-            {{ getStatusNameByValue(row.state) }}
-          </div>
+          <div :class="statusColor[row.state]">{{ getStatusNameByValue(row.state) }}</div>
         </template>
         <template slot-scope="{ row, index }" slot="action">
-          <Button
-            type="primary"
-            size="small"
-            style="margin-right: 5px"
-            @click="edit(index)"
-            >编辑</Button
-          >
+          <Button type="primary" size="small" style="margin-right: 5px" @click="edit(index)">编辑</Button>
           <Button type="error" size="small" @click="remove(index)">删除</Button>
-          <Button type="primary" size="small" @click="check(index)"
-            >验收</Button
-          >
+          <Button type="primary" size="small" @click="check(index)">验收</Button>
           <Button type="primary" size="small" @click="show(index)">详情</Button>
         </template>
       </Table>
@@ -85,9 +63,15 @@
 </template>
 <script>
 export default {
-  name: '',
+  name: 'MgMaintenance',
   data: function() {
     return {
+      typeList: [
+        { name: '全部', value: -2 },
+        { name: '清洁', value: 0 },
+        { name: '保养', value: 1 },
+        { name: '维修', value: 2 }
+      ],
       formItem: {
         type_check: '全部',
         order_no: '',
@@ -143,7 +127,44 @@ export default {
       }
     };
   },
-  created() {},
+  created() {
+    this.axios({
+      url:
+        this.global_.path.baseUrl +
+        '/rentalcars/ticket/page?pageIndex=' +
+        this.currentPage +
+        '&pageSize=' +
+        this.currentPageSize,
+      method: 'get',
+      headers: { 'Content-Type': 'application/json' }
+    }).then(
+      res => {
+        console.log(
+          'MgMaintenance Index.vue created axios /ticket success',
+          res
+        );
+        if (res.data.code === 0) {
+          this.mOrderData.push(...res.data.data.dataSource);
+          this.total = res.data.data.total;
+        } else {
+          this.$Message.error({
+            content: '维保数据请求失败'
+          });
+        }
+        this.spinShow = false;
+      },
+      err => {
+        console.log(
+          'MgMaintenance Index.vue created axios /ticket success',
+          err
+        );
+        this.$Message.error({
+          content: '维保数据请求失败'
+        });
+        this.spinShow = false;
+      }
+    );
+  },
   mounted() {},
   computed: {},
   methods: {
@@ -166,7 +187,7 @@ export default {
       };
       this.axios({
         method: 'post',
-        url: this.global_.path.baseUrl + '/rentalcars/vehicle/detail/status',
+        url: this.global_.path.baseUrl + '/rentalcars/ticket/status',
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
         data: this.$qs.stringify(temp)
       }).then(
@@ -208,14 +229,14 @@ export default {
           this.axios({
             url:
               this.global_.path.baseUrl +
-              '/rentalcars/vehicle/detail/delete?ids=' +
+              '/rentalcars/ticket/delete?ids=' +
               this.mOrderData[index].id,
             method: 'delete',
             headers: { 'Content-Type': 'application/json' }
           }).then(
             res => {
               console.log(
-                'MaintenanceOrder Index.vue created axios /vehicle/detail/delete success',
+                'MaintenanceOrder Index.vue created axios /ticket/delete success',
                 res
               );
               if (res.data.code === 0) {
@@ -230,7 +251,7 @@ export default {
             },
             err => {
               console.log(
-                'MaintenanceOrder Index.vue created axios /vehicle/detail/delete failure',
+                'MaintenanceOrder Index.vue created axios /ticket/delete failure',
                 err
               );
               this.$Message.error({
@@ -262,7 +283,7 @@ export default {
       this.axios({
         url:
           this.global_.path.baseUrl +
-          '/rentalcars/vehicle/detail/page?pageIndex=' +
+          '/rentalcars/ticket/page?pageIndex=' +
           this.currentPage +
           '&pageSize=' +
           this.currentPageSize,
@@ -304,7 +325,7 @@ export default {
       this.axios({
         url:
           this.global_.path.baseUrl +
-          '/rentalcars/vehicle/detail/page?pageIndex=' +
+          '/rentalcars/ticket/page?pageIndex=' +
           this.currentPage +
           '&pageSize=' +
           this.currentPageSize,
@@ -341,7 +362,7 @@ export default {
     },
     // 新增
     add() {
-      this.$router.push('/home/mOrderAddition?action=add');
+      this.$router.push('/home/maintenanceAddition?action=add');
     },
     // 重置
     handleReset() {
