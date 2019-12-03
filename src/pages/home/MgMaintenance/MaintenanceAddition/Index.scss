@@ -1,0 +1,24 @@
+.maintenance-addition-container {
+  background-color: #fff;
+  padding: 20px;
+  margin: 20px;
+  min-height: 260px;
+  position: relative;
+  display: flex;
+  justify-content: center;
+
+  .header {
+    font-size: 18px;
+    font-weight: bold;
+  }
+
+  .basic-info-container {
+    .content {
+      padding-top: 15px;
+    }
+  }
+
+  .btn-container {
+    padding-left: 120px;
+  }
+}
