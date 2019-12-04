@@ -130,17 +130,12 @@ export default {
             res
           );
           if (res.data.code === 0) {
-            let tempPrice = 0;
-            this.providerList.map(item => {
-              let temp = this.itemList.find(ite => ite.name === item);
-              tempPrice = tempPrice + parseInt(temp.price);
-            });
             this.basicInfoForm = Object.assign({}, this.basicInfoForm, {
               plate_num: res.data.data.plate_num,
-              service_name: '',
+              service_name: res.data.data.service_name,
               provider_name: res.data.data.provider_name,
               item_names: res.data.data.item_names.split(','),
-              price: tempPrice,
+              price: res.data.data.price_items,
               time_end: res.data.data.time_end
             });
           } else {
@@ -315,11 +310,14 @@ export default {
       let tempIndex2 = this.serviceList.findIndex(
         item => item.name === this.basicInfoForm.service_name
       );
+      let tempIndex3 = this.providerList.findIndex(
+        item => item.name === this.basicInfoForm.provider_name
+      );
       let temp = {
         plate_num: this.basicInfoForm.plate_num,
         service_id: this.serviceList[tempIndex2].id,
         item_ids: tempList.join(','),
-        provider_id: 1,
+        provider_id: this.providerList[tempIndex3].id,
         time_start: this.$moment(new Date()).format('YYYY-MM-DD HH:mm:ss'),
         time_end: this.$moment(this.basicInfoForm.time_end).format(
           'YYYY-MM-DD HH:mm:ss'

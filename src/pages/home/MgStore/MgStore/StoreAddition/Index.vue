@@ -212,7 +212,11 @@ export default {
             this.posInfoForm = Object.assign({}, this.posInfoForm, {
               address: res.data.data.address,
               guide: res.data.data.guide,
-              currentAddress: [res.data.data.province, res.data.data.city, res.data.data.county],
+              currentAddress: [
+                res.data.data.province,
+                res.data.data.city,
+                res.data.data.county
+              ],
               latitude: res.data.data.latitude,
               longitude: res.data.data.longitude
             });
@@ -244,37 +248,32 @@ export default {
     }
     this.axios({
       method: 'get',
-      url: this.global_.path.baseUrl + '/rentalcars/district/page',
+      url: this.global_.path.baseUrl + '/rentalcars/district/provinces',
       headers: { 'Content-Type': 'application/json' }
     }).then(
       res => {
         console.log(
-          'StoreAddition Index.vue created /district/page success',
+          'StoreAddition Index.vue created /district/provinces success',
           res
         );
-        if (res.data.code === 0) {
-          let temp = res.data.data.dataSource;
-          temp.shift();
-          temp = temp.map(item => {
-            let ite = {
-              value: item.code,
-              label: item.name,
-              children: [],
-              loading: false
-            };
-            return ite;
-          });
-          this.addressData.push(...temp);
-        } else {
-          this.$Message.error({
-            content: '操作失败'
-          });
-        }
+
+        let temp = res.data;
+        temp = temp.map(item => {
+          let ite = {
+            value: item.code,
+            label: item.name,
+            children: [],
+            loading: false
+          };
+          return ite;
+        });
+        this.addressData.push(...temp);
+
         this.spinShow = false;
       },
       err => {
         console.log(
-          'StoreAddition Index.vue created /district/page failure',
+          'StoreAddition Index.vue created /district/provinces failure',
           err
         );
         this.$Message.error({

@@ -4,12 +4,22 @@
       <Form :model="formItem" label-colon>
         <FormItem label="状态">
           <RadioGroup v-model="formItem.statusName">
-            <Radio v-for="(item, index) in statusList" v-bind:key="index" v-bind:label="item.name" border></Radio>
+            <Radio
+              v-for="(item, index) in statusList"
+              v-bind:key="index"
+              v-bind:label="item.name"
+              border
+            ></Radio>
           </RadioGroup>
         </FormItem>
         <FormItem label="类型">
           <RadioGroup v-model="formItem.typeName">
-            <Radio v-for="(item, index) in typeList" v-bind:key="index" v-bind:label="item.name" border></Radio>
+            <Radio
+              v-for="(item, index) in typeList"
+              v-bind:key="index"
+              v-bind:label="item.name"
+              border
+            ></Radio>
           </RadioGroup>
         </FormItem>
         <div class="input-container">
@@ -79,7 +89,7 @@ export default {
         { name: '全部', status: -2 },
         { name: '未上架', status: 0 },
         { name: '已上架', status: 1 },
-        { name: '已下架', status: -1 }
+        { name: '已下架', status: 2 }
       ],
       typeList: [
         { name: '全部', value: -2 },
@@ -190,7 +200,7 @@ export default {
         .find(item => item.status === status);
       let result = objTemp.name;
       if (type === 'action') {
-        let temp = status === 1 ? -1 : 1;
+        let temp = status === 1 ? 2 : 1;
         objTemp = this.statusList.slice().find(item => item.status === temp);
         result = objTemp.name.substr(1);
       }
@@ -314,44 +324,62 @@ export default {
     },
     // 上下架
     toggleStatus(index) {
-      this.spinShow = true;
+      let tempText = '';
       let urlTemp = '';
       if (this.adData[index].status === 1) {
         urlTemp =
           this.global_.path.baseUrl +
           '/rentalcars/banner/off?ids=' +
           this.adData[index].id;
+        tempText = '下架';
       } else {
         urlTemp =
           this.global_.path.baseUrl +
           '/rentalcars/banner/on?ids=' +
           this.adData[index].id;
+        tempText = '上架';
       }
-      this.axios({
-        url: urlTemp,
-        method: 'post',
-        headers: { 'Content-Type': 'application/json' }
-      }).then(
-        res => {
-          console.log('MgAd Index.vue created axios /banner/{} success', res);
-          if (res.data.code === 0) {
-            this.$Message.info('操作成功');
-            this.adData[index].status = -this.adData[index].status;
-          } else {
-            this.$Message.error({
-              content: '操作失败'
-            });
-          }
-          this.spinShow = false;
+      this.$Modal.confirm({
+        title: `确定${tempText + this.adData[index].title}广告吗？`,
+        content: '',
+        onOk: () => {
+          this.spinShow = true;
+          this.axios({
+            url: urlTemp,
+            method: 'post',
+            headers: { 'Content-Type': 'application/json' }
+          }).then(
+            res => {
+              console.log(
+                'MgAd Index.vue created axios /banner/{} success',
+                res
+              );
+              if (res.data.code === 0) {
+                this.$Message.info('操作成功');
+                this.adData[index].status = this.adData[index].status === 1 ? 2 : 1;
+              } else {
+                this.$Message.error({
+                  content: '操作失败'
+                });
+              }
+              this.spinShow = false;
+            },
+            err => {
+              console.log(
+                'MgAd Index.vue created axios /banner/{} failure',
+                err
+              );
+              this.$Message.error({
+                content: '操作失败'
+              });
+              this.spinShow = false;
+            }
+          );
         },
-        err => {
-          console.log('MgAd Index.vue created axios /banner/{} failure', err);
-          this.$Message.error({
-            content: '操作失败'
-          });
-          this.spinShow = false;
+        onCancel: () => {
+          console.log('MgAd index.vue confirm onCancel');
         }
-      );
+      });
     },
     // 新增
     add() {

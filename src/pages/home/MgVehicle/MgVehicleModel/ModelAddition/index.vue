@@ -286,10 +286,10 @@ export default {
             res
           );
           if (res.data.code === 0) {
-            this.basicInfoForm = {
+            this.basicInfoForm = Object.assign({}, this.basicInfoForm, {
               name: res.data.data.name
-            };
-            this.confInfoForm = {
+            });
+            this.confInfoForm = Object.assign({}, this.confInfoForm, {
               oil_type: res.data.data.oil_type,
               seat_count: res.data.data.seat_count,
               radar: [
@@ -303,12 +303,12 @@ export default {
               door_count: res.data.data.door_count,
               let_litre: res.data.data.let_litre,
               body_construction: res.data.data.body_construction
-            };
-            this.priceInfoForm = {
+            });
+            this.priceInfoForm = Object.assign({}, this.priceInfoForm, {
               price: res.data.data.standard_price,
               deposit: res.data.data.deposit,
               basic_insurance: res.data.data.basic_insurance
-            };
+            });
             this.basicInfoForm.from_brand_check = res.data.data.brand_name;
             this.basicInfoForm.vehicle_type_check = res.data.data.category_name;
             this.basicInfoForm.energy_types_check = res.data.data.energy_type;

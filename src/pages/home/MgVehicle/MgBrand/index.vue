@@ -62,6 +62,10 @@ export default {
           slot: 'logo'
         },
         {
+          title: '品牌EN',
+          key: 'name_en'
+        },
+        {
           title: '品牌名称',
           key: 'name'
         },

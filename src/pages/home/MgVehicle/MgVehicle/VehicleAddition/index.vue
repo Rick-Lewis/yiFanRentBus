@@ -210,7 +210,7 @@ export default {
                   res
                 );
                 if (res.data.code === 0) {
-                  this.basicInfoForm = {
+                  this.basicInfoForm = Object.assign({}, this.basicInfoForm, {
                     plate_num: res.data.data.vehicleDetail.plate_num,
                     vin: res.data.data.vehicleDetail.vin,
                     engine_no: res.data.data.vehicleDetail.engine_no,
@@ -218,7 +218,7 @@ export default {
                     product_date: res.data.data.vehicleDetail.product_date,
                     purchase_date: res.data.data.vehicleDetail.purchase_date,
                     purchase_price: res.data.data.vehicleDetail.purchase_price
-                  };
+                  });
                   this.vehicleModelCheck =
                     res.data.data.vehicleDetail.model_name;
                   let indexTmep = this.shopList.findIndex(

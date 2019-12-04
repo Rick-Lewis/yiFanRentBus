@@ -2,7 +2,7 @@
   <div class="maintenance-detail-container">
     <div class="basic-info-container">
       <div class="header">
-        <span>工单编号：{{ orderDetail && orderDetail.order.order_no }}</span>
+        <span>工单编号：{{ maintenanceDetail && maintenanceDetail.serialno }}</span>
       </div>
       <div class="content">
         <div class="left">

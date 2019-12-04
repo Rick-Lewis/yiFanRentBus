@@ -150,10 +150,10 @@ export default {
             res
           );
           if (res.data.code === 0) {
-            this.basicInfoForm = {
+            this.basicInfoForm = Object.assign({}, this.basicInfoForm, {
               brand_name: res.data.data.name,
               brand_en: res.data.data.name_en
-            };
+            });
             if (res.data.data.logo) {
               this.basicInfoForm.upload_list.push({
                 name: res.data.data.logo,

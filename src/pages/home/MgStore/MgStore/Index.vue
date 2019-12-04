@@ -156,45 +156,64 @@ export default {
   methods: {
     // 上下架
     toggleStatus(index) {
-      this.spinShow = true;
+      let tempText = '';
       let urlTemp = '';
       if (this.storeData[index].status === 1) {
         urlTemp =
           this.global_.path.baseUrl +
           '/rentalcars/store/off?ids=' +
           this.storeData[index].id;
+        tempText = '下架';
       } else {
         urlTemp =
           this.global_.path.baseUrl +
           '/rentalcars/store/on?ids=' +
           this.storeData[index].id;
+        tempText = '上架';
       }
-      this.axios({
-        url: urlTemp,
-        method: 'post',
-        headers: { 'Content-Type': 'application/json' }
-      }).then(
-        res => {
-          console.log('MgStore Index.vue created axios /store/{} success', res);
-          if (res.data.code === 0) {
-            this.$Message.info('操作成功');
-            this.storeData[index].status =
-              this.storeData[index].status !== 1 ? 1 : 2;
-          } else {
-            this.$Message.error({
-              content: '操作失败'
-            });
-          }
-          this.spinShow = false;
+      this.$Modal.confirm({
+        title: `确定${tempText + this.storeData[index].name}门店吗？`,
+        content: '',
+        onOk: () => {
+          this.spinShow = true;
+
+          this.axios({
+            url: urlTemp,
+            method: 'post',
+            headers: { 'Content-Type': 'application/json' }
+          }).then(
+            res => {
+              console.log(
+                'MgStore Index.vue created axios /store/{} success',
+                res
+              );
+              if (res.data.code === 0) {
+                this.$Message.info('操作成功');
+                this.storeData[index].status =
+                  this.storeData[index].status !== 1 ? 1 : 2;
+              } else {
+                this.$Message.error({
+                  content: '操作失败'
+                });
+              }
+              this.spinShow = false;
+            },
+            err => {
+              console.log(
+                'MgAd Index.vue created axios /store/{} failure',
+                err
+              );
+              this.$Message.error({
+                content: '操作失败'
+              });
+              this.spinShow = false;
+            }
+          );
         },
-        err => {
-          console.log('MgAd Index.vue created axios /store/{} failure', err);
-          this.$Message.error({
-            content: '操作失败'
-          });
-          this.spinShow = false;
+        onCancel: () => {
+          console.log('MgStore index.vue confirm onCancel');
         }
-      );
+      });
     },
     // 删除行
     remove(index) {
@@ -270,7 +289,9 @@ export default {
     },
     // 编辑
     edit(index) {
-      this.$router.push('/home/storeAddition?action=edit&id=' + this.storeData[index].id);
+      this.$router.push(
+        '/home/storeAddition?action=edit&id=' + this.storeData[index].id
+      );
     },
     // 车型详情
     show(index) {
