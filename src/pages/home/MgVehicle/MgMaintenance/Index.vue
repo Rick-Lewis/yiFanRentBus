@@ -12,15 +12,37 @@
             ></Radio>
           </RadioGroup>
         </FormItem>
+        <FormItem label="工单状态">
+          <RadioGroup v-model="formItem.status_check">
+            <Radio
+              v-for="(item, index) in statusList"
+              v-bind:key="index"
+              v-bind:label="item.name"
+              border
+            ></Radio>
+          </RadioGroup>
+        </FormItem>
         <div class="input-container">
           <FormItem label="工单编号">
-            <Input v-model="formItem.order_no" placeholder="请输入工单编号" style="width: 200px" />
+            <Input
+              v-model="formItem.serialno"
+              placeholder="请输入工单编号"
+              style="width: 200px"
+            />
           </FormItem>
           <FormItem label="车牌号">
-            <Input v-model="formItem.plate_num" placeholder="请输入车牌号" style="width: 200px" />
+            <Input
+              v-model="formItem.plate_num"
+              placeholder="请输入车牌号"
+              style="width: 200px"
+            />
           </FormItem>
           <FormItem label="填单人">
-            <Input v-model="formItem.key" placeholder="请输入填单人" style="width: 200px" />
+            <Input
+              v-model="formItem.key"
+              placeholder="请输入填单人"
+              style="width: 200px"
+            />
           </FormItem>
           <FormItem>
             <Button type="primary" @click="handleSearch">查询</Button>
@@ -34,13 +56,28 @@
         <Button type="primary" @click="add">+新增</Button>
       </div>
       <Table border :columns="mOrderColumns" :data="mOrderData" stripe>
-        <template v-slot:state="{ row }">
-          <div :class="statusColor[row.state]">{{ getStatusNameByValue(row.state) }}</div>
+        <template v-slot:status="{ row }">
+          <div :class="statusColor[row.status]">
+            {{ getStatusNameByValue(row.status) }}
+          </div>
         </template>
-        <template slot-scope="{ row, index }" slot="action">
-          <Button type="primary" size="small" style="margin-right: 5px" @click="edit(index)">编辑</Button>
+        <template v-slot:duration="{ row }">
+          <div>
+            {{ row.time_start + '-' + row.time_end }}
+          </div>
+        </template>
+        <template v-slot:action="{ row, index }">
+          <Button
+            type="primary"
+            size="small"
+            style="margin-right: 5px"
+            @click="edit(index)"
+            >编辑</Button
+          >
           <Button type="error" size="small" @click="remove(index)">删除</Button>
-          <Button type="primary" size="small" @click="check(index)">验收</Button>
+          <!-- <Button v-if="row.status === 1" type="primary" size="small" @click="check(index)"
+            >验收</Button
+          > -->
           <Button type="primary" size="small" @click="show(index)">详情</Button>
         </template>
       </Table>
@@ -66,6 +103,12 @@ export default {
   name: 'MgMaintenance',
   data: function() {
     return {
+      statusList: [
+        { name: '全部', value: -2 },
+        { name: '准备中', value: 0 },
+        { name: '进行中', value: 1 },
+        { name: '已完成', value: 2 }
+      ],
       typeList: [
         { name: '全部', value: -2 },
         { name: '清洁', value: 0 },
@@ -74,7 +117,8 @@ export default {
       ],
       formItem: {
         type_check: '全部',
-        order_no: '',
+        status_check: '全部',
+        serialno: '',
         plate_num: '',
         key: ''
       },
@@ -82,11 +126,11 @@ export default {
         {
           title: '工单编号',
           width: 180,
-          key: 'vin'
+          key: 'serialno'
         },
         {
           title: '工单类型',
-          key: 'engine_no'
+          key: 'type'
         },
         {
           title: '车牌号',
@@ -95,15 +139,15 @@ export default {
 
         {
           title: '填单时间',
-          key: 'color'
+          slot: 'duration'
         },
         {
           title: '填单人',
-          key: 'model_name'
+          key: 'username'
         },
         {
           title: '状态',
-          slot: 'state'
+          slot: 'status'
         },
         {
           title: '操作',
@@ -144,7 +188,7 @@ export default {
           res
         );
         if (res.data.code === 0) {
-          this.mOrderData.push(...res.data.data.dataSource);
+          this.mOrderData.push(...res.data.data.data);
           this.total = res.data.data.total;
         } else {
           this.$Message.error({
@@ -155,7 +199,7 @@ export default {
       },
       err => {
         console.log(
-          'MgMaintenance Index.vue created axios /ticket success',
+          'MgMaintenance Index.vue created axios /ticket/page success',
           err
         );
         this.$Message.error({
@@ -172,57 +216,57 @@ export default {
       console.log(
         'MaintenanceOrder index.vue getStatusNameByValue',
         status,
-        this.vehicleStatusList.slice()
+        this.statusList.slice()
       );
-      let objTemp = this.vehicleStatusList
+      let objTemp = this.statusList
         .slice()
-        .find(item => item.status === status);
+        .find(item => item.value === status);
       return objTemp.name;
     },
     // 检查
-    check(index) {
-      let temp = {
-        plate_nums: this.mOrderData[index].plate_num,
-        state: this.mOrderData[index].state + 1
-      };
-      this.axios({
-        method: 'post',
-        url: this.global_.path.baseUrl + '/rentalcars/ticket/status',
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        data: this.$qs.stringify(temp)
-      }).then(
-        res => {
-          console.log(
-            'MaintenanceOrder Index.vue created axios /vehilce/detail/status success',
-            res
-          );
-          if (res.data.code === 0) {
-            this.mOrderData[index].state = this.mOrderData[index].state + 1;
-            this.$Message.success({
-              content: '操作成功'
-            });
-            // this.$router.back();
-          } else {
-            this.$Message.error({
-              content: '操作失败'
-            });
-          }
-        },
-        err => {
-          console.log(
-            'MaintenanceOrder Index.vue created axios /vehilce/detail/status failure',
-            err
-          );
-          this.$Message.error({
-            content: '操作失败'
-          });
-        }
-      );
-    },
+    // check(index) {
+    //   let temp = {
+    //     id: this.mOrderData[index].id,
+    //     status: this.mOrderData[index].status + 1
+    //   };
+    //   this.axios({
+    //     method: 'post',
+    //     url: this.global_.path.baseUrl + '/rentalcars/ticket/check',
+    //     headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    //     data: this.$qs.stringify(temp)
+    //   }).then(
+    //     res => {
+    //       console.log(
+    //         'MaintenanceOrder Index.vue created axios /ticket/check success',
+    //         res
+    //       );
+    //       if (res.data.code === 0) {
+    //         this.mOrderData[index].status = this.mOrderData[index].status + 1;
+    //         this.$Message.success({
+    //           content: '操作成功'
+    //         });
+    //         // this.$router.back();
+    //       } else {
+    //         this.$Message.error({
+    //           content: '操作失败'
+    //         });
+    //       }
+    //     },
+    //     err => {
+    //       console.log(
+    //         'MaintenanceOrder Index.vue created axios /ticket/status failure',
+    //         err
+    //       );
+    //       this.$Message.error({
+    //         content: '操作失败'
+    //       });
+    //     }
+    //   );
+    // },
     // 删除
     remove(index) {
       this.$Modal.confirm({
-        title: `确定删除${this.mOrderData[index].plate_num}车辆吗？`,
+        title: `确定删除${this.mOrderData[index].serialno}工单吗？`,
         content: '',
         onOk: () => {
           this.spinShow = true;
@@ -268,12 +312,14 @@ export default {
     },
     // 详情
     show(index) {
-      this.$router.push('/home/vehicleDetail?id=' + this.mOrderData[index].id);
+      this.$router.push(
+        '/home/maintenanceDetail?id=' + this.mOrderData[index].id
+      );
     },
     // 编辑
     edit(index) {
       this.$router.push(
-        '/home/vehicleAddition?action=edit&id=' + this.mOrderData[index].id
+        '/home/maintenanceAddition?action=edit&id=' + this.mOrderData[index].id
       );
     },
     // 页码改变
@@ -292,7 +338,7 @@ export default {
       }).then(
         res => {
           console.log(
-            'MaintenanceOrder Index.vue created axios /vehicleDetail success',
+            'MaintenanceOrder Index.vue created axios /ticket/page success',
             res
           );
           if (res.data.code === 0) {
@@ -301,18 +347,18 @@ export default {
             this.total = res.data.data.total;
           } else {
             this.$Message.error({
-              content: '车辆数据请求失败'
+              content: '工单数据请求失败'
             });
           }
           this.spinShow = false;
         },
         err => {
           console.log(
-            'MaintenanceOrder Index.vue created axios /vehicleDetail success',
+            'MaintenanceOrder Index.vue created axios /ticket/page success',
             err
           );
           this.$Message.error({
-            content: '车辆数据请求失败'
+            content: '工单数据请求失败'
           });
           this.spinShow = false;
         }
@@ -334,7 +380,7 @@ export default {
       }).then(
         res => {
           console.log(
-            'MaintenanceOrder Index.vue created axios /vehicleDetail success',
+            'MaintenanceOrder Index.vue created axios /ticket/page success',
             res
           );
           if (res.data.code === 0) {
@@ -343,18 +389,18 @@ export default {
             this.total = res.data.data.total;
           } else {
             this.$Message.error({
-              content: '车辆数据请求失败'
+              content: '工单数据请求失败'
             });
           }
           this.spinShow = false;
         },
         err => {
           console.log(
-            'MaintenanceOrder Index.vue created axios /vehicleDetail success',
+            'MaintenanceOrder Index.vue created axios /ticket/page success',
             err
           );
           this.$Message.error({
-            content: '车辆数据请求失败'
+            content: '工单数据请求失败'
           });
           this.spinShow = false;
         }
@@ -373,39 +419,24 @@ export default {
     },
     // 查询
     handleSearch() {
-      let indexTemp = this.handleSelected(
-        this.formItem.order_status_check,
-        'status'
+      let indexTemp = this.typeList.findIndex(
+        item => item.name === this.formItem.type_check
       );
-      let statusTemp = this.orderStatusList[indexTemp].status;
-      indexTemp = this.handleSelected(
-        this.formItem.driver_existence_check,
-        'with_driver'
+      let indexTemp1 = this.statusList.findIndex(
+        item => item.name === this.formItem.status_check
       );
-      let withDriverTemp = this.driverExistenceList[indexTemp].value;
       let strTemp = '';
-      if (this.formItem.order_no) {
-        strTemp = strTemp + '&order_no=' + this.formItem.order_no;
+      if (this.statusList[indexTemp].value !== -2) {
+        strTemp = strTemp + '&status=' + this.statusList[indexTemp1].value;
+      }
+      if (this.formItem.serialno) {
+        strTemp = strTemp + '&serialno=' + this.formItem.serialno;
       }
       if (this.formItem.plate_num) {
         strTemp = strTemp + '&plate_num=' + this.formItem.plate_num;
       }
-      if (statusTemp !== -2) {
-        strTemp = strTemp + '&status=' + statusTemp;
-      }
-      if (withDriverTemp !== -2) {
-        strTemp = strTemp + '&with_driver=' + withDriverTemp;
-      }
-      if (this.duration) {
-        strTemp =
-          strTemp +
-          '&time_start=' +
-          this.duration.timeStart +
-          '&time_end=' +
-          this.duration.timeEnd;
-      }
       if (this.formItem.key) {
-        strTemp = strTemp + '&telephone=' + this.formItem.key;
+        strTemp = strTemp + '&username=' + this.formItem.key;
       }
       if (strTemp) {
         strTemp = '?' + strTemp.substr(1);
@@ -414,13 +445,13 @@ export default {
       this.spinShow = true;
       this.axios({
         url:
-          this.global_.path.baseUrl + '/rentalcars/order/rental/page' + strTemp,
+          this.global_.path.baseUrl + '/rentalcars/ticket/page' + strTemp,
         method: 'get',
         headers: { 'Content-Type': 'application/json' }
       }).then(
         res => {
           console.log(
-            'MaintenanceOrder Index.vue created axios /order/rental success',
+            'MaintenanceOrder Index.vue created axios /ticket success',
             res
           );
           if (res.data.code === 0) {
@@ -436,7 +467,7 @@ export default {
         },
         err => {
           console.log(
-            'MaintenanceOrder Index.vue created axios /order/rental failure',
+            'MaintenanceOrder Index.vue created axios /ticket failure',
             err
           );
           this.$Message.error({

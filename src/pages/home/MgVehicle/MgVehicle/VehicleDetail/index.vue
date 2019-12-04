@@ -256,7 +256,7 @@ export default {
       },
       err => {
         console.log(
-          'VehicleDetail Index.vue created axios /vehicleDetail success',
+          'VehicleDetail Index.vue created axios /vehicleDetail failure',
           err
         );
         this.$Message.error({

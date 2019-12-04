@@ -1,22 +1,58 @@
 .maintenance-detail-container {
-    margin-top: 5px;
-    min-height: 260px;
-    position: relative;
+  margin-top: 5px;
+  min-height: 260px;
+  position: relative;
 
-    .basic-info-container {
-        padding: 16px;
-        background-color: #fff;
+  .basic-info-container {
+    padding: 16px;
+    background-color: #fff;
 
-        .header {
-            padding-bottom: 10px;
+    .header {
+      padding-bottom: 10px;
 
-            span:first-child {
-                font-size: 20px;
-            }
+      span:first-child {
+        font-size: 20px;
+      }
 
-            span:last-child {
-                margin-left: 10px;
-            }
-        }
+      span:last-child {
+        margin-left: 10px;
+      }
     }
+  }
+  .other-container {
+    margin: 10px 20px 20px 20px;
+    .header {
+      font-size: 18px;
+      font-weight: bold;
+      padding: 20px;
+      border-bottom: 1px solid #e4e4e4;
+    }
+    & > div {
+      background-color: #fff;
+    }
+    & > div:not(:first-child) {
+      margin-top: 10px;
+    }
+    .content {
+      padding: 20px;
+    }
+    .maintenance-info-container {
+      .content {
+        display: flex;
+        justify-content: space-between;
+        & > div {
+          flex: 1;
+        }
+      }
+    }
+    .check-info-container {
+      .content {
+        display: flex;
+        justify-content: space-between;
+        & > div {
+          flex: 1;
+        }
+      }
+    }
+  }
 }

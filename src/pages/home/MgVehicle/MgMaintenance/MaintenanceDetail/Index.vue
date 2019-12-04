@@ -2,7 +2,7 @@
   <div class="maintenance-detail-container">
     <div class="basic-info-container">
       <div class="header">
-        <span>工单编号：{{orderDetail && orderDetail.order.order_no}}</span>
+        <span>工单编号：{{ orderDetail && orderDetail.order.order_no }}</span>
       </div>
       <div class="content">
         <div class="left">
@@ -28,47 +28,47 @@
       </div>
     </div>
     <div class="other-container">
-      <div class="reserve-info-container">
+      <div class="maintenance-info-container">
         <div class="header">维保信息</div>
         <div class="content">
           <div class="fetch">
             <div>
               取车时间：
-              {{orderDetail && orderDetail.order.time_start}}
+              {{ orderDetail && orderDetail.order.time_start }}
             </div>
             <div style="margin-top: 15px;">
               取车门店：
-              {{orderDetail && orderDetail.order.store_pick_up_name}}
+              {{ orderDetail && orderDetail.order.store_pick_up_name }}
             </div>
           </div>
           <div class="return">
             <div>
               还车时间：
-              {{orderDetail && orderDetail.order.time_end}}
+              {{ orderDetail && orderDetail.order.time_end }}
             </div>
             <div style="margin-top: 15px;">
               还车门店：
-              {{orderDetail && orderDetail.order.store_drop_off_name}}
+              {{ orderDetail && orderDetail.order.store_drop_off_name }}
             </div>
           </div>
           <div class="duration">
             <div>
               预计租车时长：
-              {{orderDetail && orderDetail.order.days}} 天
+              {{ orderDetail && orderDetail.order.days }} 天
             </div>
           </div>
         </div>
       </div>
-      <div class="user-info-container">
+      <div class="check-info-container">
         <div class="header">验收信息</div>
         <div class="content">
           <div>
             昵称：
-            {{orderDetail && orderDetail.order.nick_name}}
+            {{ orderDetail && orderDetail.order.nick_name }}
           </div>
           <div>
             手机号：
-            {{orderDetail && orderDetail.order.telephone}}
+            {{ orderDetail && orderDetail.order.telephone }}
           </div>
           <div style="opacity: 0;"></div>
         </div>
@@ -81,15 +81,53 @@
 export default {
   name: 'MaintenanceDetail',
   data: function() {
-    return {};
+    return {
+      maintenanceDetail: null,
+      spinShow: true
+    };
   },
-  created() {},
+  created() {
+    this.axios({
+      url:
+        this.global_.path.baseUrl +
+        '/rentalcars/ticket/detail/' +
+        this.$route.query.id,
+      method: 'get',
+      headers: { 'Content-Type': 'application/json' }
+    }).then(
+      res => {
+        console.log(
+          'MaintenanceDetail Index.vue created axios /ticket/detail/{id} success',
+          res
+        );
+        if (res.data.code === 0) {
+          this.$Message.info('操作成功');
+          this.maintenanceDetail = res.data.data;
+        } else {
+          this.$Message.error({
+            content: '操作失败'
+          });
+        }
+        this.spinShow = false;
+      },
+      err => {
+        console.log(
+          'MaintenanceDetail Index.vue created axios /ticket/detail/{id} failure',
+          err
+        );
+        this.$Message.error({
+          content: '操作失败'
+        });
+        this.spinShow = false;
+      }
+    );
+  },
   mounted() {},
   computed: {},
   methods: {},
   components: {}
 };
 </script>
-<style lang='scss' scoped>
+<style lang="scss" scoped>
 @import './Index.scss';
 </style>

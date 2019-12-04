@@ -12,20 +12,27 @@
           label-colon
         >
           <FormItem label="选择车辆" prop="plate_num">
-            <Select v-model="basicInfoForm.plate_num" filterable style="width: 300px">
+            <Select
+              v-model="basicInfoForm.plate_num"
+              filterable
+              style="width: 300px"
+            >
               <Option
                 v-for="(item, index) in vehicleData"
                 :value="item.plate_num"
                 :key="index"
                 placeholder="请输入车牌号"
-              >{{ item.plate_num + ' ' + item.model_name + ' - ' + item.color }}</Option>
+                >{{
+                  item.plate_num + ' ' + item.model_name + ' - ' + item.color
+                }}</Option
+              >
             </Select>
             <!-- <Input v-model="basicInfoForm.plate_num" placeholder="请输入车牌号" style="width: 200px" /> -->
           </FormItem>
           <FormItem label="工单类型" required>
-            <RadioGroup v-model="basicInfoForm.type_check">
+            <RadioGroup v-model="basicInfoForm.service_name">
               <Radio
-                v-for="(item, index) in typeList"
+                v-for="(item, index) in serviceList"
                 v-bind:key="index"
                 v-bind:label="item.name"
                 border
@@ -33,16 +40,21 @@
             </RadioGroup>
           </FormItem>
           <FormItem label="服务供应商">
-            <Select v-model="basicInfoForm.service_check" style="width:200px">
+            <Select v-model="basicInfoForm.provider_name" style="width:200px">
               <Option
-                v-for="(item, index) in serviceList"
-                :value="item.value"
+                v-for="(item, index) in providerList"
+                :value="item.name"
                 :key="index"
-              >{{ item.name }}</Option>
+                >{{ item.name }}</Option
+              >
             </Select>
           </FormItem>
           <FormItem label="项目">
-            <CheckboxGroup v-model="basicInfoForm.item_check" style="display: inline;">
+            <CheckboxGroup
+              v-model="basicInfoForm.item_names"
+              style="display: inline;"
+              @on-change="handleItemChange"
+            >
               <Checkbox
                 v-for="(item, index) in itemList"
                 v-bind:key="index"
@@ -52,13 +64,18 @@
             </CheckboxGroup>
           </FormItem>
           <FormItem label="价格">
-            <Input v-model="basicInfoForm.price" placeholder="请输入价格" style="width: 200px">
+            <Input
+              v-model="basicInfoForm.price"
+              placeholder="请输入价格"
+              style="width: 200px"
+              disabled
+            >
               <div class="suffix" slot="suffix">元</div>
             </Input>
           </FormItem>
           <FormItem label="预计返回时间">
             <DatePicker
-              v-model="basicInfoForm.back_time"
+              v-model="basicInfoForm.time_end"
               type="datetime"
               placeholder="请选择预计返回时间"
               style="width: 200px"
@@ -67,7 +84,9 @@
         </Form>
       </div>
       <div class="btn-container">
-        <Button type="primary" @click="handleSubmit('formDynamic')">提交</Button>
+        <Button type="primary" @click="handleSubmit('formDynamic')"
+          >提交</Button
+        >
         <Button style="margin-left: 8px" @click="handleCancel()">取消</Button>
       </div>
       <Spin size="large" fix v-if="spinShow"></Spin>
@@ -79,33 +98,153 @@ export default {
   name: 'MaintenanceAddition',
   data: function() {
     return {
+      providerList: [],
+      itemList: [],
       serviceList: [],
-      itemList: [
-        { name: '外观清洁', value: 1 },
-        { name: '内饰清洁', value: 2 },
-        { name: '车内消毒', value: 3 },
-        { name: '添加玻璃清洁液', value: 4 }
-      ],
-      typeList: [
-        { name: '清洁', value: 1 },
-        { name: '保养', value: 2 },
-        { name: '维修', value: 3 }
-      ],
       basicInfoForm: {
         plate_num: '',
-        type_check: '清洁',
-        service_check: '',
-        item_check: [],
-        price: '',
-        back_time: ''
+        service_name: '清洁',
+        provider_name: '',
+        item_names: [],
+        price: '0',
+        time_end: ''
       },
       ruleValidate: {},
       vehicleData: [],
-      spinShow: false
+      spinShow: true
     };
   },
   created() {
-    this.axios({
+    if (this.$route.query.action === 'edit') {
+      this.axios({
+        url:
+          this.global_.path.baseUrl +
+          '/rentalcars/ticket/detail/' +
+          this.$route.query.id,
+        method: 'get',
+        headers: { 'Content-Type': 'application/json' }
+      }).then(
+        res => {
+          console.log(
+            'MaintenanceAddition Index.vue created axios /ticket/detail/{id} success',
+            res
+          );
+          if (res.data.code === 0) {
+            let tempPrice = 0;
+            this.providerList.map(item => {
+              let temp = this.itemList.find(ite => ite.name === item);
+              tempPrice = tempPrice + parseInt(temp.price);
+            });
+            this.basicInfoForm = Object.assign({}, this.basicInfoForm, {
+              plate_num: res.data.data.plate_num,
+              service_name: '',
+              provider_name: res.data.data.provider_name,
+              item_names: res.data.data.item_names.split(','),
+              price: tempPrice,
+              time_end: res.data.data.time_end
+            });
+          } else {
+            this.$Message.error({
+              content: '工单数据请求失败'
+            });
+          }
+        },
+        err => {
+          console.log(
+            'MaintenanceAddition Index.vue created axios /ticket/detail/{id} failure',
+            err
+          );
+          this.$Message.error({
+            content: '工单数据请求失败'
+          });
+        }
+      );
+    }
+    let p1 = this.axios({
+      url: this.global_.path.baseUrl + '/rentalcars/service/item/page',
+      method: 'get',
+      headers: { 'Content-Type': 'application/json' }
+    }).then(
+      res => {
+        console.log(
+          'MaintenanceAddition Index.vue created axios /service/item/page success',
+          res
+        );
+        if (res.data.code === 0) {
+          this.itemList.push(...res.data.data.data);
+        } else {
+          this.$Message.error({
+            content: '服务项目数据请求失败'
+          });
+        }
+      },
+      err => {
+        console.log(
+          'MaintenanceAddition Index.vue created axios /service/item/page failure',
+          err
+        );
+        this.$Message.error({
+          content: '服务项目数据请求失败'
+        });
+      }
+    );
+    let p2 = this.axios({
+      url: this.global_.path.baseUrl + '/rentalcars/service/page',
+      method: 'get',
+      headers: { 'Content-Type': 'application/json' }
+    }).then(
+      res => {
+        console.log(
+          'MaintenanceAddition Index.vue created axios /service/page success',
+          res
+        );
+        if (res.data.code === 0) {
+          this.serviceList.push(...res.data.data.data);
+        } else {
+          this.$Message.error({
+            content: '服务类型数据请求失败'
+          });
+        }
+      },
+      err => {
+        console.log(
+          'MaintenanceAddition Index.vue created axios /service/page failure',
+          err
+        );
+        this.$Message.error({
+          content: '服务类型数据请求失败'
+        });
+      }
+    );
+    let p3 = this.axios({
+      url: this.global_.path.baseUrl + '/rentalcars/provider/page',
+      method: 'get',
+      headers: { 'Content-Type': 'application/json' }
+    }).then(
+      res => {
+        console.log(
+          'MaintenanceAddition Index.vue created axios /provider/page success',
+          res
+        );
+        if (res.data.code === 0) {
+          this.providerList.push(...res.data.data.data);
+        } else {
+          this.$Message.error({
+            content: '服务商数据请求失败'
+          });
+        }
+      },
+      err => {
+        console.log(
+          'MaintenanceAddition Index.vue created axios /provider/page failure',
+          err
+        );
+        this.$Message.error({
+          content: '服务商数据请求失败'
+        });
+      }
+    );
+    let p4 = this.axios({
       url: this.global_.path.baseUrl + '/rentalcars/vehicle/detail/page',
       method: 'get',
       headers: { 'Content-Type': 'application/json' }
@@ -125,7 +264,7 @@ export default {
       },
       err => {
         console.log(
-          'MaintenanceAddition Index.vue created axios /vehicle/detail/page success',
+          'MaintenanceAddition Index.vue created axios /vehicle/detail/page failure',
           err
         );
         this.$Message.error({
@@ -133,28 +272,56 @@ export default {
         });
       }
     );
+    Promise.all([p1, p2, p3, p4])
+      .then(res => {
+        console.log(
+          'MaintenanceAddition Index.vue created Promise.all success',
+          res
+        );
+        this.spinShow = false;
+      })
+      .catch(err => {
+        console.log(
+          'MaintenanceAddition Index.vue created Promise.all failure',
+          err
+        );
+        this.spinShow = false;
+      });
   },
   mounted() {},
   computed: {},
   methods: {
+    // 选择项目
+    handleItemChange(val) {
+      console.log(
+        'MaintenanceAddition Index.vue methods handleItemChange',
+        val
+      );
+      let tempPrice = 0;
+      val.map(item => {
+        let temp = this.itemList.find(ite => ite.name === item);
+        tempPrice = tempPrice + parseInt(temp.price);
+      });
+      this.basicInfoForm.price = tempPrice;
+    },
     // 提交
     handleSubmit() {
       let tempList = [];
-      this.basicInfoForm.item_check.map(item => {
+      this.basicInfoForm.item_names.map(item => {
         let temp = this.itemList.find(ite => ite.name === item);
-        tempList.push(temp.value);
+        tempList.push(temp.id);
       });
 
-      let tempIndex2 = this.typeList.findIndex(
-        item => item.name === this.basicInfoForm.type_check
+      let tempIndex2 = this.serviceList.findIndex(
+        item => item.name === this.basicInfoForm.service_name
       );
       let temp = {
         plate_num: this.basicInfoForm.plate_num,
-        service_id: this.typeList[tempIndex2].value,
+        service_id: this.serviceList[tempIndex2].id,
         item_ids: tempList.join(','),
         provider_id: 1,
         time_start: this.$moment(new Date()).format('YYYY-MM-DD HH:mm:ss'),
-        time_end: this.$moment(this.basicInfoForm.back_time).format(
+        time_end: this.$moment(this.basicInfoForm.time_end).format(
           'YYYY-MM-DD HH:mm:ss'
         )
         // price: this.basicInfoForm.price
