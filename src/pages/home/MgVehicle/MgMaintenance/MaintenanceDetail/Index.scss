@@ -40,17 +40,14 @@
       .content {
         display: flex;
         justify-content: space-between;
-        & > div {
-          flex: 1;
-        }
       }
     }
     .check-info-container {
       .content {
         display: flex;
         justify-content: space-between;
-        & > div {
-          flex: 1;
+        .btn-container {
+          padding-left: 120px;
         }
       }
     }

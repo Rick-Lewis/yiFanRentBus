@@ -31,47 +31,83 @@
       <div class="maintenance-info-container">
         <div class="header">维保信息</div>
         <div class="content">
-          <div class="fetch">
-            <div>
-              取车时间：
-              {{ orderDetail && orderDetail.order.time_start }}
-            </div>
-            <div style="margin-top: 15px;">
-              取车门店：
-              {{ orderDetail && orderDetail.order.store_pick_up_name }}
-            </div>
+          <div class="left">
+            <div class="image-container"><img src="" /></div>
           </div>
-          <div class="return">
+          <div class="right">
             <div>
-              还车时间：
-              {{ orderDetail && orderDetail.order.time_end }}
+              <div><span>供应商：</span><span></span></div>
+              <div><span>价格：</span><span></span></div>
+              <div><span>项目：</span><span></span></div>
             </div>
-            <div style="margin-top: 15px;">
-              还车门店：
-              {{ orderDetail && orderDetail.order.store_drop_off_name }}
-            </div>
-          </div>
-          <div class="duration">
             <div>
-              预计租车时长：
-              {{ orderDetail && orderDetail.order.days }} 天
+              <div><span>预计返回时间：</span><span></span></div>
             </div>
           </div>
         </div>
       </div>
       <div class="check-info-container">
-        <div class="header">验收信息</div>
-        <div class="content">
-          <div>
-            昵称：
-            {{ orderDetail && orderDetail.order.nick_name }}
+        <template>
+          <div class="header">验收信息</div>
+          <div class="content">
+            <div class="left">
+              <div><span>验收人：</span><span></span></div>
+              <div><span>验收意见：</span><span></span></div>
+            </div>
+            <div class="right">
+              <div><span>实际返回时间：</span><span></span></div>
+              <div><span>验收时间：</span><span></span></div>
+            </div>
           </div>
-          <div>
-            手机号：
-            {{ orderDetail && orderDetail.order.telephone }}
-          </div>
-          <div style="opacity: 0;"></div>
-        </div>
+        </template>
+        <template>
+          <div class="header">验收</div>
+          <Form
+            ref="formDynamic"
+            :model="formItem"
+            class="content"
+            :rules="ruleValidate"
+            :label-width="120"
+            label-colon
+          >
+            <FormItem label="返回时间">
+              <DatePicker
+                v-model="basicInfoForm.time_end"
+                type="datetime"
+                placeholder="请选择返回时间"
+                style="width: 200px"
+              ></DatePicker>
+            </FormItem>
+            <FormItem label="验收意见" prop="guide">
+              <Input
+                v-model="posInfoForm.guide"
+                maxlength="200"
+                show-word-limit
+                type="textarea"
+                placeholder="请输入验收意见"
+                style="width: 350px;"
+                :rows="6"
+              />
+            </FormItem>
+            <FormItem label="验收人">
+              <Input
+                v-model="basicInfoForm.author"
+                placeholder="请输入验收人"
+                style="width: 200px"
+                disabled
+              >
+              </Input>
+            </FormItem>
+            <div class="btn-container">
+              <Button type="primary" @click="handleSubmit('formDynamic')"
+                >提交</Button
+              >
+              <Button style="margin-left: 8px" @click="handleCancel()"
+                >取消</Button
+              >
+            </div>
+          </Form>
+        </template>
       </div>
     </div>
     <Spin size="large" fix v-if="spinShow"></Spin>
