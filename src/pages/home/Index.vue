@@ -1,7 +1,13 @@
 <template>
   <div class="layout">
     <Layout class="container">
-      <Sider ref="side1" hide-trigger collapsible :collapsed-width="78" v-model="isCollapsed">
+      <Sider
+        ref="side1"
+        hide-trigger
+        collapsible
+        :collapsed-width="78"
+        v-model="isCollapsed"
+      >
         <Header :class="headerClasses">
           <!-- <img class="layout-logo" src="../../assets/logo.jpg" /> -->
           <div class="layout-logo"></div>
@@ -86,15 +92,16 @@
               <BreadcrumbItem
                 v-for="(item, index) in breadcrumbList"
                 v-bind:key="index"
-                :to="item.path + (!item.query ? '' : item.query)"
-              >{{ item.text }}</BreadcrumbItem>
+                :to="item.path"
+                >{{ item.text }}</BreadcrumbItem
+              >
             </Breadcrumb>
           </div>
           <div class="right">
             <Avatar icon="ios-person" />
             <Dropdown @on-click="handleDropdown" placement="top">
               <span style="padding-left: 10px">
-                {{userInfo && userInfo.username}}
+                {{ userInfo && userInfo.username }}
                 <Icon type="ios-arrow-down"></Icon>
               </span>
               <DropdownMenu slot="list">
@@ -168,7 +175,20 @@ export default {
     },
     breadcrumbList: {
       get() {
-        return this.$route.matched[1].meta.breadcrumb;
+        let result = JSON.parse(JSON.stringify(this.$route.matched[1].meta.breadcrumb));
+        let tempLength = result.length - 1;
+        result[tempLength].path = this.$route.fullPath;
+        if (this.$route.query && this.$route.query.action) {
+          switch (this.$route.query.action) {
+            case 'add':
+              result[tempLength].text = result[tempLength].text.split('/')[0];
+              break;
+            case 'edit':
+              result[tempLength].text = result[tempLength].text.split('/')[1];
+              break;
+          }
+        }
+        return result;
       }
     }
   },

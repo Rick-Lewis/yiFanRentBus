@@ -93,8 +93,8 @@ export default new Router({
               {
                 submenuName: 'activity-center',
                 menuItemName: 'mg-ad',
-                path: '/home/ad-addition',
-                text: '新增广告'
+                path: '/home/adAddition',
+                text: '新增广告/编辑广告'
               }
             ]
           }
@@ -134,7 +134,7 @@ export default new Router({
                 submenuName: 'vehicle',
                 menuItemName: 'mg-brand',
                 path: '/home/brandAddition',
-                text: '新增品牌'
+                text: '新增品牌/编辑品牌'
               }
             ]
           }
@@ -176,7 +176,7 @@ export default new Router({
                 submenuName: 'vehicle',
                 menuItemName: 'mg-vehicle',
                 path: '/home/vehicleAddition',
-                text: '新增车辆'
+                text: '新增车辆/编辑车辆'
               }
             ]
           }
@@ -238,7 +238,7 @@ export default new Router({
                 submenuName: 'vehicle',
                 menuItemName: 'mg-vehicle-model',
                 path: '/home/modelAddition',
-                text: '新增车型'
+                text: '新增车型/编辑车型'
               }
             ]
           }
@@ -302,7 +302,7 @@ export default new Router({
                 submenuName: 'vehicle',
                 menuItemName: 'mg-maintenance',
                 path: '/home/maintenanceAddition',
-                text: '新增工单'
+                text: '新增工单/编辑工单'
               }
             ]
           }
@@ -406,7 +406,7 @@ export default new Router({
                 submenuName: 'store',
                 menuItemName: 'mg-store',
                 path: '/home/storeAddition',
-                text: '新增门店'
+                text: '新增门店/编辑门店'
               }
             ]
           }
