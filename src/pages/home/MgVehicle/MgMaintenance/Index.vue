@@ -222,6 +222,13 @@ export default {
         });
       }
     );
+    let that = this;
+    document.onkeydown = function(e) {
+      var key = window.event.keyCode;
+      if (key === 13) {
+        that.handleSearch();
+      }
+    };
   },
   mounted() {},
   computed: {},

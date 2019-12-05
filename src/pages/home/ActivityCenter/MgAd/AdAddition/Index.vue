@@ -98,8 +98,8 @@ export default {
       basicInfoForm: {
         title: '',
         upload_list: [],
-        type_check: '其他',
-        status_check: '是',
+        type_check: '营销活动',
+        status_check: '否',
         url: ''
       },
       ruleValidate: {
@@ -108,6 +108,11 @@ export default {
             required: true,
             message: '标题不能为空',
             trigger: 'blur'
+          },
+          {
+            max: 20,
+            message: '标题不能超过20个字符',
+            trigger: 'change'
           }
         ],
         upload_list: [
@@ -125,11 +130,11 @@ export default {
         this.global_.path.baseUrl +
         '/rentalcars/upload/image?image&folderName=banner',
       spinShow: true,
-      statusList: [{ name: '是', status: 1 }, { name: '否', status: 0 }],
+      statusList: [{ name: '否', status: 0 }, { name: '是', status: 1 }],
       typeList: [
         { name: '营销活动', value: 0 },
         { name: '广告', value: 1 },
-        { name: '其他', value: -2 }
+        { name: '其他', value: 2 }
       ],
       visible: false
     };

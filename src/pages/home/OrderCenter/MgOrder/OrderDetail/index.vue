@@ -131,9 +131,9 @@
         <div class="header">订单操作</div>
         <div class="content">
           <Table border :columns="optColumns" :data="optData" stripe>
-            <template v-slot:operator="{ row }">
+            <!-- <template v-slot:operator="{ row }">
               <div>{{ row.user_name || row.nick_name }}</div>
-            </template>
+            </template> -->
           </Table>
         </div>
       </div>
@@ -167,12 +167,12 @@ export default {
         },
         {
           title: '操作时间',
-          key: 'time',
+          key: 'operate_time',
           align: 'center'
         },
         {
           title: '操作人',
-          slot: 'operator',
+          key: 'operator_name',
           align: 'center'
         },
         {

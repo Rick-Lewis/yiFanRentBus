@@ -8,21 +8,21 @@
         <div class="left">
           <span>
             <span>填单人：</span>
-            <span>曲丽丽</span>
+            <span>{{ maintenanceDetail && maintenanceDetail.creator_name }}</span>
           </span>
           <span>
             <span>填单时间：</span>
-            <span>2017-01-10 10:00:00</span>
+            <span>{{ maintenanceDetail && maintenanceDetail.time_create }}</span>
           </span>
         </div>
         <div class="right">
           <div>
             <div>类型</div>
-            <div>清洁</div>
+            <div>{{ maintenanceDetail && maintenanceDetail.service_name }}</div>
           </div>
           <div>
             <div>状态</div>
-            <div>进行中</div>
+            <div>{{ maintenanceDetail && getStatusNameByValue(maintenanceDetail.status) }}</div>
           </div>
         </div>
       </div>
@@ -32,16 +32,44 @@
         <div class="header">维保信息</div>
         <div class="content">
           <div class="left">
-            <div class="image-container"><img src="" /></div>
+            <div class="image-container">
+              <img src />
+            </div>
+            <div class="text-container">
+              <div>
+                <span>车牌：</span>
+                <span>{{ maintenanceDetail && maintenanceDetail.plate_num }}</span>
+              </div>
+              <div>
+                <span>车型：</span>
+                <span>{{ maintenanceDetail && maintenanceDetail.model_name }}</span>
+              </div>
+              <div>
+                <span>颜色：</span>
+                <span>{{ maintenanceDetail && maintenanceDetail.color }}</span>
+              </div>
+            </div>
           </div>
           <div class="right">
-            <div>
-              <div><span>供应商：</span><span></span></div>
-              <div><span>价格：</span><span></span></div>
-              <div><span>项目：</span><span></span></div>
+            <div class="one">
+              <div>
+                <span>供应商：</span>
+                <span>{{ maintenanceDetail && maintenanceDetail.provider_name }}</span>
+              </div>
+              <div>
+                <span>价格：</span>
+                <span>{{ maintenanceDetail && maintenanceDetail.price_items }}元</span>
+              </div>
+              <div>
+                <span>项目：</span>
+                <span>{{ maintenanceDetail && maintenanceDetail.service_name }}</span>
+              </div>
             </div>
-            <div>
-              <div><span>预计返回时间：</span><span></span></div>
+            <div class="two">
+              <div>
+                <span>预计返回时间：</span>
+                <span>{{ maintenanceDetail && maintenanceDetail.time_end }}</span>
+              </div>
             </div>
           </div>
         </div>
@@ -51,12 +79,24 @@
           <div class="header">验收信息</div>
           <div class="content">
             <div class="left">
-              <div><span>验收人：</span><span></span></div>
-              <div><span>验收意见：</span><span></span></div>
+              <div>
+                <span>验收人：</span>
+                <span></span>
+              </div>
+              <div>
+                <span>验收意见：</span>
+                <span></span>
+              </div>
             </div>
             <div class="right">
-              <div><span>实际返回时间：</span><span></span></div>
-              <div><span>验收时间：</span><span></span></div>
+              <div>
+                <span>实际返回时间：</span>
+                <span></span>
+              </div>
+              <div>
+                <span>验收时间：</span>
+                <span></span>
+              </div>
             </div>
           </div>
         </template>
@@ -72,7 +112,7 @@
           >
             <FormItem label="返回时间">
               <DatePicker
-                v-model="basicInfoForm.time_end"
+                v-model="formItem.time_end"
                 type="datetime"
                 placeholder="请选择返回时间"
                 style="width: 200px"
@@ -80,7 +120,7 @@
             </FormItem>
             <FormItem label="验收意见" prop="guide">
               <Input
-                v-model="posInfoForm.guide"
+                v-model="formItem.guide"
                 maxlength="200"
                 show-word-limit
                 type="textarea"
@@ -90,21 +130,11 @@
               />
             </FormItem>
             <FormItem label="验收人">
-              <Input
-                v-model="basicInfoForm.author"
-                placeholder="请输入验收人"
-                style="width: 200px"
-                disabled
-              >
-              </Input>
+              <Input v-model="formItem.author" placeholder="请输入验收人" style="width: 200px" disabled></Input>
             </FormItem>
             <div class="btn-container">
-              <Button type="primary" @click="handleSubmit('formDynamic')"
-                >提交</Button
-              >
-              <Button style="margin-left: 8px" @click="handleCancel()"
-                >取消</Button
-              >
+              <Button type="primary" @click="handleSubmit('formDynamic')">提交</Button>
+              <Button style="margin-left: 8px" @click="handleCancel()">取消</Button>
             </div>
           </Form>
         </template>
@@ -118,6 +148,17 @@ export default {
   name: 'MaintenanceDetail',
   data: function() {
     return {
+      statusList: [
+        { name: '准备中', value: 0 },
+        { name: '进行中', value: 1 },
+        { name: '已完成', value: 2 }
+      ],
+      formItem: {
+        time_end: '',
+        guide: '',
+        author: ''
+      },
+      ruleValidate: {},
       maintenanceDetail: null,
       spinShow: true
     };
@@ -160,7 +201,12 @@ export default {
   },
   mounted() {},
   computed: {},
-  methods: {},
+  methods: {
+    getStatusNameByValue(status) {
+      let objTemp = this.statusList.slice().find(item => item.value === status);
+      return objTemp.name;
+    }
+  },
   components: {}
 };
 </script>

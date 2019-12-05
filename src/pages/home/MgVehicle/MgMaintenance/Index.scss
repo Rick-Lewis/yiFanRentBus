@@ -22,9 +22,9 @@
     position: relative;
     .btn-container {
       margin-bottom: 10px;
-      & > button:last-child {
-        margin-left: 25px;
-      }
+      // & > button:last-child {
+      //   margin-left: 25px;
+      // }
     }
     $status: 'storage', 'ready', 'rent', 'maintenance';
     @each $item in $status {
