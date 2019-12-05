@@ -121,19 +121,23 @@ export default {
       vehicleModelColumns: [
         {
           title: '车型名称',
-          key: 'name'
+          key: 'name',
+          align: 'center'
         },
         {
           title: '所属品牌',
-          slot: 'brand_name'
+          slot: 'brand_name',
+          align: 'center'
         },
         {
           title: '车型类型',
-          key: 'category_name'
+          key: 'category_name',
+          align: 'center'
         },
         {
           title: '今日价格',
-          key: 'standard_price'
+          key: 'standard_price',
+          align: 'center'
         },
         {
           title: '车型状态',

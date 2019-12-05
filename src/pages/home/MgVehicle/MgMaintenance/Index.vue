@@ -102,29 +102,35 @@ export default {
         {
           title: '工单编号',
           width: 200,
-          key: 'serialno'
+          key: 'serialno',
+          align: 'center'
         },
         {
           title: '工单类型',
-          slot: 'service'
+          slot: 'service',
+          align: 'center'
         },
         {
           title: '车牌号',
-          key: 'plate_num'
+          key: 'plate_num',
+          align: 'center'
         },
 
         {
           title: '填单时间',
           width: 310,
-          slot: 'duration'
+          slot: 'duration',
+          align: 'center'
         },
         {
           title: '填单人',
-          key: 'username'
+          key: 'username',
+          align: 'center'
         },
         {
           title: '状态',
-          slot: 'status'
+          slot: 'status',
+          align: 'center'
         },
         {
           title: '操作',

@@ -97,28 +97,34 @@ export default {
         },
         {
           title: '车牌号',
-          key: 'plate_num'
+          key: 'plate_num',
+          align: 'center'
         },
         {
           title: '车辆识别代码',
           width: 180,
-          key: 'vin'
+          key: 'vin',
+          align: 'center'
         },
         {
           title: '发动机号',
-          key: 'engine_no'
+          key: 'engine_no',
+          align: 'center'
         },
         {
           title: '颜色',
-          key: 'color'
+          key: 'color',
+          align: 'center'
         },
         {
           title: '车型',
-          key: 'model_name'
+          key: 'model_name',
+          align: 'center'
         },
         {
           title: '状态',
-          slot: 'state'
+          slot: 'state',
+          align: 'center'
         },
         {
           title: '操作',

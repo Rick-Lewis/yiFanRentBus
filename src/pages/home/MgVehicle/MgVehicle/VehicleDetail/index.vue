@@ -106,23 +106,28 @@ export default {
       rtColumns: [
         {
           title: '租用时间',
-          key: 'leaseTime'
+          key: 'leaseTime',
+          align: 'center'
         },
         {
           title: '租用用户',
-          key: 'leaseUser'
+          key: 'leaseUser',
+          align: 'center'
         },
         {
           title: '用户单位',
-          key: 'userUnit'
+          key: 'userUnit',
+          align: 'center'
         },
         {
           title: '租用费用（元）',
-          key: 'cost'
+          key: 'cost',
+          align: 'center'
         },
         {
           title: '里程数记录',
-          key: 'mileageRecord'
+          key: 'mileageRecord',
+          align: 'center'
         },
         {
           title: '操作',
@@ -135,23 +140,28 @@ export default {
       mtColumns: [
         {
           title: '维保日期',
-          key: 'maintenanceDate'
+          key: 'maintenanceDate',
+          align: 'center'
         },
         {
           title: '类型',
-          key: 'type'
+          key: 'type',
+          align: 'center'
         },
         {
           title: '服务单位',
-          key: 'serviceUnit'
+          key: 'serviceUnit',
+          align: 'center'
         },
         {
           title: '费用（元）',
-          key: 'cost'
+          key: 'cost',
+          align: 'center'
         },
         {
           title: '负责人',
-          key: 'head'
+          key: 'head',
+          align: 'center'
         },
         {
           title: '操作',
@@ -164,27 +174,33 @@ export default {
       irColumns: [
         {
           title: '保险日期',
-          key: 'dateOfInsurance'
+          key: 'dateOfInsurance',
+          align: 'center'
         },
         {
           title: '投保日期',
-          key: 'insuredDate'
+          key: 'insuredDate',
+          align: 'center'
         },
         {
           title: '保险类型',
-          key: 'type'
+          key: 'type',
+          align: 'center'
         },
         {
           title: '服务单位',
-          key: 'serviceUnit'
+          key: 'serviceUnit',
+          align: 'center'
         },
         {
           title: '费用（元）',
-          key: 'cost'
+          key: 'cost',
+          align: 'center'
         },
         {
           title: '保单号',
-          key: 'insurancePolicyNo'
+          key: 'insurancePolicyNo',
+          align: 'center'
         },
         {
           title: '操作',

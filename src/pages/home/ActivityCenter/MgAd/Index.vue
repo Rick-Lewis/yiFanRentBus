@@ -100,29 +100,35 @@ export default {
       adColumns: [
         {
           title: '图片',
-          slot: 'pic'
+          slot: 'pic',
+          align: 'center'
         },
         {
           title: '标题',
-          key: 'title'
+          key: 'title',
+          align: 'center'
         },
         {
           title: '跳转链接',
           key: 'url',
-          width: 190
+          width: 190,
+          align: 'center'
         },
         {
           title: '类型',
-          slot: 'type'
+          slot: 'type',
+          align: 'center'
         },
         {
           title: '状态',
-          slot: 'status'
+          slot: 'status',
+          align: 'center'
         },
         {
           title: '新增时间',
           key: 'time_create',
-          width: 170
+          width: 170,
+          align: 'center'
         },
         {
           title: '操作',

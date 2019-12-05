@@ -25,7 +25,7 @@
     </div>
     <div class="content-container">
       <Button type="primary" style="margin-bottom: 10px;" @click="add">+新增</Button>
-      <Table border :columns="StoreColumns" :data="storeData" stripe>
+      <Table border :columns="storeColumns" :data="storeData" stripe>
         <template v-slot:duration="{ row }">
           <div>{{row.start_time + '-' + row.end_time}}</div>
         </template>
@@ -77,27 +77,32 @@ export default {
         statusName: '全部',
         name: ''
       },
-      StoreColumns: [
+      storeColumns: [
         {
           title: '门店名称',
-          key: 'name'
+          key: 'name',
+          align: 'center'
         },
         {
           title: '门店地址',
-          key: 'address'
+          key: 'address',
+          align: 'center'
         },
         {
           title: '门店电话',
           key: 'telephone',
-          width: 190
+          width: 190,
+          align: 'center'
         },
         {
           title: '营业时间',
-          slot: 'duration'
+          slot: 'duration',
+          align: 'center'
         },
         {
           title: '状态',
-          slot: 'status'
+          slot: 'status',
+          align: 'center'
         },
         {
           title: '操作',

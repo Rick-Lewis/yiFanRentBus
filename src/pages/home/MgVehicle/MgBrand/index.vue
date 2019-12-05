@@ -59,19 +59,23 @@ export default {
       brandColumns: [
         {
           title: 'Logo',
-          slot: 'logo'
+          slot: 'logo',
+          align: 'center'
         },
         {
           title: '品牌EN',
-          key: 'name_en'
+          key: 'name_en',
+          align: 'center'
         },
         {
           title: '品牌名称',
-          key: 'name'
+          key: 'name',
+          align: 'center'
         },
         {
           title: '车辆数',
-          key: 'num'
+          key: 'num',
+          align: 'center'
         },
         {
           title: '操作',

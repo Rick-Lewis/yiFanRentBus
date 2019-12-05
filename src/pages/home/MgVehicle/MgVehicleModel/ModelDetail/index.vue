@@ -140,19 +140,23 @@ export default {
       vehicleColumns: [
         {
           title: '车牌号',
-          key: 'plate_num'
+          key: 'plate_num',
+          align: 'center'
         },
         {
           title: '车牌识别代码',
-          key: 'vin'
+          key: 'vin',
+          align: 'center'
         },
         {
           title: '发动机号',
-          key: 'engine_no'
+          key: 'engine_no',
+          align: 'center'
         },
         {
           title: '颜色',
-          key: 'color'
+          key: 'color',
+          align: 'center'
         },
         {
           title: '状态',
