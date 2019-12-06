@@ -163,7 +163,6 @@
   </div>
 </template>
 <script>
-// import myOrderStore from '../../../../store/home/OrderCenter/MyOrder/index';
 export default {
   name: 'MgOrder',
   data: function() {
@@ -195,8 +194,6 @@ export default {
   },
   created() {
     console.log('MgOrder Index.vue created', this.$store);
-    // this.$store.registerModule('myOrderStore', myOrderStore);
-    // this.$store.dispatch('homeStore/initBreadcrumbList', window.location.href);
     let p1 = this.axios({
       url: this.global_.path.baseUrl + '/rentalcars/status/order',
       method: 'get',

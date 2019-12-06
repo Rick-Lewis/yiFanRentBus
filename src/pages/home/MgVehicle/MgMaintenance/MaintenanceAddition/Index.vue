@@ -286,6 +286,11 @@ export default {
   mounted() {},
   computed: {},
   methods: {
+    // 取消
+    handleCancel() {
+      console.log('MaintenanceAddition index.vue methods handleCancel');
+      this.$router.back();
+    },
     // 选择项目
     handleItemChange(val) {
       console.log(

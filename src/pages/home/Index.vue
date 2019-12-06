@@ -118,7 +118,7 @@
   </div>
 </template>
 <script>
-// import homeStore from '../../store/home/index';
+import homeStore from '../../store/home/index';
 import myOrderStore from '../../store/home/OrderCenter/MyOrder/index';
 export default {
   name: 'home',
@@ -130,7 +130,7 @@ export default {
   },
   created() {
     console.log('home Index.vue created', this.$store);
-    // this.$store.registerModule('homeStore', homeStore);
+    this.$store.registerModule('homeStore', homeStore);
     this.$store.registerModule('myOrderStore', myOrderStore);
     // let urlTemp = '';
     // this.axios.get(urlTemp).then(
@@ -145,6 +145,9 @@ export default {
     this.userInfo = {
       username: window.localStorage.getItem('username')
     };
+    this.$store.dispatch('homeStore/setUser', {
+      username: window.localStorage.getItem('username')
+    });
   },
   // 重要信息：当多次访问路由时，
   // 避免在客户端重复注册模块。

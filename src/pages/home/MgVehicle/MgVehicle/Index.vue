@@ -91,11 +91,6 @@ export default {
       },
       vehicleColumns: [
         {
-          type: 'selection',
-          width: 60,
-          align: 'center'
-        },
-        {
           title: '车牌号',
           key: 'plate_num',
           align: 'center'

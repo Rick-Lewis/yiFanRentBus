@@ -113,8 +113,10 @@
     .check-info-container {
       .content {
         display: flex;
-        justify-content: space-between;
-
+        justify-content: space-around;
+      }
+      .form-container{
+        padding: 20px;
         .btn-container {
           padding-left: 120px;
         }

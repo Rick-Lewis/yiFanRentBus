@@ -13,11 +13,19 @@
         >
           <FormItem label="品牌名称" prop="brand_name">
             <!-- <span>品牌名称：</span> -->
-            <Input v-model="basicInfoForm.brand_name" placeholder="请输入品牌名称" style="width: 200px" />
+            <Input
+              v-model="basicInfoForm.brand_name"
+              placeholder="请输入品牌名称"
+              style="width: 200px"
+            />
           </FormItem>
           <FormItem label="英文名称" prop="brand_en">
             <!-- <span>英文名称：</span> -->
-            <Input v-model="basicInfoForm.brand_en" placeholder="请输入英文名称" style="width: 200px" />
+            <Input
+              v-model="basicInfoForm.brand_en"
+              placeholder="请输入英文名称"
+              style="width: 200px"
+            />
           </FormItem>
           <FormItem label="品牌LOGO" prop="upload_list">
             <!-- <span>品牌LOGO：</span> -->
@@ -29,12 +37,22 @@
               <template v-if="item.status === 'finished'">
                 <img :src="item.url" />
                 <div class="upload-list-cover">
-                  <Icon type="ios-eye-outline" @click.native="handleView(item)"></Icon>
-                  <Icon type="ios-trash-outline" @click.native="handleRemove(item)"></Icon>
+                  <Icon
+                    type="ios-eye-outline"
+                    @click.native="handleView(item)"
+                  ></Icon>
+                  <Icon
+                    type="ios-trash-outline"
+                    @click.native="handleRemove(item)"
+                  ></Icon>
                 </div>
               </template>
               <template v-else>
-                <Progress v-if="item.showProgress" :percent="item.percentage" hide-info></Progress>
+                <Progress
+                  v-if="item.showProgress"
+                  :percent="item.percentage"
+                  hide-info
+                ></Progress>
               </template>
             </div>
             <Upload
@@ -43,7 +61,7 @@
               :on-success="handleSuccess"
               :on-error="handleError"
               :default-file-list="defaultList"
-              :format="['jpg','jpeg','png']"
+              :format="['jpg', 'jpeg', 'png']"
               :max-size="2048"
               name="image"
               :on-format-error="handleFormatError"
@@ -53,13 +71,19 @@
               type="drag"
               :action="uploadUrl"
               style="display: inline-block;width:58px;"
-              :style="basicInfoForm.upload_list.length === 0 ? {} : {display: 'none'}"
+              :style="
+                basicInfoForm.upload_list.length === 0
+                  ? {}
+                  : { display: 'none' }
+              "
             >
               <div style="width: 58px;height:58px;line-height: 58px;">
                 <Icon type="ios-camera" size="20"></Icon>
               </div>
             </Upload>
-            <span style="margin-left: 10px;">支持格式png、jpg，分辨率100*100的图片，大小不超过500k</span>
+            <span style="margin-left: 10px;"
+              >支持格式png、jpg，分辨率100*100的图片，大小不超过500k</span
+            >
             <Modal title="View Image" v-model="visible">
               <img :src="this.imgUrl" v-if="visible" style="width: 100%" />
             </Modal>
@@ -67,7 +91,9 @@
         </Form>
       </div>
       <div class="btn-container">
-        <Button type="primary" @click="handleSubmit('formDynamic')">提交</Button>
+        <Button type="primary" @click="handleSubmit('formDynamic')"
+          >提交</Button
+        >
         <Button style="margin-left: 8px" @click="handleCancel()">取消</Button>
       </div>
       <Spin size="large" fix v-if="spinShow"></Spin>
