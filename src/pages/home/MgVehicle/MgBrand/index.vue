@@ -63,13 +63,13 @@ export default {
           align: 'center'
         },
         {
-          title: '品牌EN',
-          key: 'name_en',
+          title: '品牌名称',
+          key: 'name',
           align: 'center'
         },
         {
-          title: '品牌名称',
-          key: 'name',
+          title: '品牌EN',
+          key: 'name_en',
           align: 'center'
         },
         {

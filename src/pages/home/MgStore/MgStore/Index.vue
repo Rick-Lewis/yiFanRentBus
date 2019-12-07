@@ -102,6 +102,7 @@ export default {
         {
           title: '状态',
           slot: 'status',
+          width: 100,
           align: 'center'
         },
         {

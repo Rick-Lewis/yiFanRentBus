@@ -129,7 +129,7 @@ export default {
       uploadUrl:
         this.global_.path.baseUrl +
         '/rentalcars/upload/image?image&folderName=banner',
-      spinShow: true,
+      spinShow: false,
       statusList: [{ name: '否', status: 0 }, { name: '是', status: 1 }],
       typeList: [
         { name: '营销活动', value: 0 },
@@ -142,6 +142,7 @@ export default {
   created() {
     console.log('AdAddition Index.vue created', this.$route.query);
     if (this.$route.query.action === 'edit') {
+      this.spinShow = true;
       this.axios({
         method: 'get',
         url:
@@ -187,8 +188,6 @@ export default {
           this.spinShow = false;
         }
       );
-    } else {
-      this.spinShow = false;
     }
   },
   mounted() {
@@ -271,6 +270,7 @@ export default {
             temp = Object.assign({}, temp, { id: this.$route.query.id });
           }
           console.log('AdAddition index.vue methods handleSubmit', temp);
+          this.spinShow = true;
           this.axios({
             method: 'post',
             url: this.global_.path.baseUrl + '/rentalcars/banner/saveData',
@@ -292,6 +292,7 @@ export default {
                   content: '操作失败'
                 });
               }
+              this.spinShow = false;
             },
             err => {
               console.log(
@@ -301,6 +302,7 @@ export default {
               this.$Message.error({
                 content: '操作失败'
               });
+              this.spinShow = false;
             }
           );
         } else {

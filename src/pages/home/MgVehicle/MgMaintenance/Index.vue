@@ -130,6 +130,7 @@ export default {
         {
           title: '状态',
           slot: 'status',
+          width: 100,
           align: 'center'
         },
         {
@@ -462,7 +463,7 @@ export default {
         strTemp = strTemp + '&plate_num=' + this.formItem.plate_num;
       }
       if (this.formItem.key) {
-        strTemp = strTemp + '&username=' + this.formItem.key;
+        strTemp = strTemp + '&operator_name=' + this.formItem.key;
       }
       if (strTemp) {
         strTemp = '?' + strTemp.substr(1);

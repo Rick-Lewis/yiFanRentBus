@@ -162,6 +162,7 @@ export default {
     console.log('BrandAddition Index.vue created', this.$route.query);
     // this.$store.dispatch('homeStore/initBreadcrumbList', window.location.href);
     if (this.$route.query.action === 'edit') {
+      this.spinShow = true;
       this.axios({
         method: 'get',
         url:
@@ -192,6 +193,7 @@ export default {
               content: '操作失败'
             });
           }
+          this.spinShow = false;
         },
         err => {
           console.log(
@@ -201,6 +203,7 @@ export default {
           this.$Message.error({
             content: '操作失败'
           });
+          this.spinShow = false;
         }
       );
     }
@@ -274,6 +277,7 @@ export default {
             temp = Object.assign({}, temp, { id: this.$route.query.id });
           }
           console.log('BrandAddition index.vue methods handleSubmit', temp);
+          this.spinShow = true;
           this.axios({
             method: 'post',
             url:
@@ -296,6 +300,7 @@ export default {
                   content: '操作失败'
                 });
               }
+              this.spinShow = false;
             },
             err => {
               console.log(
@@ -305,6 +310,7 @@ export default {
               this.$Message.error({
                 content: '操作失败'
               });
+              this.spinShow = false;
             }
           );
         } else {

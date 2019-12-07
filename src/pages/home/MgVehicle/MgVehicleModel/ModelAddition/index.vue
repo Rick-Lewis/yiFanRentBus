@@ -265,7 +265,7 @@ export default {
         { en: 'radar_tail', name: '后雷达' }
       ],
       backupCameraList: [{ name: '有', state: 1 }, { name: '无', state: 0 }],
-      spinShow: true
+      spinShow: false
     };
   },
   created() {
@@ -326,7 +326,6 @@ export default {
               content: '操作失败'
             });
           }
-          this.spinShow = false;
         },
         err => {
           console.log(
@@ -336,10 +335,10 @@ export default {
           this.$Message.error({
             content: '操作失败'
           });
-          this.spinShow = false;
         }
       );
     }
+    this.spinShow = true;
     let p1 = this.axios({
       url: this.global_.path.baseUrl + '/rentalcars/vehicle/category/page',
       method: 'get',

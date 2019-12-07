@@ -142,7 +142,7 @@ export default {
       shopCheck: '其他',
       shopList: [],
       vehicleColor: '',
-      spinShow: true,
+      spinShow: false,
       uploadUrl:
         this.global_.path.baseUrl +
         '/rentalcars/upload/image?image&folderName=vehicle'
@@ -151,6 +151,7 @@ export default {
   created() {
     console.log('VehicleAddition Index.vue created', this.$store);
     // this.$store.dispatch('homeStore/initBreadcrumbList', window.location.href);
+    this.spinShow = true;
     let p1 = this.axios({
       url: this.global_.path.baseUrl + '/rentalcars/store/page',
       method: 'get',
@@ -359,6 +360,7 @@ export default {
         temp = Object.assign({}, temp, { id: this.$route.query.id });
       }
       console.log('VehicleAddition index.vue methods handleSubmit', temp);
+      this.spinShow = true;
       this.axios({
         method: 'post',
         url: this.global_.path.baseUrl + '/rentalcars/vehicle/detail/saveData',
@@ -380,6 +382,7 @@ export default {
               content: '操作失败'
             });
           }
+          this.spinShow = false;
         },
         err => {
           console.log(
@@ -389,6 +392,7 @@ export default {
           this.$Message.error({
             content: '操作失败'
           });
+          this.spinShow = false;
         }
       );
     },

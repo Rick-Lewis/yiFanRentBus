@@ -41,6 +41,9 @@
             <img :src="global_.path.baseUrl + row.pic" />
           </div>
         </template>
+        <template v-slot:url="{ row }">
+          <a :href="row.url" target="_blank">{{row.url}}</a>
+        </template>
         <template v-slot:type="{ row }">
           <div>{{getTypeNameByValue(row.type)}}</div>
         </template>
@@ -106,12 +109,13 @@ export default {
         {
           title: '标题',
           key: 'title',
+          width: 250,
           align: 'center'
         },
         {
           title: '跳转链接',
-          key: 'url',
-          width: 190,
+          slot: 'url',
+          width: 200,
           align: 'center'
         },
         {
@@ -122,6 +126,7 @@ export default {
         {
           title: '状态',
           slot: 'status',
+          width: 100,
           align: 'center'
         },
         {
@@ -369,7 +374,8 @@ export default {
               );
               if (res.data.code === 0) {
                 this.$Message.info('操作成功');
-                this.adData[index].status = this.adData[index].status === 1 ? 2 : 1;
+                this.adData[index].status =
+                  this.adData[index].status === 1 ? 2 : 1;
               } else {
                 this.$Message.error({
                   content: '操作失败'

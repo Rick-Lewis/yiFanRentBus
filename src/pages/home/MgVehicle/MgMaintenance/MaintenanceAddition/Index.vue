@@ -111,7 +111,7 @@ export default {
       },
       ruleValidate: {},
       vehicleData: [],
-      spinShow: true
+      spinShow: false
     };
   },
   created() {
@@ -155,6 +155,7 @@ export default {
         }
       );
     }
+    this.spinShow = true;
     let p1 = this.axios({
       url: this.global_.path.baseUrl + '/rentalcars/service/item/page',
       method: 'get',
@@ -333,6 +334,7 @@ export default {
         temp = Object.assign({}, temp, { id: this.$route.query.id });
       }
       console.log('MaintenanceAddition index.vue methods handleSubmit', temp);
+      this.spinShow = true;
       this.axios({
         method: 'post',
         url: this.global_.path.baseUrl + '/rentalcars/ticket/saveData',
@@ -354,6 +356,7 @@ export default {
               content: '操作失败'
             });
           }
+          this.spinShow = false;
         },
         err => {
           console.log(
@@ -363,6 +366,7 @@ export default {
           this.$Message.error({
             content: '操作失败'
           });
+          this.spinShow = false;
         }
       );
     }

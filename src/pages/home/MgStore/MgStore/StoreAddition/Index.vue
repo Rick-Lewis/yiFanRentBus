@@ -177,7 +177,7 @@ export default {
           }
         ]
       },
-      spinShow: true
+      spinShow: false
     };
   },
   created() {
@@ -232,7 +232,6 @@ export default {
               content: '操作失败'
             });
           }
-          this.spinShow = false;
         },
         err => {
           console.log(
@@ -242,10 +241,10 @@ export default {
           this.$Message.error({
             content: '操作失败'
           });
-          this.spinShow = false;
         }
       );
     }
+    this.spinShow = true;
     this.axios({
       method: 'get',
       url: this.global_.path.baseUrl + '/rentalcars/district/provinces',
@@ -366,6 +365,7 @@ export default {
             this.basicInfoForm,
             this.posInfoForm
           );
+          this.spinShow = true;
           this.axios({
             method: 'post',
             url: this.global_.path.baseUrl + '/rentalcars/store/saveData',
@@ -387,6 +387,7 @@ export default {
                   content: '操作失败'
                 });
               }
+              this.spinShow = false;
             },
             err => {
               console.log(
@@ -396,6 +397,7 @@ export default {
               this.$Message.error({
                 content: '操作失败'
               });
+              this.spinShow = false;
             }
           );
         } else {
