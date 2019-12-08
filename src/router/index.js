@@ -21,6 +21,7 @@ import AdAddition from '@/pages/home/ActivityCenter/MgAd/AdAddition';
 import MgStore from '@/pages/home/MgStore/MgStore';
 import StoreAddition from '@/pages/home/MgStore/MgStore/StoreAddition';
 import StoreDetail from '@/pages/home/MgStore/MgStore/StoreDetail';
+import ModelAssociated from '@/pages/home/MgStore/ModelAssociated';
 
 Vue.use(Router);
 
@@ -429,6 +430,28 @@ export default new Router({
                 menuItemName: 'mg-store',
                 path: '/home/storeDetail',
                 text: '门店详情'
+              }
+            ]
+          }
+        },
+        {
+          path: 'modelAssociated',
+          component: ModelAssociated,
+          meta: {
+            breadcrumb: [
+              {
+                path: '',
+                text: '门店管理'
+              },
+              {
+                path: '/home/mgStore',
+                text: '门店列表'
+              },
+              {
+                submenuName: 'store',
+                menuItemName: 'mg-store',
+                path: '/home/modelAssociated',
+                text: '关联车型'
               }
             ]
           }

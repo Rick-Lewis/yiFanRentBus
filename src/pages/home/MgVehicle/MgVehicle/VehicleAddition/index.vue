@@ -8,9 +8,9 @@
             <!-- <span>车牌号：</span> -->
             <Input v-model="basicInfoForm.plate_num" placeholder="请输入车牌号" style="width: 200px" />
           </FormItem>
-          <FormItem label="车型名称">
+          <FormItem label="所属车型">
             <!-- <span>车型名称：</span> -->
-            <RadioGroup v-model="vehicleModelCheck">
+            <RadioGroup v-model="basicInfoForm.vehicleModelCheck">
               <Radio
                 v-for="(item, index) in vehicleModelList"
                 v-bind:key="index"
@@ -58,13 +58,14 @@
               :before-upload="handleBeforeUpload"
               type="drag"
               :action="uploadUrl"
-              style="display: inline-block;width:58px;"
-              :style="basicInfoForm.upload_list.length === 0 ? {} : {visibility: 'hidden'}"
+              style="display: inline-block;width:200px;"
+              :style="basicInfoForm.upload_list.length === 0 ? {} : {display: 'none'}"
             >
-              <div style="width: 58px;height:58px;line-height: 58px;">
+              <div style="width:200px; height:100px; line-height:100px;">
                 <Icon type="ios-camera" size="20"></Icon>
               </div>
             </Upload>
+            <span style="margin-left: 10px;">请上传分辨率为375*100，png、jpg格式的图片，大小不超过500KB</span>
             <Modal title="View Image" v-model="visible">
               <img
                 :src="'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png'"
@@ -77,17 +78,29 @@
             <!-- <span>颜色：</span> -->
             <Input v-model="basicInfoForm.color" placeholder="请输入颜色" style="width: 200px" />
           </FormItem>
-          <FormItem label="出厂时间" style="margin-left: 0;">
+          <FormItem label="出厂日期" style="margin-left: 0;">
             <!-- <span>出厂时间：</span> -->
-            <Input v-model="basicInfoForm.product_date" placeholder="请输入出厂时间" style="width: 200px" />
+            <!-- <Input v-model="basicInfoForm.product_date" placeholder="请输入出厂日期" style="width: 200px" /> -->
+            <DatePicker
+              v-model="basicInfoForm.product_date"
+              type="date"
+              placeholder="请选择出厂日期"
+              style="width: 200px"
+            ></DatePicker>
           </FormItem>
           <FormItem label="购买日期" style="margin-left: 0;">
             <!-- <span>购买日期：</span> -->
-            <Input
+            <!-- <Input
               v-model="basicInfoForm.purchase_date"
               placeholder="请输入购买日期"
               style="width: 200px"
-            />
+            />-->
+            <DatePicker
+              v-model="basicInfoForm.purchase_date"
+              type="date"
+              placeholder="请选择购买日期"
+              style="width: 200px"
+            ></DatePicker>
           </FormItem>
           <FormItem label="购买价格" style="margin-left: 0;">
             <!-- <span>购买价格：</span> -->
@@ -95,18 +108,28 @@
               v-model="basicInfoForm.purchase_price"
               placeholder="请输入购买价格"
               style="width: 200px"
-            />
+            >
+              <div class="suffix" slot="suffix">元</div>
+            </Input>
           </FormItem>
           <FormItem label="所属门店">
             <!-- <span>所属门店：</span> -->
-            <RadioGroup v-model="shopCheck">
+            <Select v-model="basicInfoForm.shopCheck" filterable style="width: 200px;">
+              <Option
+                v-for="(item, index) in shopList"
+                :value="item.name"
+                :key="index"
+                placeholder="请输入所属门店"
+              >{{ item.name }}</Option>
+            </Select>
+            <!-- <RadioGroup v-model="basicInfoForm.shopCheck">
               <Radio
                 v-for="(item, index) in shopList"
                 v-bind:key="index"
                 v-bind:label="item.name"
                 border
               ></Radio>
-            </RadioGroup>
+            </RadioGroup>-->
           </FormItem>
         </Form>
       </div>
@@ -131,15 +154,14 @@ export default {
         product_date: '',
         purchase_date: '',
         purchase_price: '',
-        upload_list: []
+        upload_list: [],
+        vehicleModelCheck: '其他',
+        shopCheck: '其他'
       },
-      defaultList: [],
       imgName: '',
       visible: false,
       // uploadList: [],
-      vehicleModelCheck: '其他',
       vehicleModelList: [],
-      shopCheck: '其他',
       shopList: [],
       vehicleColor: '',
       spinShow: false,
@@ -153,7 +175,9 @@ export default {
     // this.$store.dispatch('homeStore/initBreadcrumbList', window.location.href);
     this.spinShow = true;
     let p1 = this.axios({
-      url: this.global_.path.baseUrl + '/rentalcars/store/page',
+      url:
+        this.global_.path.baseUrl +
+        '/rentalcars/store/page?pageIndex=1&pageSize=500',
       method: 'get',
       headers: { 'Content-Type': 'application/json' }
     }).then(
@@ -164,7 +188,7 @@ export default {
         );
         if (res.data.code === 0) {
           this.shopList.push(...res.data.data.data);
-          this.shopCheck = this.shopList[0].name;
+          this.basicInfoForm.shopCheck = this.shopList[0].name;
         } else {
           this.$Message.error({
             content: '门店获取失败'
@@ -192,10 +216,8 @@ export default {
           res
         );
         if (res.data.code === 0) {
-          this.vehicleModelList.push(
-            { id: -1, name: '其他' },
-            ...res.data.data.data
-          );
+          this.vehicleModelList.push(...res.data.data.data);
+          this.basicInfoForm.vehicleModelCheck = res.data.data.data[0].name;
           if (this.$route.query.action === 'edit') {
             this.axios({
               url:
@@ -220,15 +242,15 @@ export default {
                     purchase_date: res.data.data.vehicleDetail.purchase_date,
                     purchase_price: res.data.data.vehicleDetail.purchase_price
                   });
-                  this.vehicleModelCheck =
+                  this.basicInfoForm.vehicleModelCheck =
                     res.data.data.vehicleDetail.model_name;
                   let indexTmep = this.shopList.findIndex(
                     item => item.id === res.data.data.vehicleDetail.store_id
                   );
                   if (indexTmep !== -1) {
-                    this.shopCheck = this.shopList[indexTmep].name;
+                    this.basicInfoForm.shopCheck = this.shopList[indexTmep].name;
                   } else {
-                    this.shopCheck = this.shopList[0].name;
+                    this.basicInfoForm.shopCheck = this.shopList[0].name;
                   }
                   if (res.data.data.vehicleDetail.image) {
                     this.basicInfoForm.upload_list.push({
@@ -338,10 +360,10 @@ export default {
     // 提交
     handleSubmit() {
       let tempIndex1 = this.shopList.findIndex(
-        item => item.name === this.shopCheck
+        item => item.name === this.basicInfoForm.shopCheck
       );
       let tempIndex2 = this.vehicleModelList.findIndex(
-        item => item.name === this.vehicleModelCheck
+        item => item.name === this.basicInfoForm.vehicleModelCheck
       );
       let temp = {
         image: this.basicInfoForm.upload_list[0].name,
@@ -350,8 +372,12 @@ export default {
         vin: this.basicInfoForm.vin,
         color: this.basicInfoForm.color,
         state: this.basicInfoForm.state,
-        product_date: this.basicInfoForm.product_date,
-        purchase_date: this.basicInfoForm.purchase_date,
+        product_date: this.$moment(this.basicInfoForm.product_date).format(
+          'YYYY-MM-DD'
+        ),
+        purchase_date: this.$moment(this.basicInfoForm.purchase_date).format(
+          'YYYY-MM-DD'
+        ),
         purchase_price: this.basicInfoForm.purchase_price,
         model_id: this.vehicleModelList[tempIndex2].id,
         store_id: this.shopList[tempIndex1].id

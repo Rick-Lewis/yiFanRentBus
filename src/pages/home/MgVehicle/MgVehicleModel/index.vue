@@ -57,8 +57,11 @@
         <template v-slot:brand_name="{ row }">
           <span>{{ row.brand_name }}</span>
         </template>
-        <template v-slot:state="{ row }">
-          <Switch :value="row.state == '0' ? false : true" :disabled="true">
+        <template v-slot:state="{ row, index }">
+          <Switch
+            :value="row.state == '0' ? false : true"
+            @on-change="(val) => handleSwitchChange(val, index)"
+          >
             <span slot="open">开</span>
             <span slot="close">关</span>
           </Switch>
@@ -260,6 +263,100 @@ export default {
     };
   },
   methods: {
+    handleSwitchChange(val, index) {
+      let url = '';
+      if (this.vehicleModelData[index].state === 1) {
+        url =
+          this.global_.path.baseUrl +
+          '/rentalcars/vehicle/model/off?ids=' +
+          this.vehicleModelData[index].id;
+      } else {
+        url =
+          this.global_.path.baseUrl +
+          '/rentalcars/vehicle/model/on?ids=' +
+          this.vehicleModelData[index].id;
+      }
+      console.log(
+        'MgVehicleModel Index.vue created handleSwitchChange',
+        val,
+        index
+      );
+      this.spinShow = true;
+      this.axios({
+        url: url,
+        method: 'post',
+        headers: { 'Content-Type': 'application/json' }
+      }).then(
+        res => {
+          console.log(
+            'MgVehicleModel Index.vue created axios /vehicle/model/{off/on} success',
+            res
+          );
+          if (res.data.code === 0) {
+            this.$Message.info('操作成功');
+            this.vehicleModelData[index].state =
+              this.vehicleModelData[index].state === 1 ? 0 : 1;
+          } else {
+            this.$Message.error({
+              content: '操作失败'
+            });
+          }
+          this.spinShow = false;
+        },
+        err => {
+          console.log(
+            'MgVehicleModel Index.vue created axios /vehicle/model/{off/on} failure',
+            err
+          );
+          this.$Message.error({
+            content: '操作失败'
+          });
+          this.spinShow = false;
+        }
+      );
+      // this.$Modal.confirm({
+      //   title: `确定${val + this.vehicleModelData[index].name}车型吗？`,
+      //   content: '',
+      //   onOk: () => {
+      //     this.spinShow = true;
+      //     this.axios({
+      //       url: url,
+      //       method: 'post',
+      //       headers: { 'Content-Type': 'application/json' }
+      //     }).then(
+      //       res => {
+      //         console.log(
+      //           'MgVehicleModel Index.vue created axios /vehicle/model/{off/on} success',
+      //           res
+      //         );
+      //         if (res.data.code === 0) {
+      //           this.$Message.info('操作成功');
+      //           this.vehicleModelData[index].state =
+      //             this.vehicleModelData[index].state === 1 ? 0 : 1;
+      //         } else {
+      //           this.$Message.error({
+      //             content: '操作失败'
+      //           });
+      //         }
+      //         this.spinShow = false;
+      //       },
+      //       err => {
+      //         console.log(
+      //           'MgVehicleModel Index.vue created axios /vehicle/model/{off/on} failure',
+      //           err
+      //         );
+      //         this.$Message.error({
+      //           content: '操作失败'
+      //         });
+      //         this.spinShow = false;
+      //       }
+      //     );
+      //   },
+      //   onCancel: () => {
+      //     console.log('MgVehicleModel index.vue confirm onCancel');
+      //   }
+      // });
+    },
     handleSelected(e, type) {
       console.log('MgVehicleModel index.vue handleSelected', e, type);
       let indexTemp = -1;

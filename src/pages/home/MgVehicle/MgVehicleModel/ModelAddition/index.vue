@@ -39,17 +39,18 @@
               :before-upload="handleBeforeUpload"
               type="drag"
               :action="uploadUrl"
-              style="display: inline-block;width:58px;"
+              style="display: inline-block;width:200px;"
               :style="
               basicInfoForm.upload_list.length === 0
                 ? {}
-                : { visibility: 'hidden' }
+                : {display: 'none'}
             "
             >
-              <div style="width: 58px;height:58px;line-height: 58px;">
+              <div style="width:200px; height:100px; line-height:100px;">
                 <Icon type="ios-camera" size="20"></Icon>
               </div>
             </Upload>
+            <span style="margin-left: 10px;">请上传分辨率为375*100，png、jpg格式的图片，大小不超过500KB</span>
             <Modal title="View Image" v-model="visible">
               <img :src="this.imgUrl" v-if="visible" style="width: 100%" />
             </Modal>
