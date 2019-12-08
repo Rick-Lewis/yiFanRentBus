@@ -3,7 +3,7 @@
     <div class="filtrate-container">
       <Form :model="formItem" label-colon>
         <FormItem label="工单类型">
-          <RadioGroup v-model="formItem.service_name">
+          <RadioGroup v-model="formItem.service_name" @on-change="handleSearch">
             <Radio
               v-for="(item, index) in serviceList"
               v-bind:key="index"
@@ -13,7 +13,7 @@
           </RadioGroup>
         </FormItem>
         <FormItem label="工单状态">
-          <RadioGroup v-model="formItem.status_check">
+          <RadioGroup v-model="formItem.status_check" @on-change="handleSearch">
             <Radio
               v-for="(item, index) in statusList"
               v-bind:key="index"
@@ -54,12 +54,12 @@
           <div>{{ row.time_start + '-' + row.time_end }}</div>
         </template>
         <template v-slot:action="{ row, index }">
-          <Button type="primary" size="small" style="margin-right: 5px" @click="edit(index)">编辑</Button>
-          <Button type="error" size="small" @click="remove(index)">删除</Button>
+          <a style="margin-right: 5px" @click="edit(index)">编辑</a>
+          <a @click="remove(index)">删除</a>
           <!-- <Button v-if="row.status === 1" type="primary" size="small" @click="check(index)"
             >验收</Button
           >-->
-          <Button type="primary" size="small" @click="show(index)">详情</Button>
+          <a @click="show(index)">详情</a>
         </template>
       </Table>
       <div style="margin: 10px;overflow: hidden;">
@@ -124,7 +124,7 @@ export default {
         },
         {
           title: '填单人',
-          key: 'username',
+          key: 'operator_name',
           align: 'center'
         },
         {

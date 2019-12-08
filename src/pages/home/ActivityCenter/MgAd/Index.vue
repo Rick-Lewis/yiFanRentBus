@@ -3,7 +3,7 @@
     <div class="filtrate-container">
       <Form :model="formItem" label-colon>
         <FormItem label="状态">
-          <RadioGroup v-model="formItem.statusName">
+          <RadioGroup v-model="formItem.statusName" @on-change="handleSearch">
             <Radio
               v-for="(item, index) in statusList"
               v-bind:key="index"
@@ -13,7 +13,7 @@
           </RadioGroup>
         </FormItem>
         <FormItem label="类型">
-          <RadioGroup v-model="formItem.typeName">
+          <RadioGroup v-model="formItem.typeName" @on-change="handleSearch">
             <Radio
               v-for="(item, index) in typeList"
               v-bind:key="index"
@@ -37,7 +37,7 @@
       <Button type="primary" style="margin-bottom: 10px;" @click="add">+新增</Button>
       <Table border :columns="adColumns" :data="adData" stripe>
         <template v-slot:pic="{ row, index }">
-          <div class="image-container">
+          <div class="image-container" @click="handlePicPreview(row)">
             <img :src="global_.path.baseUrl + row.pic" />
           </div>
         </template>
@@ -51,14 +51,12 @@
           <div :class="statusColor[row.status]">{{getStatusNameByValue(row.status, 'status')}}</div>
         </template>
         <template v-slot:action="{ row, index }">
-          <Button
-            type="primary"
-            size="small"
+          <a
             style="margin-right: 5px"
             @click="toggleStatus(index)"
-          >{{getStatusNameByValue(row.status, 'action')}}</Button>
-          <Button v-if="row.status === 0" type="error" size="small" @click="remove(index)">删除</Button>
-          <Button type="primary" size="small" @click="edit(index)">编辑</Button>
+          >{{getStatusNameByValue(row.status, 'action')}}</a>
+          <a v-if="row.status === 0" @click="remove(index)">删除</a>
+          <a @click="edit(index)">编辑</a>
         </template>
       </Table>
       <div class="page-container">
@@ -75,6 +73,11 @@
         </template>
       </div>
       <Spin size="large" fix v-if="spinShow"></Spin>
+      <Modal v-model="picDetail.modal" title="图片预览">
+        <p>
+          <img :src="picDetail.src" style="width: 100%;" />
+        </p>
+      </Modal>
     </div>
   </div>
 </template>
@@ -153,7 +156,11 @@ export default {
       total: 0, // 数据总条数
       currentPage: 1, // 当前页码
       currentPageSize: 10, // 当前每页条数
-      spinShow: true
+      spinShow: true,
+      picDetail: {
+        modal: false,
+        src: ''
+      }
     };
   },
   created() {
@@ -197,6 +204,12 @@ export default {
     };
   },
   methods: {
+    handlePicPreview(row) {
+      this.picDetail = Object.assign({}, this.picDetail, {
+        modal: true,
+        src: this.global_.path.baseUrl + row.pic
+      });
+    },
     edit(index) {
       this.$router.push(
         '/home/adAddition?action=edit&id=' + this.adData[index].id
@@ -241,7 +254,10 @@ export default {
     handleSearch() {
       let indexTemp = this.handleSelected(this.formItem.typeName, 'type');
       let statusTemp = this.typeList[indexTemp].value;
-      let strTemp = '&title=' + this.formItem.title;
+      let strTemp = '';
+      if (this.formItem.title) {
+        strTemp = '&title=' + this.formItem.title;
+      }
       if (statusTemp !== -2) {
         strTemp = strTemp + '&type=' + statusTemp;
       }

@@ -3,7 +3,7 @@
     <div class="filtrate-container">
       <Form :model="formItem" label-colon>
         <FormItem label="门店状态">
-          <RadioGroup v-model="formItem.statusName">
+          <RadioGroup v-model="formItem.statusName" @on-change="handleSearch">
             <Radio
               v-for="(item, index) in statusList"
               v-bind:key="index"
@@ -33,16 +33,11 @@
           <div :class="statusColor[row.status]">{{getStatusNameByValue(row.status)}}</div>
         </template>
         <template v-slot:action="{ row, index }">
-          <Button v-if="row.status === 0" type="error" size="small" @click="remove(index)">删除</Button>
-          <Button
-            v-if="row.status === 0 || row.status === 2"
-            type="error"
-            size="small"
-            @click="toggleStatus(index)"
-          >上架</Button>
-          <Button v-if="row.status === 1" type="error" size="small" @click="toggleStatus(index)">下架</Button>
-          <Button type="primary" size="small" @click="edit(index)">编辑</Button>
-          <Button type="primary" size="small" @click="show(index)">详情</Button>
+          <a v-if="row.status === 0" @click="remove(index)">删除</a>
+          <a v-if="row.status === 0 || row.status === 2" @click="toggleStatus(index)">上架</a>
+          <a v-if="row.status === 1" @click="toggleStatus(index)">下架</a>
+          <a @click="edit(index)">编辑</a>
+          <a @click="show(index)">详情</a>
         </template>
       </Table>
       <div class="page-container">

@@ -32,7 +32,7 @@
               :on-success="handleSuccess"
               :on-error="handleError"
               :format="['jpg', 'jpeg', 'png']"
-              :max-size="2048"
+              :max-size="500"
               name="image"
               :on-format-error="handleFormatError"
               :on-exceeded-size="handleMaxSize"
@@ -56,14 +56,22 @@
           </FormItem>
           <FormItem label="车型品牌">
             <!-- <span>车型品牌：</span> -->
-            <RadioGroup v-model="basicInfoForm.from_brand_check">
+            <Select v-model="basicInfoForm.from_brand_check" filterable style="width: 200px;">
+              <Option
+                v-for="(item, index) in fromBrandList"
+                :value="item.name"
+                :key="index"
+                placeholder="请输入品牌"
+              >{{ item.name }}</Option>
+            </Select>
+            <!-- <RadioGroup v-model="basicInfoForm.from_brand_check">
               <Radio
                 v-for="(item, index) in fromBrandList"
                 v-bind:key="index"
                 v-bind:label="item.name"
                 border
               ></Radio>
-            </RadioGroup>
+            </RadioGroup>-->
           </FormItem>
           <FormItem label="车辆类型">
             <!-- <span>车辆类型：</span> -->
@@ -200,10 +208,10 @@
               <div class="suffix" slot="suffix">元</div>
             </Input>
           </FormItem>
-          <FormItem label="基础价格">
+          <FormItem label="基础价格" class="base-price">
             <!-- <span>基础价格：</span> -->
             <Input v-model="priceInfoForm.price" placeholder="请输入基础价格" style="width: 200px">
-              <div class="suffix" slot="suffix">元</div>
+              <div class="suffix" slot="suffix">元/日</div>
             </Input>
           </FormItem>
         </Form>
@@ -226,7 +234,7 @@ export default {
         from_brand_check: '全部',
         vehicle_type_check: '其他',
         energy_types_check: '其他',
-        vehicle_status_check: '全部',
+        vehicle_status_check: '已关停',
         name: '',
         upload_list: []
       },
@@ -256,7 +264,6 @@ export default {
       vehicleTypeList: [],
       energyTypesList: ['其他', '汽油', '电动', '油电混合', '柴油'],
       vehicleStatusList: [
-        { name: '全部', state: -1 },
         { name: '已关停', state: 0 },
         { name: '已开启', state: 1 }
       ],
@@ -359,7 +366,7 @@ export default {
       },
       err => {
         console.log(
-          'ModelAddition Index.vue created axios /vehicleCategory success',
+          'ModelAddition Index.vue created axios /vehicleCategory failure',
           err
         );
         this.$Message.error({
@@ -368,29 +375,20 @@ export default {
       }
     );
     let p2 = this.axios({
-      url: this.global_.path.baseUrl + '/rentalcars/vehicle/brand/page',
+      url: this.global_.path.baseUrl + '/rentalcars/vehicle/brand/list',
       method: 'get',
       headers: { 'Content-Type': 'application/json' }
     }).then(
       res => {
         console.log(
-          'ModelAddition Index.vue created axios /vehicleBrand success',
+          'ModelAddition Index.vue created axios /vehicle/brand/list success',
           res
         );
-        if (res.data.code === 0) {
-          this.fromBrandList.push(
-            { id: -1, name: '全部' },
-            ...res.data.data.data
-          );
-        } else {
-          this.$Message.error({
-            content: '品牌数据请求失败'
-          });
-        }
+        this.fromBrandList.push(...res.data);
       },
       err => {
         console.log(
-          'ModelAddition Index.vue created axios /vehicleBrand success',
+          'ModelAddition Index.vue created axios /vehicle/brand/list failure',
           err
         );
         this.$Message.error({
@@ -454,7 +452,7 @@ export default {
     handleMaxSize(file) {
       console.log('ModelAddition index.vue methods handleMaxSize', file);
       this.$Notice.warning({
-        title: '图片尺寸过大',
+        title: '图片过大',
         desc: ''
       });
     },

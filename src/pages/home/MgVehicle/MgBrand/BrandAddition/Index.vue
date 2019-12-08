@@ -62,7 +62,7 @@
               :on-error="handleError"
               :default-file-list="defaultList"
               :format="['jpg', 'jpeg', 'png']"
-              :max-size="2048"
+              :max-size="500"
               name="image"
               :on-format-error="handleFormatError"
               :on-exceeded-size="handleMaxSize"
@@ -250,7 +250,7 @@ export default {
     handleMaxSize(file) {
       console.log('BrandAddition index.vue methods handleMaxSize', file);
       this.$Notice.warning({
-        title: '图片尺寸过大',
+        title: '图片过大',
         desc: ''
       });
     },

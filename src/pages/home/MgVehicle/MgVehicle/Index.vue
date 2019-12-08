@@ -4,7 +4,7 @@
       <Form :model="formItem" label-colon>
         <FormItem label="车辆状态" class="vehicle-status">
           <!-- <span>车辆状态：</span> -->
-          <RadioGroup v-model="formItem.vehicle_status_check">
+          <RadioGroup v-model="formItem.vehicle_status_check" @on-change="handleSearch">
             <Radio
               v-for="(item, index) in vehicleStatusList"
               v-bind:key="index"
@@ -42,14 +42,10 @@
           <div :class="statusColor[row.state]">{{getStatusNameByValue(row.state)}}</div>
         </template>
         <template slot-scope="{ row, index }" slot="action">
-          <Button type="primary" size="small" style="margin-right: 5px" @click="edit(index)">编辑</Button>
-          <Button type="error" size="small" @click="remove(index)">删除</Button>
-          <Button
-            type="primary"
-            size="small"
-            @click="check(index)"
-          >{{getStatusNameByValue(row.state + 1)}}</Button>
-          <Button type="primary" size="small" @click="show(index)">详情</Button>
+          <a style="margin-right: 5px" @click="edit(index)">编辑</a>
+          <a @click="remove(index)">删除</a>
+          <a @click="check(index)">{{getStatusNameByValue(row.state + 1)}}</a>
+          <a @click="show(index)">详情</a>
         </template>
       </Table>
       <div style="margin: 10px;overflow: hidden;">

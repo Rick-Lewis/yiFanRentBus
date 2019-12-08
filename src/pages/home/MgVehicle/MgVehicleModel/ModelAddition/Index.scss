@@ -77,13 +77,20 @@
       .left {
         margin-right: 100px;
       }
+
     }
   }
 
   .price-info-container {
     .content {
       padding-top: 15px;
+
       // padding-left: 55px;
+      .base-price {
+        /deep/ .ivu-input-suffix {
+          width: 48px;
+        }
+      }
     }
   }
 

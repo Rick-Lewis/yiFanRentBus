@@ -26,8 +26,8 @@
           </div>
         </template>
         <template v-slot:action="{ row, index }">
-          <Button type="primary" size="small" style="margin-right: 5px" @click="edit(index)">编辑</Button>
-          <Button type="error" size="small" @click="remove(index)">删除</Button>
+          <a style="margin-right: 5px" @click="edit(index)">编辑</a>
+          <a @click="remove(index)">删除</a>
         </template>
       </Table>
       <div class="page-container">
@@ -68,7 +68,7 @@ export default {
           align: 'center'
         },
         {
-          title: '品牌EN',
+          title: '英文名称',
           key: 'name_en',
           align: 'center'
         },
