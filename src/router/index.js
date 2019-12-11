@@ -3,6 +3,8 @@ import Router from 'vue-router';
 import Login from '@/pages/login';
 import Home from '@/pages/home';
 import Workspace from '@/pages/home/Workspace';
+import FetchVehicle from '@/pages/home/Workspace/FetchVehicle';
+import ReturnVehicle from '@/pages/home/Workspace/ReturnVehicle';
 import MgVehicle from '@/pages/home/MgVehicle/MgVehicle';
 import VehicleAddition from '@/pages/home/MgVehicle/MgVehicle/VehicleAddition';
 import VehicleDetail from '@/pages/home/MgVehicle/MgVehicle/VehicleDetail';
@@ -56,6 +58,42 @@ export default new Router({
                 menuItemName: 'workspace',
                 path: '/home/workspace',
                 text: '工作台'
+              }
+            ]
+          }
+        },
+        {
+          path: 'fetchVehicle',
+          component: FetchVehicle,
+          meta: {
+            breadcrumb: [
+              {
+                path: '/home/workspace',
+                text: '工作台'
+              },
+              {
+                submenuName: '',
+                menuItemName: 'workspace',
+                path: '/home/fetchVehicle',
+                text: '取车'
+              }
+            ]
+          }
+        },
+        {
+          path: 'returnVehicle',
+          component: ReturnVehicle,
+          meta: {
+            breadcrumb: [
+              {
+                path: '/home/workspace',
+                text: '工作台'
+              },
+              {
+                submenuName: '',
+                menuItemName: 'workspace',
+                path: '/home/returnVehicle',
+                text: '还车'
               }
             ]
           }

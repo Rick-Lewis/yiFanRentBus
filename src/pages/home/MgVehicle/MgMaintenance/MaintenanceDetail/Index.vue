@@ -223,13 +223,6 @@ export default {
             message: '请输入验收意见',
             trigger: 'blur'
           }
-        ],
-        author: [
-          {
-            required: true,
-            message: '请输入验收人',
-            trigger: 'blur'
-          }
         ]
       },
       maintenanceDetail: null,
