@@ -78,52 +78,54 @@
     <div class="fetch-form-container">
       <div class="header">取车操作</div>
       <div class="form-container">
-        <Form
-          ref="formDynamic"
-          :rules="ruleValidate"
-          :model="formItem"
-          :label-width="120"
-          label-colon
-        >
-          <FormItem label="车辆里程">
-            <Input v-model="formItem.mileage" placeholder="请输入车辆仪表盘上的公里数" style="width: 300px">
-              <div class="suffix" slot="suffix">Km</div>
-            </Input>
-          </FormItem>
-          <FormItem label="剩余油量">
-            <Input v-model="formItem.innage" placeholder="请输入车辆仪表盘上的剩余油量" style="width: 300px">
-              <div class="suffix" slot="suffix">L</div>
-            </Input>
-          </FormItem>
-          <FormItem label="问题记录">
-            <Input
-              v-model="formItem.issue_record"
-              maxlength="200"
-              show-word-limit
-              type="textarea"
-              placeholder="请输入取车时的问题记录（如车辆剐蹭、配件信息等）"
-              style="width: 350px;"
-              :rows="4"
-            />
-          </FormItem>
-          <FormItem label="操作意见">
-            <Input
-              v-model="formItem.opinion"
-              maxlength="200"
-              show-word-limit
-              type="textarea"
-              placeholder="信息核对无误，可以取取车"
-              style="width: 350px;"
-              :rows="4"
-            />
-          </FormItem>
-          <FormItem label="操作人">
-            <div>{{ formItem.author }}</div>
-          </FormItem>
-        </Form>
-        <div class="btn-container">
-          <Button type="primary" @click="handleSubmit('formDynamic')">提交</Button>
-          <Button style="margin-left: 8px" @click="handleCancel">取消</Button>
+        <div>
+          <Form
+            ref="formDynamic"
+            :rules="ruleValidate"
+            :model="formItem"
+            :label-width="120"
+            label-colon
+          >
+            <FormItem label="车辆里程" prop="mileage">
+              <Input v-model="formItem.mileage" placeholder="请输入车辆仪表盘上的公里数" style="width: 300px">
+                <div class="suffix" slot="suffix">Km</div>
+              </Input>
+            </FormItem>
+            <FormItem label="剩余油量" prop="innage">
+              <Input v-model="formItem.innage" placeholder="请输入车辆仪表盘上的剩余油量" style="width: 300px">
+                <div class="suffix" slot="suffix">L</div>
+              </Input>
+            </FormItem>
+            <FormItem label="问题记录" prop="issue_record">
+              <Input
+                v-model="formItem.issue_record"
+                maxlength="200"
+                show-word-limit
+                type="textarea"
+                placeholder="请输入取车时的问题记录（如车辆剐蹭、配件信息等）"
+                style="width: 350px;"
+                :rows="4"
+              />
+            </FormItem>
+            <FormItem label="操作意见" prop="opinion">
+              <Input
+                v-model="formItem.opinion"
+                maxlength="200"
+                show-word-limit
+                type="textarea"
+                placeholder="信息核对无误，可以取取车"
+                style="width: 350px;"
+                :rows="4"
+              />
+            </FormItem>
+            <FormItem label="操作人">
+              <div>{{ formItem.author }}</div>
+            </FormItem>
+          </Form>
+          <div class="btn-container">
+            <Button type="primary" @click="handleSubmit('formDynamic')">提交</Button>
+            <Button style="margin-left: 8px" @click="handleCancel">取消</Button>
+          </div>
         </div>
       </div>
     </div>
@@ -374,7 +376,7 @@ export default {
       this.$refs[name].validate(valid => {
         if (valid) {
           let temp = {
-            order_no: '019102532000167',
+            order_no: this.orderDetail.order.order_no,
             mileage: this.formItem.mileage,
             innage: this.formItem.innage,
             issue_record: this.formItem.issue_record,
@@ -414,16 +416,17 @@ export default {
             }
           );
         } else {
-          this.$Message.error('有必填项未填写');
+          this.$Message.warning('有必填项未填写');
         }
       });
     }
   },
   computed: {
     orderStatus() {
-      let temp = this.orderDetail
-        ? this.orderStatusList.find(item => item.status === this.orderDetail.order.status)
-        : null;
+      let temp = null;
+      if (this.orderDetail) {
+        temp = this.orderStatusList.find(item => item.status === this.orderDetail.order.status);
+      }
       return temp ? temp.name : '';
     }
   }
