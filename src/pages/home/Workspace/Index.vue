@@ -25,7 +25,12 @@
           @on-change="handleStoreChange"
           style="width:200px;font-weight: 400;"
         >
-          <Option v-for="(item, index) in mgStore" :value="item.id" :key="index">{{ item.name }}</Option>
+          <Option
+            v-for="(item, index) in mgStore"
+            :value="item.id"
+            :key="index"
+            >{{ item.name }}</Option
+          >
         </Select>
       </div>
       <div class="content">
@@ -39,9 +44,21 @@
               @on-search="handleSearchByTel"
             />
           </div>
-          <Tabs :animated="false" style="padding:10px;" @on-click="handleTabChange">
-            <TabPane :label="h => label(h, todayVehicle.fetch.total, 'fetch')" name="fetch">
-              <div v-if="todayVehicle.fetch.list.length <= 0" style="text-align: center;">～ 没有更多了 ～</div>
+          <Tabs
+            :animated="false"
+            style="padding:10px;"
+            @on-click="handleTabChange"
+          >
+            <TabPane
+              :label="h => label(h, todayVehicle.fetch.total, 'fetch')"
+              name="fetch"
+            >
+              <div
+                v-if="todayVehicle.fetch.list.length <= 0"
+                style="text-align: center;"
+              >
+                ～ 没有更多了 ～
+              </div>
               <div
                 class="item-container"
                 v-for="(item, index) in todayVehicle.fetch.list"
@@ -93,8 +110,16 @@
                 </div>
               </div>
             </TabPane>
-            <TabPane :label="h => label(h, todayVehicle.return.total, 'return')" name="return">
-              <div v-if="todayVehicle.return.list.length <= 0" style="text-align: center;">～ 没有更多了 ～</div>
+            <TabPane
+              :label="h => label(h, todayVehicle.return.total, 'return')"
+              name="return"
+            >
+              <div
+                v-if="todayVehicle.return.list.length <= 0"
+                style="text-align: center;"
+              >
+                ～ 没有更多了 ～
+              </div>
               <div
                 class="item-container"
                 v-for="(item, index) in todayVehicle.return.list"
@@ -171,12 +196,22 @@
       <div class="header">
         <span>在租车辆</span>
         <div class="search-container">
-          <Input search enter-button="搜索" placeholder="请输入用户手机号" @on-search="handleSearchByTel1" />
+          <Input
+            search
+            enter-button="搜索"
+            placeholder="请输入用户手机号"
+            @on-search="handleSearchByTel1"
+          />
         </div>
       </div>
       <div class="content">
         <div class="main-container">
-          <div v-if="vehicleOnline.list.length <= 0" style="text-align: center;">～ 没有更多了 ～</div>
+          <div
+            v-if="vehicleOnline.list.length <= 0"
+            style="text-align: center;"
+          >
+            ～ 没有更多了 ～
+          </div>
           <div
             class="item-container"
             v-for="(item, index) in vehicleOnline.list"
@@ -184,7 +219,9 @@
           >
             <div class="item-header">
               <span>下单时间：{{ item.time_create }}</span>
-              <span style="padding-left: 15px;">订单编号：{{ item.order_no }}</span>
+              <span style="padding-left: 15px;"
+                >订单编号：{{ item.order_no }}</span
+              >
               <!-- <span style="padding-left: 15px;">司机：王大伟</span> -->
             </div>
             <div class="item-content">
@@ -238,16 +275,23 @@
               <div class="string"></div>
               <div class="col-item">
                 <div>
-                  <Tag color="warning">{{ orderStatusList[haneleIndexByStatus(item.status)].name }}</Tag>
+                  <Tag color="warning">{{
+                    orderStatusList[haneleIndexByStatus(item.status)].name
+                  }}</Tag>
                 </div>
               </div>
               <div class="string"></div>
               <div class="col-item" style="width: 170px; text-align:center;">
-                <a @click="handleOperate(index, 'refund')" v-if="item.status === 1">退款</a>
+                <a
+                  @click="handleOperate(index, 'refund')"
+                  v-if="item.status === 1"
+                  >退款</a
+                >
                 <a
                   @click="handleOperate(index)"
                   v-if="item.status === 1 || item.status === 3"
-                >{{ getOperateText(index) }}</a>
+                  >{{ getOperateText(index) }}</a
+                >
                 <a @click="show(index)">订单详情</a>
               </div>
             </div>
@@ -285,7 +329,7 @@ export default {
   },
   created() {
     this.axios({
-      url: this.global_.path.baseUrl + '/rentalcars/order/rental/page',
+      url: this.global_.path.baseUrl + '/rentalcars/order/rental/page?status=3',
       method: 'get',
       headers: { 'Content-Type': 'application/json' }
     }).then(
@@ -633,79 +677,15 @@ export default {
         case '':
           if (this.vehicleOnline.list[index].status === 1) {
             // 取车
-            temp = {
-              order_no: this.vehicleOnline.list[index].order_no
-            };
-            this.axios({
-              url:
-                this.global_.path.baseUrl + '/rentalcars/order/rental/pickup',
-              method: 'post',
-              data: this.$qs.stringify(temp),
-              headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
-            }).then(
-              res => {
-                console.log(
-                  'Workspace Index.vue handleOperate axios /rental/pickup success',
-                  res
-                );
-                if (res.data.code === 0) {
-                  this.$Message.info('操作成功');
-                  this.vehicleOnline.list[index].status = 3;
-                } else {
-                  this.$Message.error({
-                    content: '操作失败'
-                  });
-                }
-                this.spinShow = false;
-              },
-              err => {
-                console.log(
-                  'Workspace Index.vue handleOperate axios /rental/pickup failure',
-                  err
-                );
-                this.$Message.error({
-                  content: '操作失败'
-                });
-                this.spinShow = false;
-              }
+            this.$router.push(
+              '/home/fetchVehicle?order_no=' +
+                this.vehicleOnline.list[index].order_no
             );
           } else if (this.vehicleOnline.list[index].status === 3) {
             // 还车
-            temp = {
-              order_no: this.vehicleOnline.list[index].order_no
-            };
-            this.axios({
-              url:
-                this.global_.path.baseUrl + '/rentalcars/order/rental/dropoff',
-              method: 'post',
-              data: this.$qs.stringify(temp),
-              headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
-            }).then(
-              res => {
-                console.log(
-                  'Workspace Index.vue handleOperate axios /rental/dropoff success',
-                  res
-                );
-                if (res.data.code === 0) {
-                  this.$Message.info('操作成功');
-                  this.vehicleOnline.list[index].status = 4;
-                } else {
-                  this.$Message.error({
-                    content: '操作失败'
-                  });
-                }
-                this.spinShow = false;
-              },
-              err => {
-                console.log(
-                  'Workspace Index.vue handleOperate axios /rental/refund failure',
-                  err
-                );
-                this.$Message.error({
-                  content: '操作失败'
-                });
-                this.spinShow = false;
-              }
+            this.$router.push(
+              '/home/returnVehicle?order_no=' +
+                this.vehicleOnline.list[index].order_no
             );
           }
           break;
