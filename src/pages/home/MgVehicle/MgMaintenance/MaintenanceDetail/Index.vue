@@ -44,7 +44,7 @@
         <div class="content">
           <div class="left">
             <div class="image-container">
-              <img src />
+              <img :src="maintenanceDetail && (this.global_.path.baseUrl + maintenanceDetail.model_image)" />
             </div>
             <div class="text-container">
               <div>
@@ -308,7 +308,7 @@ export default {
                   content: '操作成功'
                 });
                 this.maintenanceDetail = Object.assign({}, this.maintenanceDetail, res.data.data);
-                this.$router.back();
+                // this.$router.back();
               } else {
                 this.$Message.error({
                   content: '操作失败'
