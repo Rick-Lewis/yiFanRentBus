@@ -62,7 +62,7 @@
               :on-error="handleError"
               :default-file-list="defaultList"
               :format="['jpg', 'jpeg', 'png']"
-              :max-size="2048"
+              :max-size="500"
               name="image"
               :on-format-error="handleFormatError"
               :on-exceeded-size="handleMaxSize"
@@ -162,6 +162,7 @@ export default {
     console.log('BrandAddition Index.vue created', this.$route.query);
     // this.$store.dispatch('homeStore/initBreadcrumbList', window.location.href);
     if (this.$route.query.action === 'edit') {
+      this.spinShow = true;
       this.axios({
         method: 'get',
         url:
@@ -192,6 +193,7 @@ export default {
               content: '操作失败'
             });
           }
+          this.spinShow = false;
         },
         err => {
           console.log(
@@ -201,6 +203,7 @@ export default {
           this.$Message.error({
             content: '操作失败'
           });
+          this.spinShow = false;
         }
       );
     }
@@ -247,7 +250,7 @@ export default {
     handleMaxSize(file) {
       console.log('BrandAddition index.vue methods handleMaxSize', file);
       this.$Notice.warning({
-        title: '图片尺寸过大',
+        title: '图片过大',
         desc: ''
       });
     },
@@ -274,6 +277,7 @@ export default {
             temp = Object.assign({}, temp, { id: this.$route.query.id });
           }
           console.log('BrandAddition index.vue methods handleSubmit', temp);
+          this.spinShow = true;
           this.axios({
             method: 'post',
             url:
@@ -296,6 +300,7 @@ export default {
                   content: '操作失败'
                 });
               }
+              this.spinShow = false;
             },
             err => {
               console.log(
@@ -305,6 +310,7 @@ export default {
               this.$Message.error({
                 content: '操作失败'
               });
+              this.spinShow = false;
             }
           );
         } else {

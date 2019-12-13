@@ -32,38 +32,47 @@
               :on-success="handleSuccess"
               :on-error="handleError"
               :format="['jpg', 'jpeg', 'png']"
-              :max-size="2048"
+              :max-size="500"
               name="image"
               :on-format-error="handleFormatError"
               :on-exceeded-size="handleMaxSize"
               :before-upload="handleBeforeUpload"
               type="drag"
               :action="uploadUrl"
-              style="display: inline-block;width:58px;"
+              style="display: inline-block;width:200px;"
               :style="
               basicInfoForm.upload_list.length === 0
                 ? {}
-                : { visibility: 'hidden' }
+                : {display: 'none'}
             "
             >
-              <div style="width: 58px;height:58px;line-height: 58px;">
+              <div style="width:200px; height:100px; line-height:100px;">
                 <Icon type="ios-camera" size="20"></Icon>
               </div>
             </Upload>
+            <span style="margin-left: 10px;">请上传分辨率为375*100，png、jpg格式的图片，大小不超过500KB</span>
             <Modal title="View Image" v-model="visible">
               <img :src="this.imgUrl" v-if="visible" style="width: 100%" />
             </Modal>
           </FormItem>
           <FormItem label="车型品牌">
             <!-- <span>车型品牌：</span> -->
-            <RadioGroup v-model="basicInfoForm.from_brand_check">
+            <Select v-model="basicInfoForm.from_brand_check" filterable style="width: 200px;">
+              <Option
+                v-for="(item, index) in fromBrandList"
+                :value="item.name"
+                :key="index"
+                placeholder="请输入品牌"
+              >{{ item.name }}</Option>
+            </Select>
+            <!-- <RadioGroup v-model="basicInfoForm.from_brand_check">
               <Radio
                 v-for="(item, index) in fromBrandList"
                 v-bind:key="index"
                 v-bind:label="item.name"
                 border
               ></Radio>
-            </RadioGroup>
+            </RadioGroup>-->
           </FormItem>
           <FormItem label="车辆类型">
             <!-- <span>车辆类型：</span> -->
@@ -200,10 +209,10 @@
               <div class="suffix" slot="suffix">元</div>
             </Input>
           </FormItem>
-          <FormItem label="基础价格">
+          <FormItem label="基础价格" class="base-price">
             <!-- <span>基础价格：</span> -->
             <Input v-model="priceInfoForm.price" placeholder="请输入基础价格" style="width: 200px">
-              <div class="suffix" slot="suffix">元</div>
+              <div class="suffix" slot="suffix">元/日</div>
             </Input>
           </FormItem>
         </Form>
@@ -226,7 +235,7 @@ export default {
         from_brand_check: '全部',
         vehicle_type_check: '其他',
         energy_types_check: '其他',
-        vehicle_status_check: '全部',
+        vehicle_status_check: '已关停',
         name: '',
         upload_list: []
       },
@@ -256,7 +265,6 @@ export default {
       vehicleTypeList: [],
       energyTypesList: ['其他', '汽油', '电动', '油电混合', '柴油'],
       vehicleStatusList: [
-        { name: '全部', state: -1 },
         { name: '已关停', state: 0 },
         { name: '已开启', state: 1 }
       ],
@@ -265,7 +273,7 @@ export default {
         { en: 'radar_tail', name: '后雷达' }
       ],
       backupCameraList: [{ name: '有', state: 1 }, { name: '无', state: 0 }],
-      spinShow: true
+      spinShow: false
     };
   },
   created() {
@@ -326,7 +334,6 @@ export default {
               content: '操作失败'
             });
           }
-          this.spinShow = false;
         },
         err => {
           console.log(
@@ -336,10 +343,10 @@ export default {
           this.$Message.error({
             content: '操作失败'
           });
-          this.spinShow = false;
         }
       );
     }
+    this.spinShow = true;
     let p1 = this.axios({
       url: this.global_.path.baseUrl + '/rentalcars/vehicle/category/page',
       method: 'get',
@@ -360,7 +367,7 @@ export default {
       },
       err => {
         console.log(
-          'ModelAddition Index.vue created axios /vehicleCategory success',
+          'ModelAddition Index.vue created axios /vehicleCategory failure',
           err
         );
         this.$Message.error({
@@ -369,29 +376,20 @@ export default {
       }
     );
     let p2 = this.axios({
-      url: this.global_.path.baseUrl + '/rentalcars/vehicle/brand/page',
+      url: this.global_.path.baseUrl + '/rentalcars/vehicle/brand/list',
       method: 'get',
       headers: { 'Content-Type': 'application/json' }
     }).then(
       res => {
         console.log(
-          'ModelAddition Index.vue created axios /vehicleBrand success',
+          'ModelAddition Index.vue created axios /vehicle/brand/list success',
           res
         );
-        if (res.data.code === 0) {
-          this.fromBrandList.push(
-            { id: -1, name: '全部' },
-            ...res.data.data.data
-          );
-        } else {
-          this.$Message.error({
-            content: '品牌数据请求失败'
-          });
-        }
+        this.fromBrandList.push(...res.data);
       },
       err => {
         console.log(
-          'ModelAddition Index.vue created axios /vehicleBrand success',
+          'ModelAddition Index.vue created axios /vehicle/brand/list failure',
           err
         );
         this.$Message.error({
@@ -455,7 +453,7 @@ export default {
     handleMaxSize(file) {
       console.log('ModelAddition index.vue methods handleMaxSize', file);
       this.$Notice.warning({
-        title: '图片尺寸过大',
+        title: '图片过大',
         desc: ''
       });
     },

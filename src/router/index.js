@@ -3,6 +3,8 @@ import Router from 'vue-router';
 import Login from '@/pages/login';
 import Home from '@/pages/home';
 import Workspace from '@/pages/home/Workspace';
+import FetchVehicle from '@/pages/home/Workspace/FetchVehicle';
+import ReturnVehicle from '@/pages/home/Workspace/ReturnVehicle';
 import MgVehicle from '@/pages/home/MgVehicle/MgVehicle';
 import VehicleAddition from '@/pages/home/MgVehicle/MgVehicle/VehicleAddition';
 import VehicleDetail from '@/pages/home/MgVehicle/MgVehicle/VehicleDetail';
@@ -21,6 +23,7 @@ import AdAddition from '@/pages/home/ActivityCenter/MgAd/AdAddition';
 import MgStore from '@/pages/home/MgStore/MgStore';
 import StoreAddition from '@/pages/home/MgStore/MgStore/StoreAddition';
 import StoreDetail from '@/pages/home/MgStore/MgStore/StoreDetail';
+import ModelAssociated from '@/pages/home/MgStore/ModelAssociated';
 
 Vue.use(Router);
 
@@ -55,6 +58,42 @@ export default new Router({
                 menuItemName: 'workspace',
                 path: '/home/workspace',
                 text: '工作台'
+              }
+            ]
+          }
+        },
+        {
+          path: 'fetchVehicle',
+          component: FetchVehicle,
+          meta: {
+            breadcrumb: [
+              {
+                path: '/home/workspace',
+                text: '工作台'
+              },
+              {
+                submenuName: '',
+                menuItemName: 'workspace',
+                path: '/home/fetchVehicle',
+                text: '取车'
+              }
+            ]
+          }
+        },
+        {
+          path: 'returnVehicle',
+          component: ReturnVehicle,
+          meta: {
+            breadcrumb: [
+              {
+                path: '/home/workspace',
+                text: '工作台'
+              },
+              {
+                submenuName: '',
+                menuItemName: 'workspace',
+                path: '/home/returnVehicle',
+                text: '还车'
               }
             ]
           }
@@ -429,6 +468,28 @@ export default new Router({
                 menuItemName: 'mg-store',
                 path: '/home/storeDetail',
                 text: '门店详情'
+              }
+            ]
+          }
+        },
+        {
+          path: 'modelAssociated',
+          component: ModelAssociated,
+          meta: {
+            breadcrumb: [
+              {
+                path: '',
+                text: '门店管理'
+              },
+              {
+                path: '/home/mgStore',
+                text: '门店列表'
+              },
+              {
+                submenuName: 'store',
+                menuItemName: 'mg-store',
+                path: '/home/modelAssociated',
+                text: '关联车型'
               }
             ]
           }

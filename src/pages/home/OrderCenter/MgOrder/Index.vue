@@ -4,7 +4,7 @@
       <Form :model="formItem" label-colon>
         <FormItem label="订单状态" class="order-status">
           <!-- <span>订单状态：</span> -->
-          <RadioGroup v-model="formItem.order_status_check">
+          <RadioGroup v-model="formItem.order_status_check" @on-change="handleSearch">
             <Radio
               v-for="(item, index) in orderStatusList"
               v-bind:key="index"
@@ -15,7 +15,7 @@
         </FormItem>
         <FormItem label="有无司机" class="driver-existence">
           <!-- <span>有无司机：</span> -->
-          <RadioGroup v-model="formItem.driver_existence_check">
+          <RadioGroup v-model="formItem.driver_existence_check" @on-change="handleSearch">
             <Radio
               v-for="(item, index) in driverExistenceList"
               v-bind:key="index"
@@ -174,10 +174,10 @@ export default {
         { name: '有', value: 1 }
       ],
       timeList: ['全部', '今日', '近7天', '近一个月', '近三个月'],
-      time_start: '',
-      time_end: '',
       duration: null,
       formItem: {
+        time_start: '',
+        time_end: '',
         order_status_check: '全部',
         driver_existence_check: '全部',
         time_check: '全部',
@@ -416,8 +416,8 @@ export default {
       let nowDate = this.$moment(new Date()).format('YYYY-MM-DD HH:mm:ss');
       let timeStartTemp = '';
       let timeEndTemp = '';
-      this.time_start = '';
-      this.time_end = '';
+      this.formItem.time_start = '';
+      this.formItem.time_end = '';
       switch (val) {
         case '今日':
           timeStartTemp = this.$moment(new Date()).format(
@@ -455,16 +455,23 @@ export default {
         {},
         { timeStart: timeStartTemp, timeEnd: timeEndTemp }
       );
+      this.handleSearch();
     },
     handleCalDurationS(val) {
       let nowDate = this.$moment(new Date()).format('YYYY-MM-DD HH:mm:ss');
       let timeStartTemp = '';
       let timeEndTemp = '';
       this.formItem.time_check = '全部';
-      timeStartTemp = this.$moment(this.time_start).format(
-        'YYYY-MM-DD HH:mm:ss'
-      );
-      timeEndTemp = nowDate;
+      if (this.formItem.time_start) {
+        timeStartTemp = this.$moment(this.formItem.time_start).format(
+          'YYYY-MM-DD HH:mm:ss'
+        );
+      }
+      if (this.formItem.time_end) {
+        timeEndTemp = this.$moment(this.formItem.time_end).format(
+          'YYYY-MM-DD HH:mm:ss'
+        );
+      }
       console.log(
         'MyOrder Index.vue methods handleCalDurationS',
         nowDate,
@@ -482,9 +489,15 @@ export default {
       let timeStartTemp = '';
       let timeEndTemp = '';
       this.formItem.time_check = '全部';
-      if (this.time_end) {
-        timeStartTemp = nowDate;
-        timeEndTemp = this.$moment(this.time_end).format('YYYY-MM-DD HH:mm:ss');
+      if (this.formItem.time_end) {
+        timeEndTemp = this.$moment(this.formItem.time_end).format(
+          'YYYY-MM-DD HH:mm:ss'
+        );
+      }
+      if (this.formItem.time_start) {
+        timeStartTemp = this.$moment(this.formItem.time_start).format(
+          'YYYY-MM-DD HH:mm:ss'
+        );
       }
       console.log(
         'MyOrder Index.vue methods handleCalDurationE',
@@ -543,13 +556,11 @@ export default {
       if (withDriverTemp !== -2) {
         strTemp = strTemp + '&with_driver=' + withDriverTemp;
       }
-      if (this.duration) {
-        strTemp =
-          strTemp +
-          '&time_start=' +
-          this.duration.timeStart +
-          '&time_end=' +
-          this.duration.timeEnd;
+      if (this.duration.timeStart) {
+        strTemp = strTemp + '&time_start=' + this.duration.timeStart;
+      }
+      if (this.duration.timeEnd) {
+        strTemp = strTemp + '&time_end=' + this.duration.timeEnd;
       }
       if (this.formItem.key) {
         strTemp = strTemp + '&telephone=' + this.formItem.key;
