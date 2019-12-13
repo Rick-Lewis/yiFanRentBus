@@ -12,7 +12,11 @@
           label-colon
         >
           <FormItem label="门店名称" prop="name">
-            <Input v-model="basicInfoForm.name" placeholder="请输入门店名称" style="width: 475px" />
+            <Input
+              v-model="basicInfoForm.name"
+              placeholder="请输入门店名称"
+              style="width: 475px"
+            />
           </FormItem>
           <FormItem label="门店图片(选填)" prop="upload_list">
             <div
@@ -23,42 +27,64 @@
               <template v-if="item.status === 'finished'">
                 <img :src="item.url" />
                 <div class="upload-list-cover">
-                  <Icon type="ios-eye-outline" @click.native="handleView(item)"></Icon>
-                  <Icon type="ios-trash-outline" @click.native="handleRemove(item)"></Icon>
+                  <Icon
+                    type="ios-eye-outline"
+                    @click.native="handleView(item)"
+                  ></Icon>
+                  <Icon
+                    type="ios-trash-outline"
+                    @click.native="handleRemove(item)"
+                  ></Icon>
                 </div>
               </template>
               <template v-else>
-                <Progress v-if="item.showProgress" :percent="item.percentage" hide-info></Progress>
+                <Progress
+                  v-if="item.showProgress"
+                  :percent="item.percentage"
+                  hide-info
+                ></Progress>
               </template>
             </div>
-            <Upload
-              ref="upload"
-              :show-upload-list="false"
-              :on-success="handleSuccess"
-              :on-error="handleError"
-              :format="['jpg','jpeg','png']"
-              :max-size="500"
-              name="image"
-              :on-format-error="handleFormatError"
-              :on-exceeded-size="handleMaxSize"
-              :before-upload="handleBeforeUpload"
-              multiple
-              type="drag"
-              :action="uploadUrl"
-              style="display:inline-block; width: 100px;"
-              :style="basicInfoForm.upload_list.length === 0 ? {} : {display: 'none'}"
-            >
-              <div style="width:100px; height:100px; line-height:100px;">
-                <Icon type="ios-camera" size="20"></Icon>
-              </div>
-            </Upload>
-            <span style="margin-left: 10px;">请上传100×100，png、jpg格式的图片，大小不超过500KB</span>
+            <div>
+              <Upload
+                ref="upload"
+                :show-upload-list="false"
+                :on-success="handleSuccess"
+                :on-error="handleError"
+                :format="['jpg', 'jpeg', 'png']"
+                :max-size="500"
+                name="image"
+                :on-format-error="handleFormatError"
+                :on-exceeded-size="handleMaxSize"
+                :before-upload="handleBeforeUpload"
+                multiple
+                type="drag"
+                :action="uploadUrl"
+                style="display:inline-block; width: 100px;"
+                :style="
+                  basicInfoForm.upload_list.length === 0
+                    ? {}
+                    : { display: 'none' }
+                "
+              >
+                <div style="width:100px; height:100px; line-height:100px;">
+                  <Icon type="ios-camera" size="20"></Icon>
+                </div>
+              </Upload>
+              <span style="margin-left: 10px;"
+                >请上传100×100，png、jpg格式的图片，大小不超过500KB</span
+              >
+            </div>
             <Modal title="View Image" v-model="visible">
               <img :src="this.imgUrl" v-if="visible" style="width: 100%" />
             </Modal>
           </FormItem>
           <FormItem label="门店电话" prop="telephone">
-            <Input v-model="basicInfoForm.telephone" placeholder="请输入门店电话" style="width: 475px" />
+            <Input
+              v-model="basicInfoForm.telephone"
+              placeholder="请输入门店电话"
+              style="width: 475px"
+            />
           </FormItem>
           <FormItem label="营业时间" class="time">
             <TimePicker
@@ -95,14 +121,26 @@
             ></Cascader>
           </FormItem>
           <FormItem label="门店地址" prop="address">
-            <Input v-model="posInfoForm.address" placeholder="请输入门店地址" style="width: 475px;" />
+            <Input
+              v-model="posInfoForm.address"
+              placeholder="请输入门店地址"
+              style="width: 475px;"
+            />
           </FormItem>
           <div style="display: flex;">
             <FormItem label="经度">
-              <Input v-model="posInfoForm.latitude" placeholder="请输入门店经度" style="width: 150px;" />
+              <Input
+                v-model="posInfoForm.latitude"
+                placeholder="请输入门店经度"
+                style="width: 150px;"
+              />
             </FormItem>
             <FormItem label="纬度">
-              <Input v-model="posInfoForm.longitude" placeholder="请输入门店纬度" style="width: 150px;" />
+              <Input
+                v-model="posInfoForm.longitude"
+                placeholder="请输入门店纬度"
+                style="width: 150px;"
+              />
             </FormItem>
           </div>
           <FormItem label="步行指引" prop="address">
@@ -130,6 +168,16 @@
 export default {
   name: 'StoreAddition',
   data: function() {
+    const validateUploadList = (rule, value, callback) => {
+      if (this.errorText) {
+        callback(new Error(this.errorText));
+      } else {
+        if (value.length === 0) {
+          callback(new Error('图片不能为空'));
+        }
+        callback();
+      }
+    };
     return {
       basicInfoForm: {
         name: '',
@@ -150,7 +198,10 @@ export default {
         this.global_.path.baseUrl +
         '/rentalcars/upload/image?image&folderName=store',
       visible: false,
-      statusList: [{ name: '停运', status: 0 }, { name: '运营', status: 1 }],
+      statusList: [
+        { name: '停运', status: 0 },
+        { name: '运营', status: 1 }
+      ],
       addressData: [],
       ruleValidate: {
         name: [
@@ -161,13 +212,14 @@ export default {
           }
         ],
         upload_list: [
-          {
-            required: true,
-            type: 'array',
-            min: 1,
-            message: '图片不能为空',
-            trigger: 'change'
-          }
+          // {
+          //   required: true,
+          //   type: 'array',
+          //   min: 1,
+          //   message: '图片不能为空',
+          //   trigger: 'change'
+          // }
+          { validator: validateUploadList, trigger: 'change' }
         ],
         telephone: [
           {
@@ -177,7 +229,8 @@ export default {
           }
         ]
       },
-      spinShow: false
+      spinShow: false,
+      errorText: ''
     };
   },
   created() {
@@ -336,6 +389,7 @@ export default {
     },
     // 提交
     handleSubmit(name) {
+      this.errorText = '';
       let tempIndex2 = this.statusList.findIndex(
         item => item.name === this.basicInfoForm.status_check
       );
@@ -436,30 +490,34 @@ export default {
         file,
         fileList
       );
-      this.$Notice.error({
+      this.$Message.error({
         title: '图片上传失败',
         desc: ''
       });
     },
     handleFormatError(file) {
       console.log('StoreAddition index.vue methods handleFormatError', file);
-      this.$Notice.warning({
-        title: '图片格式错误',
-        desc: ''
-      });
+      // this.$Message.warning({
+      //   title: '图片格式错误',
+      //   desc: ''
+      // });
+      this.errorText = '图片格式错误';
+      this.$refs.formDynamic.validateField('upload_list');
     },
     handleMaxSize(file) {
       console.log('StoreAddition index.vue methods handleMaxSize', file);
-      this.$Notice.warning({
-        title: '图片过大',
-        desc: ''
-      });
+      // this.$Message.warning({
+      //   title: '图片过大',
+      //   desc: ''
+      // });
+      this.errorText = '图片过大';
+      this.$refs.formDynamic.validateField('upload_list');
     },
     handleBeforeUpload(file) {
       console.log('StoreAddition index.vue methods handleBeforeUpload', file);
       const check = this.basicInfoForm.upload_list.length < 5;
       if (!check) {
-        this.$Notice.warning({
+        this.$Message.warning({
           title: '上传图片不能超过5张'
         });
       }

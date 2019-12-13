@@ -55,35 +55,37 @@
                 ></Progress>
               </template>
             </div>
-            <Upload
-              ref="upload"
-              :show-upload-list="false"
-              :on-success="handleSuccess"
-              :on-error="handleError"
-              :default-file-list="defaultList"
-              :format="['jpg', 'jpeg', 'png']"
-              :max-size="500"
-              name="image"
-              :on-format-error="handleFormatError"
-              :on-exceeded-size="handleMaxSize"
-              :before-upload="handleBeforeUpload"
-              multiple
-              type="drag"
-              :action="uploadUrl"
-              style="display: inline-block;width:58px;"
-              :style="
-                basicInfoForm.upload_list.length === 0
-                  ? {}
-                  : { display: 'none' }
-              "
-            >
-              <div style="width: 58px;height:58px;line-height: 58px;">
-                <Icon type="ios-camera" size="20"></Icon>
-              </div>
-            </Upload>
-            <span style="margin-left: 10px;"
-              >支持格式png、jpg，分辨率100*100的图片，大小不超过500k</span
-            >
+            <div>
+              <Upload
+                ref="upload"
+                :show-upload-list="false"
+                :on-success="handleSuccess"
+                :on-error="handleError"
+                :default-file-list="defaultList"
+                :format="['jpg', 'jpeg', 'png']"
+                :max-size="500"
+                name="image"
+                :on-format-error="handleFormatError"
+                :on-exceeded-size="handleMaxSize"
+                :before-upload="handleBeforeUpload"
+                multiple
+                type="drag"
+                :action="uploadUrl"
+                style="display: inline-block;width:58px;"
+                :style="
+                  basicInfoForm.upload_list.length === 0
+                    ? {}
+                    : { display: 'none' }
+                "
+              >
+                <div style="width: 58px;height:58px;line-height: 58px;">
+                  <Icon type="ios-camera" size="20"></Icon>
+                </div>
+              </Upload>
+              <span style="margin-left: 10px; vertical-align: text-bottom;"
+                >支持格式png、jpg，分辨率100*100的图片，大小不超过500k</span
+              >
+            </div>
             <Modal title="View Image" v-model="visible">
               <img :src="this.imgUrl" v-if="visible" style="width: 100%" />
             </Modal>
@@ -104,6 +106,16 @@
 export default {
   name: 'BrandAddition',
   data: function() {
+    const validateUploadList = (rule, value, callback) => {
+      if (this.errorText) {
+        callback(new Error(this.errorText));
+      } else {
+        if (value.length === 0) {
+          callback(new Error('品牌LOGO不能为空'));
+        }
+        callback();
+      }
+    };
     return {
       basicInfoForm: {
         brand_name: '',
@@ -138,13 +150,14 @@ export default {
           }
         ],
         upload_list: [
-          {
-            required: true,
-            type: 'array',
-            min: 1,
-            message: '品牌LOGO不能为空',
-            trigger: 'change'
-          }
+          // {
+          //   required: true,
+          //   type: 'array',
+          //   min: 1,
+          //   message: '品牌LOGO不能为空',
+          //   trigger: 'change'
+          // },
+          { validator: validateUploadList, trigger: 'change' }
         ]
       },
       defaultList: [],
@@ -155,7 +168,8 @@ export default {
       uploadUrl:
         this.global_.path.baseUrl +
         '/rentalcars/upload/image?image&folderName=brand',
-      spinShow: false
+      spinShow: false,
+      errorText: ''
     };
   },
   created() {
@@ -227,6 +241,7 @@ export default {
       );
       file.name = res.data;
       file.url = this.global_.path.baseUrl + res.data;
+      this.errorText = '';
     },
     handleError(res, file, fileList) {
       console.log(
@@ -235,30 +250,33 @@ export default {
         file,
         fileList
       );
-      this.$Notice.error({
-        title: '图片上传失败',
-        desc: ''
+      this.$Message.error({
+        title: '图片上传失败'
       });
     },
     handleFormatError(file) {
       console.log('BrandAddition index.vue methods handleFormatError', file);
-      this.$Notice.warning({
-        title: '图片格式错误',
-        desc: ''
-      });
+      // this.$Message.warning({
+      //   title: '图片格式错误',
+      //   desc: ''
+      // });
+      this.errorText = '图片格式错误';
+      this.$refs.formDynamic.validateField('upload_list');
     },
     handleMaxSize(file) {
       console.log('BrandAddition index.vue methods handleMaxSize', file);
-      this.$Notice.warning({
-        title: '图片过大',
-        desc: ''
-      });
+      // this.$Message.warning({
+      //   title: '图片过大',
+      //   desc: ''
+      // });
+      this.errorText = '图片过大';
+      this.$refs.formDynamic.validateField('upload_list');
     },
     handleBeforeUpload(file) {
       console.log('BrandAddition index.vue methods handleBeforeUpload', file);
       const check = this.basicInfoForm.upload_list.length < 5;
       if (!check) {
-        this.$Notice.warning({
+        this.$Message.warning({
           title: '上传图片不能超过5张'
         });
       }
@@ -266,6 +284,7 @@ export default {
     },
     // 提交
     handleSubmit(name) {
+      this.errorText = '';
       this.$refs[name].validate(valid => {
         if (valid) {
           let temp = {

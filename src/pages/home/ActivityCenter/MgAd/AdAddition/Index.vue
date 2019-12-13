@@ -12,7 +12,11 @@
           label-colon
         >
           <FormItem label="标题" prop="title">
-            <Input v-model="basicInfoForm.title" placeholder="请输入广告标题" style="width: 200px" />
+            <Input
+              v-model="basicInfoForm.title"
+              placeholder="请输入广告标题"
+              style="width: 200px"
+            />
           </FormItem>
           <FormItem label="图片" prop="upload_list">
             <div
@@ -23,42 +27,64 @@
               <template v-if="item.status === 'finished'">
                 <img :src="item.url" />
                 <div class="upload-list-cover">
-                  <Icon type="ios-eye-outline" @click.native="handleView(item)"></Icon>
-                  <Icon type="ios-trash-outline" @click.native="handleRemove(item)"></Icon>
+                  <Icon
+                    type="ios-eye-outline"
+                    @click.native="handleView(item)"
+                  ></Icon>
+                  <Icon
+                    type="ios-trash-outline"
+                    @click.native="handleRemove(item)"
+                  ></Icon>
                 </div>
               </template>
               <template v-else>
-                <Progress v-if="item.showProgress" :percent="item.percentage" hide-info></Progress>
+                <Progress
+                  v-if="item.showProgress"
+                  :percent="item.percentage"
+                  hide-info
+                ></Progress>
               </template>
             </div>
-            <Upload
-              ref="upload"
-              :show-upload-list="false"
-              :on-success="handleSuccess"
-              :on-error="handleError"
-              :format="['jpg','jpeg','png']"
-              :max-size="500"
-              name="image"
-              :on-format-error="handleFormatError"
-              :on-exceeded-size="handleMaxSize"
-              :before-upload="handleBeforeUpload"
-              multiple
-              type="drag"
-              :action="uploadUrl"
-              style="display:inline-block; width: 200px;"
-              :style="basicInfoForm.upload_list.length === 0 ? {} : {display: 'none'}"
-            >
-              <div style="width:200px; height:100px; line-height:100px;">
-                <Icon type="ios-camera" size="20"></Icon>
-              </div>
-            </Upload>
-            <span style="margin-left: 10px;">请上传分辨率为375*100，png、jpg格式的图片，大小不超过500KB</span>
+            <div>
+              <Upload
+                ref="upload"
+                :show-upload-list="false"
+                :on-success="handleSuccess"
+                :on-error="handleError"
+                :format="['jpg', 'jpeg', 'png']"
+                :max-size="500"
+                name="image"
+                :on-format-error="handleFormatError"
+                :on-exceeded-size="handleMaxSize"
+                :before-upload="handleBeforeUpload"
+                multiple
+                type="drag"
+                :action="uploadUrl"
+                style="display:inline-block; width: 200px;"
+                :style="
+                  basicInfoForm.upload_list.length === 0
+                    ? {}
+                    : { display: 'none' }
+                "
+              >
+                <div style="width:200px; height:100px; line-height:100px;">
+                  <Icon type="ios-camera" size="20"></Icon>
+                </div>
+              </Upload>
+              <span style="margin-left: 10px; vertical-align: text-bottom;"
+                >请上传分辨率为375*100，png、jpg格式的图片，大小不超过500KB</span
+              >
+            </div>
             <Modal title="View Image" v-model="visible">
               <img :src="this.imgUrl" v-if="visible" style="width: 100%" />
             </Modal>
           </FormItem>
           <FormItem label="跳转链接" prop="url">
-            <Input v-model="basicInfoForm.url" placeholder="请输入跳转链接" style="width: 200px" />
+            <Input
+              v-model="basicInfoForm.url"
+              placeholder="请输入跳转链接"
+              style="width: 200px"
+            />
           </FormItem>
           <FormItem label="类型" required>
             <RadioGroup v-model="basicInfoForm.type_check">
@@ -83,7 +109,9 @@
         </Form>
       </div>
       <div class="btn-container">
-        <Button type="primary" @click="handleSubmit('formDynamic')">提交</Button>
+        <Button type="primary" @click="handleSubmit('formDynamic')"
+          >提交</Button
+        >
         <Button style="margin-left: 8px" @click="handleCancel()">取消</Button>
       </div>
       <Spin size="large" fix v-if="spinShow"></Spin>
@@ -94,6 +122,16 @@
 export default {
   name: '',
   data: function() {
+    const validateUploadList = (rule, value, callback) => {
+      if (this.errorText) {
+        callback(new Error(this.errorText));
+      } else {
+        if (value.length === 0) {
+          callback(new Error('图片不能为空'));
+        }
+        callback();
+      }
+    };
     return {
       basicInfoForm: {
         title: '',
@@ -116,13 +154,14 @@ export default {
           }
         ],
         upload_list: [
-          {
-            required: true,
-            type: 'array',
-            min: 1,
-            message: '图片不能为空',
-            trigger: 'change'
-          }
+          // {
+          //   required: true,
+          //   type: 'array',
+          //   min: 1,
+          //   message: '图片不能为空',
+          //   trigger: 'change'
+          // }
+          { validator: validateUploadList, trigger: 'change' }
         ]
       },
       imgUrl: '',
@@ -130,13 +169,17 @@ export default {
         this.global_.path.baseUrl +
         '/rentalcars/upload/image?image&folderName=banner',
       spinShow: false,
-      statusList: [{ name: '否', status: 0 }, { name: '是', status: 1 }],
+      statusList: [
+        { name: '否', status: 0 },
+        { name: '是', status: 1 }
+      ],
       typeList: [
         { name: '营销活动', value: 0 },
         { name: '广告', value: 1 },
         { name: '其他', value: 2 }
       ],
-      visible: false
+      visible: false,
+      errorText: ''
     };
   },
   created() {
@@ -220,30 +263,34 @@ export default {
         file,
         fileList
       );
-      this.$Notice.error({
+      this.$Message.error({
         title: '图片上传失败',
         desc: ''
       });
     },
     handleFormatError(file) {
       console.log('AdAddition index.vue methods handleFormatError', file);
-      this.$Notice.warning({
-        title: '图片格式错误',
-        desc: ''
-      });
+      // this.$Message.warning({
+      //   title: '图片格式错误',
+      //   desc: ''
+      // });
+      this.errorText = '图片格式错误';
+      this.$refs.formDynamic.validateField('upload_list');
     },
     handleMaxSize(file) {
       console.log('AdAddition index.vue methods handleMaxSize', file);
-      this.$Notice.warning({
-        title: '图片过大',
-        desc: ''
-      });
+      // this.$Message.warning({
+      //   title: '图片过大',
+      //   desc: ''
+      // });
+      this.errorText = '图片过大';
+      this.$refs.formDynamic.validateField('upload_list');
     },
     handleBeforeUpload(file) {
       console.log('AdAddition index.vue methods handleBeforeUpload', file);
       const check = this.basicInfoForm.upload_list.length < 5;
       if (!check) {
-        this.$Notice.warning({
+        this.$Message.warning({
           title: '上传图片不能超过5张'
         });
       }
@@ -251,6 +298,7 @@ export default {
     },
     // 提交
     handleSubmit(name) {
+      this.errorText = '';
       let tempIndex1 = this.typeList.findIndex(
         item => item.name === this.basicInfoForm.type_check
       );
