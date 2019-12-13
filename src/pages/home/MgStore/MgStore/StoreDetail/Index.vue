@@ -164,7 +164,9 @@ export default {
     this.axios({
       url:
         this.global_.path.baseUrl +
-        '/rentalcars/vehicle/model/page?pageIndex=' +
+        '/rentalcars/vehicle/model/page?store_id=' +
+        this.$route.query.id +
+        '&pageIndex=' +
         this.currentPage +
         '&pageSize=' +
         this.currentPageSize,

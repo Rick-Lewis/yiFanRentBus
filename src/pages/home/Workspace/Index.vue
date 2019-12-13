@@ -440,7 +440,7 @@ export default {
               });
             }
           );
-          strTemp = '?status=1';
+          strTemp = '?status=3';
           strTemp =
             strTemp +
             '&time_start=' +

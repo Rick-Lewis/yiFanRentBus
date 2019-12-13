@@ -75,7 +75,13 @@ export default {
               res
             );
             if (res.data.code === 0) {
-              window.localStorage.setItem('username', this.username);
+              if (this.isRemember) {
+                window.localStorage.setItem('username', this.username);
+                window.localStorage.setItem('password', this.password);
+              } else {
+                window.localStorage.removeItem('username');
+                window.localStorage.removeItem('password');
+              }
               this.$router.push('/home/workspace');
             } else {
               this.$Message.error({
