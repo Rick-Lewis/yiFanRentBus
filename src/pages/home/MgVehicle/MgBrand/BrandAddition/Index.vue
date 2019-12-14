@@ -27,9 +27,10 @@
               style="width: 200px"
             />
           </FormItem>
-          <FormItem label="品牌LOGO" prop="upload_list">
+          <FormItem label="品牌LOGO" prop="upload_list" required>
             <!-- <span>品牌LOGO：</span> -->
-            <div
+            <div>
+              <div
               class="upload-list"
               v-for="(item, index) in basicInfoForm.upload_list"
               v-bind:key="index"
@@ -55,7 +56,6 @@
                 ></Progress>
               </template>
             </div>
-            <div>
               <Upload
                 ref="upload"
                 :show-upload-list="false"
@@ -72,11 +72,7 @@
                 type="drag"
                 :action="uploadUrl"
                 style="display: inline-block;width:58px;"
-                :style="
-                  basicInfoForm.upload_list.length === 0
-                    ? {}
-                    : { display: 'none' }
-                "
+                v-if="basicInfoForm.upload_list.length === 0"
               >
                 <div style="width: 58px;height:58px;line-height: 58px;">
                   <Icon type="ios-camera" size="20"></Icon>

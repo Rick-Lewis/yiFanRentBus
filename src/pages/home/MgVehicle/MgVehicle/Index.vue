@@ -1,7 +1,7 @@
 <template>
   <div class="vehicle-container">
     <div class="filtrate-container">
-      <Form :model="formItem" label-colon>
+      <Form :model="formItem" label-colon @submit.native.prevent>
         <FormItem label="车辆状态" class="vehicle-status">
           <!-- <span>车辆状态：</span> -->
           <RadioGroup v-model="formItem.vehicle_status_check" @on-change="handleSearch">
@@ -20,11 +20,21 @@
           </FormItem>
           <FormItem label="车辆识别代码">
             <!-- <span>车辆识别代码：</span> -->
-            <Input v-model="formItem.vin" placeholder="请输入车辆识别代码" style="width: 200px" />
+            <Input
+              v-model="formItem.vin"
+              @on-enter="handleSearch"
+              placeholder="请输入车辆识别代码"
+              style="width: 200px"
+            />
           </FormItem>
           <FormItem label="发动机号">
             <!-- <span>发动机号：</span> -->
-            <Input v-model="formItem.engine_no" placeholder="请输入发动机号" style="width: 200px" />
+            <Input
+              v-model="formItem.engine_no"
+              @on-enter="handleSearch"
+              placeholder="请输入发动机号"
+              style="width: 200px"
+            />
           </FormItem>
           <FormItem>
             <Button type="primary" @click="handleSearch">查询</Button>
@@ -163,7 +173,8 @@ export default {
         '/rentalcars/vehicle/detail/page?pageIndex=' +
         this.currentPage +
         '&pageSize=' +
-        this.currentPageSize,
+        this.currentPageSize +
+        '&sortField=create_time&sortOrder=desc',
       method: 'get',
       headers: { 'Content-Type': 'application/json' }
     }).then(
@@ -238,13 +249,16 @@ export default {
         'status'
       );
       let statusTemp = this.vehicleStatusList[indexTemp].status;
-      let strTemp =
-        '?plate_num=' +
-        this.formItem.plate_num +
-        '&vin=' +
-        this.formItem.vin +
-        '&engine_no=' +
-        this.formItem.engine_no;
+      let strTemp = '';
+      if (this.formItem.plate_num) {
+        strTemp = strTemp + '&plate_num=' + this.formItem.plate_num;
+      }
+      if (this.formItem.vin) {
+        strTemp = strTemp + '&vin=' + this.formItem.vin;
+      }
+      if (this.formItem.engine_no) {
+        strTemp = strTemp + '&engine_no=' + this.formItem.engine_no;
+      }
       if (statusTemp !== -2) {
         strTemp = strTemp + '&state=' + statusTemp;
       }
@@ -254,11 +268,12 @@ export default {
         url:
           this.global_.path.baseUrl +
           '/rentalcars/vehicle/detail/page' +
-          strTemp +
-          'pageIndex=' +
+          '?pageIndex=' +
           this.currentPage +
           '&pageSize=' +
-          this.currentPageSize,
+          this.currentPageSize +
+          strTemp +
+          '&sortField=create_time&sortOrder=desc',
         method: 'get',
         headers: { 'Content-Type': 'application/json' }
       }).then(
@@ -369,7 +384,7 @@ export default {
                 res
               );
               if (res.data.code === 0) {
-                this.$Message.info('操作成功');
+                this.$Message.success('操作成功');
                 this.vehicleData.splice(index, 1);
               } else {
                 this.$Message.error({
@@ -418,7 +433,8 @@ export default {
           '/rentalcars/vehicle/detail/page?pageIndex=' +
           this.currentPage +
           '&pageSize=' +
-          this.currentPageSize,
+          this.currentPageSize +
+          '&sortField=create_time&sortOrder=desc',
         method: 'get',
         headers: { 'Content-Type': 'application/json' }
       }).then(
@@ -460,7 +476,8 @@ export default {
           '/rentalcars/vehicle/detail/page?pageIndex=' +
           this.currentPage +
           '&pageSize=' +
-          this.currentPageSize,
+          this.currentPageSize +
+          '&sortField=create_time&sortOrder=desc',
         method: 'get',
         headers: { 'Content-Type': 'application/json' }
       }).then(

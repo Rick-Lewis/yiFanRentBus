@@ -1,7 +1,7 @@
 <template>
   <div class="model-associated-container">
     <div class="filtrate-container">
-      <Form :model="formItem" label-colon>
+      <Form :model="formItem" label-colon @submit.native.prevent>
         <FormItem label="所属品牌" class="from-brand">
           <RadioGroup v-model="formItem.from_brand_check" @on-change="handleSearch">
             <Radio
@@ -48,6 +48,7 @@
       </Form>
     </div>
     <div class="content-container">
+      <Button type="primary" style="margin-bottom: 10px;" @click="handleSubmit">确定关联</Button>
       <Table
         border
         ref="selection"
@@ -66,13 +67,13 @@
           </Switch>
         </template>
       </Table>
-      <div class="page-container">
+      <!-- <div class="page-container">
         <template>
           <Button @click="handleSelectAll(true)">全选</Button>
           <Button @click="handleSelectAll(false)">取消全选</Button>
           <Button type="primary" @click="handleSubmit">确定</Button>
         </template>
-      </div>
+      </div>-->
       <Spin size="large" fix v-if="spinShow"></Spin>
     </div>
   </div>
@@ -197,7 +198,8 @@ export default {
         '/rentalcars/vehicle/model/page?pageIndex=' +
         this.currentPage +
         '&pageSize=' +
-        this.currentPageSize,
+        this.currentPageSize +
+        '&sortField=create_time&sortOrder=desc',
       method: 'get',
       headers: { 'Content-Type': 'application/json' }
     }).then(
@@ -353,7 +355,8 @@ export default {
           this.currentPage +
           '&pageSize=' +
           this.currentPageSize +
-          strTemp,
+          strTemp +
+          '&sortField=create_time&sortOrder=desc',
         method: 'get',
         headers: { 'Content-Type': 'application/json' }
       }).then(

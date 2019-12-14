@@ -1,13 +1,10 @@
 <template>
   <div class="order-container">
     <div class="filtrate-container">
-      <Form :model="formItem" label-colon>
+      <Form :model="formItem" label-colon @submit.native.prevent>
         <FormItem label="订单状态" class="order-status">
           <!-- <span>订单状态：</span> -->
-          <RadioGroup
-            v-model="formItem.order_status_check"
-            @on-change="handleSearch"
-          >
+          <RadioGroup v-model="formItem.order_status_check" @on-change="handleSearch">
             <Radio
               v-for="(item, index) in orderStatusList"
               v-bind:key="index"
@@ -18,10 +15,7 @@
         </FormItem>
         <FormItem label="有无司机" class="driver-existence">
           <!-- <span>有无司机：</span> -->
-          <RadioGroup
-            v-model="formItem.driver_existence_check"
-            @on-change="handleSearch"
-          >
+          <RadioGroup v-model="formItem.driver_existence_check" @on-change="handleSearch">
             <Radio
               v-for="(item, index) in driverExistenceList"
               v-bind:key="index"
@@ -32,16 +26,8 @@
         </FormItem>
         <FormItem label="时间查询" class="time">
           <!-- <span>时间查询：</span> -->
-          <RadioGroup
-            v-model="formItem.time_check"
-            @on-change="handleCalDuration1"
-          >
-            <Radio
-              v-for="(item, index) in timeList"
-              v-bind:key="index"
-              v-bind:label="item"
-              border
-            ></Radio>
+          <RadioGroup v-model="formItem.time_check" @on-change="handleCalDuration1">
+            <Radio v-for="(item, index) in timeList" v-bind:key="index" v-bind:label="item" border></Radio>
           </RadioGroup>
           <div class="custom-time">
             <DatePicker
@@ -69,6 +55,7 @@
               v-model="formItem.order_no"
               placeholder="请输入订单编号"
               style="width: 200px"
+              @on-enter="handleSearch"
             />
           </FormItem>
           <FormItem label="车牌号">
@@ -77,15 +64,12 @@
               v-model="formItem.plate_num"
               placeholder="请输入车牌号"
               style="width: 200px"
+              @on-enter="handleSearch"
             />
           </FormItem>
           <FormItem label="手机号查询">
             <!-- <span>用户查询：</span> -->
-            <Input
-              v-model="formItem.key"
-              placeholder="请输入手机号"
-              style="width: 200px"
-            />
+            <Input v-model="formItem.key" placeholder="请输入手机号" style="width: 200px" />
           </FormItem>
           <FormItem>
             <Button type="primary" @click="handleSearch">查询</Button>
@@ -95,14 +79,8 @@
       </Form>
     </div>
     <div class="content-container">
-      <div v-if="orderData.length <= 0" style="text-align: center;">
-        ～ 没有更多了 ～
-      </div>
-      <div
-        class="item-container"
-        v-for="(item, index) in orderData"
-        v-bind:key="index"
-      >
+      <div v-if="orderData.length <= 0" style="text-align: center;">～ 没有更多了 ～</div>
+      <div class="item-container" v-for="(item, index) in orderData" v-bind:key="index">
         <div class="item-header">
           <span>下单时间：{{ item.time_create }}</span>
           <span style="padding-left: 15px;">订单编号：{{ item.order_no }}</span>
@@ -159,21 +137,16 @@
           <div class="string"></div>
           <div class="col-item">
             <div>
-              <Tag color="warning">
-                {{ orderStatusList[haneleIndexByStatus(item.status)].name }}
-              </Tag>
+              <Tag color="warning">{{ orderStatusList[haneleIndexByStatus(item.status)].name }}</Tag>
             </div>
           </div>
           <div class="string"></div>
           <div class="col-item" style="width: 170px; text-align:center;">
-            <a @click="handleOperate(index, 'refund')" v-if="item.status === 1"
-              >退款</a
-            >
+            <a @click="handleOperate(index, 'refund')" v-if="item.status === 1">退款</a>
             <a
               @click="handleOperate(index)"
               v-if="item.status === 1 || item.status === 3"
-              >{{ getOperateText(index) }}</a
-            >
+            >{{ getOperateText(index) }}</a>
             <a @click="show(index)">订单详情</a>
           </div>
         </div>
@@ -344,7 +317,7 @@ export default {
                   res
                 );
                 if (res.data.code === 0) {
-                  this.$Message.info('操作成功');
+                  this.$Message.success('操作成功');
                   this.orderData[index].status = 2;
                 } else {
                   this.$Message.error({
@@ -389,7 +362,7 @@ export default {
         //       res
         //     );
         //     if (res.data.code === 0) {
-        //       this.$Message.info('操作成功');
+        //       this.$Message.success('操作成功');
         //       this.orderData[index].status = 3;
         //     } else {
         //       this.$Message.error({
@@ -429,7 +402,7 @@ export default {
         //       res
         //     );
         //     if (res.data.code === 0) {
-        //       this.$Message.info('操作成功');
+        //       this.$Message.success('操作成功');
         //       this.orderData[index].status = 4;
         //     } else {
         //       this.$Message.error({
@@ -611,7 +584,9 @@ export default {
       this.spinShow = true;
       this.axios({
         url:
-          this.global_.path.baseUrl + '/rentalcars/order/rental/page' + strTemp,
+          this.global_.path.baseUrl +
+          '/rentalcars/order/rental/page' +
+          strTemp,
         method: 'get',
         headers: { 'Content-Type': 'application/json' }
       }).then(

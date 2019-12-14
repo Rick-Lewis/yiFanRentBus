@@ -1,7 +1,7 @@
 <template>
   <div class="mg-maintenance-container">
     <div class="filtrate-container">
-      <Form :model="formItem" label-colon>
+      <Form :model="formItem" label-colon @submit.native.prevent>
         <FormItem label="工单类型">
           <RadioGroup v-model="formItem.service_name" @on-change="handleSearch">
             <Radio
@@ -27,10 +27,20 @@
             <Input v-model="formItem.serialno" placeholder="请输入工单编号" style="width: 200px" />
           </FormItem>
           <FormItem label="车牌号">
-            <Input v-model="formItem.plate_num" placeholder="请输入车牌号" style="width: 200px" />
+            <Input
+              v-model="formItem.plate_num"
+              @on-enter="handleSearch"
+              placeholder="请输入车牌号"
+              style="width: 200px"
+            />
           </FormItem>
           <FormItem label="填单人">
-            <Input v-model="formItem.key" placeholder="请输入填单人" style="width: 200px" />
+            <Input
+              v-model="formItem.key"
+              @on-enter="handleSearch"
+              placeholder="请输入填单人"
+              style="width: 200px"
+            />
           </FormItem>
           <FormItem>
             <Button type="primary" @click="handleSearch">查询</Button>
@@ -177,7 +187,8 @@ export default {
               '/rentalcars/ticket/page?pageIndex=' +
               this.currentPage +
               '&pageSize=' +
-              this.currentPageSize,
+              this.currentPageSize +
+              '&sortField=create_time&sortOrder=desc',
             method: 'get',
             headers: { 'Content-Type': 'application/json' }
           }).then(
@@ -308,7 +319,7 @@ export default {
                 res
               );
               if (res.data.code === 0) {
-                this.$Message.info('操作成功');
+                this.$Message.success('操作成功');
                 this.mOrderData.splice(index, 1);
               } else {
                 this.$Message.error({
@@ -356,7 +367,8 @@ export default {
           '/rentalcars/ticket/page?pageIndex=' +
           this.currentPage +
           '&pageSize=' +
-          this.currentPageSize,
+          this.currentPageSize +
+          '&sortField=create_time&sortOrder=desc',
         method: 'get',
         headers: { 'Content-Type': 'application/json' }
       }).then(
@@ -398,7 +410,8 @@ export default {
           '/rentalcars/ticket/page?pageIndex=' +
           this.currentPage +
           '&pageSize=' +
-          this.currentPageSize,
+          this.currentPageSize +
+          '&sortField=create_time&sortOrder=desc',
         method: 'get',
         headers: { 'Content-Type': 'application/json' }
       }).then(
@@ -471,7 +484,11 @@ export default {
       console.log('MaintenanceOrder index.vue handleSearch');
       this.spinShow = true;
       this.axios({
-        url: this.global_.path.baseUrl + '/rentalcars/ticket/page' + strTemp,
+        url:
+          this.global_.path.baseUrl +
+          '/rentalcars/ticket/page' +
+          strTemp +
+          '&sortField=create_time&sortOrder=desc',
         method: 'get',
         headers: { 'Content-Type': 'application/json' }
       }).then(

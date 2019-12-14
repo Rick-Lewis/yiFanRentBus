@@ -7,6 +7,7 @@
         inline
         label-colon
         style="display: flex; align-items: center;"
+        @submit.native.prevent
       >
         <FormItem label="品牌名称">
           <Input v-model="formItem.brand_name" placeholder="请输入品牌名称" style="width: 200px" />
@@ -209,7 +210,7 @@ export default {
                 res
               );
               if (res.data.code === 0) {
-                this.$Message.info('操作成功');
+                this.$Message.success('操作成功');
                 this.brandData.splice(index, 1);
               } else {
                 this.$Message.error({

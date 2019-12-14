@@ -1,7 +1,7 @@
 <template>
   <div class="vehicle-model-container">
     <div class="filtrate-container">
-      <Form :model="formItem" label-colon>
+      <Form :model="formItem" label-colon @submit.native.prevent>
         <FormItem label="所属品牌" class="from-brand">
           <!-- <span>所属品牌：</span> -->
           <RadioGroup v-model="formItem.from_brand_check" @on-change="handleSearch">
@@ -57,9 +57,12 @@
         <template v-slot:brand_name="{ row }">
           <span>{{ row.brand_name }}</span>
         </template>
+        <template v-slot:standard_price="{ row }">
+          <span>{{ row.standard_price.toFixed(2) }}</span>
+        </template>
         <template v-slot:state="{ row, index }">
           <Switch
-            :value="row.state == '0' ? false : true"
+            :value="row.state == '1' ? true : false"
             @on-change="(val) => handleSwitchChange(val, index)"
           >
             <span slot="open">开</span>
@@ -126,8 +129,8 @@ export default {
         },
         {
           title: '今日价格',
-          key: 'standard_price',
-          align: 'center'
+          slot: 'standard_price',
+          align: 'left'
         },
         {
           title: '车型状态',
@@ -211,7 +214,8 @@ export default {
         '/rentalcars/vehicle/model/page?pageIndex=' +
         this.currentPage +
         '&pageSize=' +
-        this.currentPageSize,
+        this.currentPageSize +
+        '&sortField=create_time&sortOrder=desc',
       method: 'get',
       headers: { 'Content-Type': 'application/json' }
     }).then(
@@ -293,9 +297,9 @@ export default {
             res
           );
           if (res.data.code === 0) {
-            this.$Message.info('操作成功');
+            this.$Message.success('操作成功');
             this.vehicleModelData[index].state =
-              this.vehicleModelData[index].state === 1 ? 0 : 1;
+              this.vehicleModelData[index].state === 1 ? 2 : 1;
           } else {
             this.$Message.error({
               content: '操作失败'
@@ -330,7 +334,7 @@ export default {
       //           res
       //         );
       //         if (res.data.code === 0) {
-      //           this.$Message.info('操作成功');
+      //           this.$Message.success('操作成功');
       //           this.vehicleModelData[index].state =
       //             this.vehicleModelData[index].state === 1 ? 0 : 1;
       //         } else {
@@ -411,7 +415,8 @@ export default {
           this.currentPage +
           '&pageSize=' +
           this.currentPageSize +
-          strTemp,
+          strTemp +
+          '&sortField=create_time&sortOrder=desc',
         method: 'get',
         headers: { 'Content-Type': 'application/json' }
       }).then(
@@ -473,7 +478,7 @@ export default {
                 res
               );
               if (res.data.code === 0) {
-                this.$Message.info('操作成功');
+                this.$Message.success('操作成功');
                 this.vehicleModelData.splice(index, 1);
               } else {
                 this.$Message.error({
@@ -525,7 +530,8 @@ export default {
           '/rentalcars/vehicle/model/page?pageIndex=' +
           this.currentPage +
           '&pageSize=' +
-          this.currentPageSize,
+          this.currentPageSize +
+          '&sortField=create_time&sortOrder=desc',
         method: 'get',
         headers: { 'Content-Type': 'application/json' }
       }).then(
@@ -565,7 +571,8 @@ export default {
           '/rentalcars/vehicle/model/page?pageIndex=' +
           this.currentPage +
           '&pageSize=' +
-          this.currentPageSize,
+          this.currentPageSize +
+          '&sortField=create_time&sortOrder=desc',
         method: 'get',
         headers: { 'Content-Type': 'application/json' }
       }).then(

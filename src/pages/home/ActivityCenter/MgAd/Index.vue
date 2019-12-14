@@ -1,7 +1,7 @@
 <template>
   <div class="ad-container">
     <div class="filtrate-container">
-      <Form :model="formItem" label-colon>
+      <Form :model="formItem" @submit.native.prevent label-colon>
         <FormItem label="状态">
           <RadioGroup v-model="formItem.statusName" @on-change="handleSearch">
             <Radio
@@ -330,7 +330,7 @@ export default {
                 res
               );
               if (res.data.code === 0) {
-                this.$Message.info('操作成功');
+                this.$Message.success('操作成功');
                 this.adData.splice(index, 1);
               } else {
                 this.$Message.error({
@@ -389,7 +389,7 @@ export default {
                 res
               );
               if (res.data.code === 0) {
-                this.$Message.info('操作成功');
+                this.$Message.success('操作成功');
                 this.adData[index].status =
                   this.adData[index].status === 1 ? 2 : 1;
               } else {

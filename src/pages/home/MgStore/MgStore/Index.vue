@@ -1,7 +1,7 @@
 <template>
   <div class="mg-store-container">
     <div class="filtrate-container">
-      <Form :model="formItem" label-colon>
+      <Form :model="formItem" label-colon @submit.native.prevent>
         <FormItem label="门店状态">
           <RadioGroup v-model="formItem.statusName" @on-change="handleSearch">
             <Radio
@@ -147,7 +147,8 @@ export default {
         '/rentalcars/store/page?pageIndex=' +
         this.currentPage +
         '&pageSize=' +
-        this.currentPageSize,
+        this.currentPageSize +
+        '&sortField=create_time&sortOrder=desc',
       method: 'get',
       headers: { 'Content-Type': 'application/json' }
     }).then(
@@ -221,7 +222,7 @@ export default {
                 res
               );
               if (res.data.code === 0) {
-                this.$Message.info('操作成功');
+                this.$Message.success('操作成功');
                 this.storeData[index].status =
                   this.storeData[index].status !== 1 ? 1 : 2;
               } else {
@@ -270,7 +271,7 @@ export default {
                 res
               );
               if (res.data.code === 0) {
-                this.$Message.info('操作成功');
+                this.$Message.success('操作成功');
                 this.storeData.splice(index, 1);
               } else {
                 this.$Message.error({
@@ -370,7 +371,8 @@ export default {
           this.currentPage +
           '&pageSize=' +
           this.currentPageSize +
-          strTemp,
+          strTemp +
+          '&sortField=create_time&sortOrder=desc',
         method: 'get',
         headers: { 'Content-Type': 'application/json' }
       }).then(

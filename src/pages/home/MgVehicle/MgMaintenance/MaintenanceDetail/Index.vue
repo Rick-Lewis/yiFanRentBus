@@ -244,7 +244,7 @@ export default {
           res
         );
         if (res.data.code === 0) {
-          this.$Message.info('操作成功');
+          this.$Message.success('操作成功');
           this.maintenanceDetail = res.data.data;
         } else {
           this.$Message.error({

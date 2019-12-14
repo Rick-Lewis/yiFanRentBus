@@ -12,40 +12,26 @@
           label-colon
         >
           <FormItem label="标题" prop="title">
-            <Input
-              v-model="basicInfoForm.title"
-              placeholder="请输入广告标题"
-              style="width: 200px"
-            />
+            <Input v-model="basicInfoForm.title" placeholder="请输入广告标题" style="width: 200px" />
           </FormItem>
-          <FormItem label="图片" prop="upload_list">
-            <div
-              class="upload-list"
-              v-for="(item, index) in basicInfoForm.upload_list"
-              v-bind:key="index"
-            >
-              <template v-if="item.status === 'finished'">
-                <img :src="item.url" />
-                <div class="upload-list-cover">
-                  <Icon
-                    type="ios-eye-outline"
-                    @click.native="handleView(item)"
-                  ></Icon>
-                  <Icon
-                    type="ios-trash-outline"
-                    @click.native="handleRemove(item)"
-                  ></Icon>
-                </div>
-              </template>
-              <template v-else>
-                <Progress
-                  v-if="item.showProgress"
-                  :percent="item.percentage"
-                  hide-info
-                ></Progress>
-              </template>
-            </div>
+          <FormItem label="图片" prop="upload_list" required>
             <div>
+              <div
+                class="upload-list"
+                v-for="(item, index) in basicInfoForm.upload_list"
+                v-bind:key="index"
+              >
+                <template v-if="item.status === 'finished'">
+                  <img :src="item.url" />
+                  <div class="upload-list-cover">
+                    <Icon type="ios-eye-outline" @click.native="handleView(item)"></Icon>
+                    <Icon type="ios-trash-outline" @click.native="handleRemove(item)"></Icon>
+                  </div>
+                </template>
+                <template v-else>
+                  <Progress v-if="item.showProgress" :percent="item.percentage" hide-info></Progress>
+                </template>
+              </div>
               <Upload
                 ref="upload"
                 :show-upload-list="false"
@@ -60,31 +46,28 @@
                 multiple
                 type="drag"
                 :action="uploadUrl"
-                style="display:inline-block; width: 200px;"
-                :style="
-                  basicInfoForm.upload_list.length === 0
-                    ? {}
-                    : { display: 'none' }
-                "
+                style="display:inline-block; width: 355px;"
+                v-if="basicInfoForm.upload_list.length === 0"
               >
-                <div style="width:200px; height:100px; line-height:100px;">
+                <div style="width:355px; height:150px; line-height:150px;">
                   <Icon type="ios-camera" size="20"></Icon>
                 </div>
               </Upload>
-              <span style="margin-left: 10px; vertical-align: text-bottom;"
-                >请上传分辨率为375*100，png、jpg格式的图片，大小不超过500KB</span
-              >
+              <span
+                style="margin-left: 10px; vertical-align: text-bottom;"
+              >请上传分辨率为355*150，png、jpg格式的图片，大小不超过500KB</span>
             </div>
             <Modal title="View Image" v-model="visible">
               <img :src="this.imgUrl" v-if="visible" style="width: 100%" />
             </Modal>
           </FormItem>
           <FormItem label="跳转链接" prop="url">
-            <Input
-              v-model="basicInfoForm.url"
-              placeholder="请输入跳转链接"
-              style="width: 200px"
-            />
+            <Input v-model="basicInfoForm.url" placeholder="请输入跳转链接" style="width: 250px">
+              <Select v-model="basicInfoForm.preUrl" slot="prepend" style="width: 80px">
+                <Option value="http://">http://</Option>
+                <Option value="https://">https://</Option>
+              </Select>
+            </Input>
           </FormItem>
           <FormItem label="类型" required>
             <RadioGroup v-model="basicInfoForm.type_check">
@@ -109,9 +92,7 @@
         </Form>
       </div>
       <div class="btn-container">
-        <Button type="primary" @click="handleSubmit('formDynamic')"
-          >提交</Button
-        >
+        <Button type="primary" @click="handleSubmit('formDynamic')">提交</Button>
         <Button style="margin-left: 8px" @click="handleCancel()">取消</Button>
       </div>
       <Spin size="large" fix v-if="spinShow"></Spin>
@@ -138,7 +119,8 @@ export default {
         upload_list: [],
         type_check: '营销活动',
         status_check: '否',
-        url: ''
+        url: '',
+        preUrl: 'http://'
       },
       ruleValidate: {
         title: [
@@ -169,10 +151,7 @@ export default {
         this.global_.path.baseUrl +
         '/rentalcars/upload/image?image&folderName=banner',
       spinShow: false,
-      statusList: [
-        { name: '否', status: 0 },
-        { name: '是', status: 1 }
-      ],
+      statusList: [{ name: '否', status: 2 }, { name: '是', status: 1 }],
       typeList: [
         { name: '营销活动', value: 0 },
         { name: '广告', value: 1 },
@@ -203,11 +182,15 @@ export default {
             let temp2 = this.statusList.find(
               item => item.status === res.data.data.status
             );
+            let temp3 = res.data.data.url.match(new RegExp(/(http(s*)):\/\//));
             this.basicInfoForm = Object.assign({}, this.basicInfoForm, {
               title: res.data.data.title,
               type_check: temp1.name,
               status_check: temp2.name,
-              url: res.data.data.url
+              url: temp3
+                ? res.data.data.url.split(temp3[0])[1]
+                : res.data.data.url,
+              preUrl: temp3 ? temp3[0] : ''
             });
             if (res.data.data.pic) {
               this.basicInfoForm.upload_list.push({
@@ -309,7 +292,7 @@ export default {
         if (valid) {
           let temp = {
             title: this.basicInfoForm.title,
-            url: this.basicInfoForm.url,
+            url: this.basicInfoForm.preUrl + this.basicInfoForm.url,
             pic: this.basicInfoForm.upload_list[0].name,
             type: this.typeList[tempIndex1].value,
             status: this.statusList[tempIndex2].status

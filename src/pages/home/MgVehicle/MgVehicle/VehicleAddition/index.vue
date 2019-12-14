@@ -3,19 +3,10 @@
     <div>
       <div class="basic-info-container">
         <div class="header">基础信息</div>
-        <Form
-          :model="basicInfoForm"
-          class="content"
-          :label-width="120"
-          label-colon
-        >
+        <Form :model="basicInfoForm" class="content" :label-width="120" label-colon>
           <FormItem label="车牌号" style="margin-left: 0;">
             <!-- <span>车牌号：</span> -->
-            <Input
-              v-model="basicInfoForm.plate_num"
-              placeholder="请输入车牌号"
-              style="width: 200px"
-            />
+            <Input v-model="basicInfoForm.plate_num" placeholder="请输入车牌号" style="width: 200px" />
           </FormItem>
           <FormItem label="所属车型">
             <!-- <span>车型名称：</span> -->
@@ -30,49 +21,31 @@
           </FormItem>
           <FormItem label="车辆识别代码" style="margin-left: 0;">
             <!-- <span>车辆识别代码：</span> -->
-            <Input
-              v-model="basicInfoForm.vin"
-              placeholder="请输入车辆识别代码"
-              style="width: 200px"
-            />
+            <Input v-model="basicInfoForm.vin" placeholder="请输入车辆识别代码" style="width: 200px" />
           </FormItem>
           <FormItem label="发动机号" style="margin-left: 0;">
             <!-- <span>发动机号：</span> -->
-            <Input
-              v-model="basicInfoForm.engine_no"
-              placeholder="请输入发动机号"
-              style="width: 200px"
-            />
+            <Input v-model="basicInfoForm.engine_no" placeholder="请输入发动机号" style="width: 200px" />
           </FormItem>
           <FormItem label="车辆图片">
             <!-- <span>车辆图片：</span> -->
-            <div
-              class="upload-list"
-              v-for="(item, index) in basicInfoForm.upload_list"
-              v-bind:key="index"
-            >
-              <template v-if="item.status === 'finished'">
-                <img :src="item.url" />
-                <div class="upload-list-cover">
-                  <Icon
-                    type="ios-eye-outline"
-                    @click.native="handleView(item)"
-                  ></Icon>
-                  <Icon
-                    type="ios-trash-outline"
-                    @click.native="handleRemove(item)"
-                  ></Icon>
-                </div>
-              </template>
-              <template v-else>
-                <Progress
-                  v-if="item.showProgress"
-                  :percent="item.percentage"
-                  hide-info
-                ></Progress>
-              </template>
-            </div>
             <div>
+              <div
+                class="upload-list"
+                v-for="(item, index) in basicInfoForm.upload_list"
+                v-bind:key="index"
+              >
+                <template v-if="item.status === 'finished'">
+                  <img :src="item.url" />
+                  <div class="upload-list-cover">
+                    <Icon type="ios-eye-outline" @click.native="handleView(item)"></Icon>
+                    <Icon type="ios-trash-outline" @click.native="handleRemove(item)"></Icon>
+                  </div>
+                </template>
+                <template v-else>
+                  <Progress v-if="item.showProgress" :percent="item.percentage" hide-info></Progress>
+                </template>
+              </div>
               <Upload
                 ref="upload"
                 :show-upload-list="false"
@@ -87,19 +60,13 @@
                 type="drag"
                 :action="uploadUrl"
                 style="display: inline-block;width:200px;"
-                :style="
-                  basicInfoForm.upload_list.length === 0
-                    ? {}
-                    : { display: 'none' }
-                "
+                v-if="basicInfoForm.upload_list.length === 0"
               >
                 <div style="width:200px; height:100px; line-height:100px;">
                   <Icon type="ios-camera" size="20"></Icon>
                 </div>
               </Upload>
-              <span style="margin-left: 10px;"
-                >请上传分辨率为375*100，png、jpg格式的图片，大小不超过500KB</span
-              >
+              <span style="margin-left: 10px;">请上传分辨率为375*100，png、jpg格式的图片，大小不超过500KB</span>
             </div>
             <Modal title="View Image" v-model="visible">
               <img
@@ -113,11 +80,7 @@
           </FormItem>
           <FormItem label="颜色">
             <!-- <span>颜色：</span> -->
-            <Input
-              v-model="basicInfoForm.color"
-              placeholder="请输入颜色"
-              style="width: 200px"
-            />
+            <Input v-model="basicInfoForm.color" placeholder="请输入颜色" style="width: 200px" />
           </FormItem>
           <FormItem label="出厂日期" style="margin-left: 0;">
             <!-- <span>出厂时间：</span> -->
@@ -155,18 +118,13 @@
           </FormItem>
           <FormItem label="所属门店">
             <!-- <span>所属门店：</span> -->
-            <Select
-              v-model="basicInfoForm.shopCheck"
-              filterable
-              style="width: 200px;"
-            >
+            <Select v-model="basicInfoForm.shopCheck" filterable style="width: 200px;">
               <Option
                 v-for="(item, index) in shopList"
                 :value="item.name"
                 :key="index"
                 placeholder="请输入所属门店"
-                >{{ item.name }}</Option
-              >
+              >{{ item.name }}</Option>
             </Select>
             <!-- <RadioGroup v-model="basicInfoForm.shopCheck">
               <Radio
