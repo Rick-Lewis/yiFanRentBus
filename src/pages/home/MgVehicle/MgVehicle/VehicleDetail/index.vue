@@ -5,7 +5,7 @@
       <div class="content">
         <div class="left">
           <div>{{vehicleDetail && vehicleDetail.vehicleDetail.plate_num}}</div>
-          <div>车型信息：{{vehicleDetail && vehicleDetail.vehicleDetail.model_name}}</div>
+          <div>品牌信息：{{vehicleDetail && vehicleDetail.vehicleModel.brand_name}}</div>
           <div>发动机号：{{vehicleDetail && vehicleDetail.vehicleDetail.engine_no}}</div>
           <div>出厂时间：{{vehicleDetail && vehicleDetail.vehicleDetail.product_date}}</div>
           <div>购买时间：{{vehicleDetail && vehicleDetail.vehicleDetail.purchase_date}}</div>
@@ -15,6 +15,7 @@
             <div>状态</div>
             <div>{{vehicleDetail && getStatusNameByValue(vehicleDetail.vehicleDetail.state)}}</div>
           </div>
+          <div>车型信息：{{vehicleDetail && vehicleDetail.vehicleDetail.model_name}}</div>
           <div>车辆识别代码：{{vehicleDetail && vehicleDetail.vehicleDetail.vin}}</div>
           <div>车辆颜色：{{vehicleDetail && vehicleDetail.vehicleDetail.color}}</div>
           <div>购买价格：{{vehicleDetail && vehicleDetail.vehicleDetail.purchase_price}}元</div>

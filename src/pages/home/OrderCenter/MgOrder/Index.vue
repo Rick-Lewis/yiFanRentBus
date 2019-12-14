@@ -229,7 +229,8 @@ export default {
         '/rentalcars/order/rental/page?pageIndex=' +
         this.currentPage +
         '&pageSize=' +
-        this.currentPageSize,
+        this.currentPageSize +
+        '&sortField=time_create&sortOrder=desc',
       method: 'get',
       headers: { 'Content-Type': 'application/json' }
     }).then(
@@ -586,7 +587,8 @@ export default {
         url:
           this.global_.path.baseUrl +
           '/rentalcars/order/rental/page' +
-          strTemp,
+          strTemp +
+          '&sortField=time_create&sortOrder=desc',
         method: 'get',
         headers: { 'Content-Type': 'application/json' }
       }).then(
@@ -670,7 +672,8 @@ export default {
           this.currentPage +
           '&pageSize=' +
           this.currentPageSize +
-          strTemp,
+          strTemp +
+          '&sortField=time_create&sortOrder=desc',
         method: 'get',
         headers: { 'Content-Type': 'application/json' }
       }).then(
@@ -738,7 +741,8 @@ export default {
           this.currentPage +
           '&pageSize=' +
           this.currentPageSize +
-          strTemp,
+          strTemp +
+          '&sortField=time_create&sortOrder=desc',
         method: 'get',
         headers: { 'Content-Type': 'application/json' }
       }).then(

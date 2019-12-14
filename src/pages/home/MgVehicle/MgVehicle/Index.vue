@@ -18,21 +18,21 @@
             <!-- <span>车牌号：</span> -->
             <Input v-model="formItem.plate_num" placeholder="请输入车牌号" style="width: 200px" />
           </FormItem>
-          <FormItem label="车辆识别代码">
+          <FormItem label="品牌名称">
             <!-- <span>车辆识别代码：</span> -->
             <Input
-              v-model="formItem.vin"
+              v-model="formItem.brand_name"
               @on-enter="handleSearch"
-              placeholder="请输入车辆识别代码"
+              placeholder="请输入品牌名称"
               style="width: 200px"
             />
           </FormItem>
-          <FormItem label="发动机号">
+          <FormItem label="车型名称">
             <!-- <span>发动机号：</span> -->
             <Input
-              v-model="formItem.engine_no"
+              v-model="formItem.model_name"
               @on-enter="handleSearch"
-              placeholder="请输入发动机号"
+              placeholder="请输入车型名称"
               style="width: 200px"
             />
           </FormItem>
@@ -92,8 +92,8 @@ export default {
       formItem: {
         vehicle_status_check: '全部',
         plate_num: '',
-        vin: '',
-        engine_no: ''
+        brand_name: '',
+        model_name: ''
       },
       vehicleColumns: [
         {
@@ -101,20 +101,25 @@ export default {
           key: 'plate_num',
           align: 'center'
         },
-        {
-          title: '车辆识别代码',
-          width: 180,
-          key: 'vin',
-          align: 'center'
-        },
-        {
-          title: '发动机号',
-          key: 'engine_no',
-          align: 'center'
-        },
+        // {
+        //   title: '车辆识别代码',
+        //   width: 180,
+        //   key: 'vin',
+        //   align: 'center'
+        // },
+        // {
+        //   title: '发动机号',
+        //   key: 'engine_no',
+        //   align: 'center'
+        // },
         {
           title: '颜色',
           key: 'color',
+          align: 'center'
+        },
+        {
+          title: '品牌',
+          key: 'brand_name',
           align: 'center'
         },
         {
@@ -253,11 +258,11 @@ export default {
       if (this.formItem.plate_num) {
         strTemp = strTemp + '&plate_num=' + this.formItem.plate_num;
       }
-      if (this.formItem.vin) {
-        strTemp = strTemp + '&vin=' + this.formItem.vin;
+      if (this.formItem.brand_name) {
+        strTemp = strTemp + '&brand_name=' + this.formItem.brand_name;
       }
-      if (this.formItem.engine_no) {
-        strTemp = strTemp + '&engine_no=' + this.formItem.engine_no;
+      if (this.formItem.model_name) {
+        strTemp = strTemp + '&model_name=' + this.formItem.model_name;
       }
       if (statusTemp !== -2) {
         strTemp = strTemp + '&state=' + statusTemp;

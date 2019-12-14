@@ -291,7 +291,8 @@ export default {
     this.axios({
       url:
         this.global_.path.baseUrl +
-        '/rentalcars/order/rental/page?status=3',
+        '/rentalcars/order/rental/page?status=3' +
+        '&sortField=time_create&sortOrder=desc',
       method: 'get',
       headers: { 'Content-Type': 'application/json' }
     }).then(
@@ -374,7 +375,8 @@ export default {
             url:
               this.global_.path.baseUrl +
               '/rentalcars/order/rental/page' +
-              strTemp,
+              strTemp +
+              '&sortField=time_create&sortOrder=desc',
             method: 'get',
             headers: { 'Content-Type': 'application/json' }
           }).then(
@@ -416,7 +418,8 @@ export default {
             url:
               this.global_.path.baseUrl +
               '/rentalcars/order/rental/page' +
-              strTemp,
+              strTemp +
+              '&sortField=time_create&sortOrder=desc',
             method: 'get',
             headers: { 'Content-Type': 'application/json' }
           }).then(
@@ -468,7 +471,8 @@ export default {
         url:
           this.global_.path.baseUrl +
           '/rentalcars/order/rental/page' +
-          temp,
+          temp +
+          '&sortField=time_create&sortOrder=desc',
         method: 'get',
         headers: { 'Content-Type': 'application/json' }
       }).then(
@@ -521,7 +525,8 @@ export default {
         url:
           this.global_.path.baseUrl +
           '/rentalcars/order/rental/page' +
-          strTemp,
+          strTemp +
+          '&sortField=time_create&sortOrder=desc',
         method: 'get',
         headers: { 'Content-Type': 'application/json' }
       }).then(
@@ -579,7 +584,8 @@ export default {
         url:
           this.global_.path.baseUrl +
           '/rentalcars/order/rental/page' +
-          strTemp,
+          strTemp +
+          '&sortField=time_create&sortOrder=desc',
         method: 'get',
         headers: { 'Content-Type': 'application/json' }
       }).then(
@@ -830,7 +836,8 @@ export default {
           url:
             this.global_.path.baseUrl +
             '/rentalcars/order/rental/page' +
-            strTemp,
+            strTemp +
+            '&sortField=time_create&sortOrder=desc',
           method: 'get',
           headers: { 'Content-Type': 'application/json' }
         }).then(
@@ -880,7 +887,8 @@ export default {
           url:
             this.global_.path.baseUrl +
             '/rentalcars/order/rental/page' +
-            strTemp,
+            strTemp +
+            '&sortField=time_create&sortOrder=desc',
           method: 'get',
           headers: { 'Content-Type': 'application/json' }
         }).then(
