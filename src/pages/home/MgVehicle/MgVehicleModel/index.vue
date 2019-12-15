@@ -130,7 +130,7 @@ export default {
         {
           title: '今日价格',
           slot: 'standard_price',
-          align: 'left'
+          align: 'right'
         },
         {
           title: '车型状态',
@@ -215,7 +215,7 @@ export default {
         this.currentPage +
         '&pageSize=' +
         this.currentPageSize +
-        '&sortField=create_time&sortOrder=desc',
+        '&sortField=id&sortOrder=desc',
       method: 'get',
       headers: { 'Content-Type': 'application/json' }
     }).then(
@@ -416,7 +416,7 @@ export default {
           '&pageSize=' +
           this.currentPageSize +
           strTemp +
-          '&sortField=create_time&sortOrder=desc',
+          '&sortField=id&sortOrder=desc',
         method: 'get',
         headers: { 'Content-Type': 'application/json' }
       }).then(
@@ -531,7 +531,7 @@ export default {
           this.currentPage +
           '&pageSize=' +
           this.currentPageSize +
-          '&sortField=create_time&sortOrder=desc',
+          '&sortField=id&sortOrder=desc',
         method: 'get',
         headers: { 'Content-Type': 'application/json' }
       }).then(
@@ -572,7 +572,7 @@ export default {
           this.currentPage +
           '&pageSize=' +
           this.currentPageSize +
-          '&sortField=create_time&sortOrder=desc',
+          '&sortField=id&sortOrder=desc',
         method: 'get',
         headers: { 'Content-Type': 'application/json' }
       }).then(
