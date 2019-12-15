@@ -46,15 +46,15 @@
                 multiple
                 type="drag"
                 :action="uploadUrl"
-                style="display:inline-block; width: 355px;"
-                v-if="basicInfoForm.upload_list.length === 0"
+                style="display:inline-block;"
+                :style="basicInfoForm.upload_list.length === 0 ? null : {display: 'none'}"
               >
-                <div style="width:355px; height:150px; line-height:150px;">
+                <div style="width:353px; height:148px; line-height:148px;">
                   <Icon type="ios-camera" size="20"></Icon>
                 </div>
               </Upload>
               <span
-                style="margin-left: 10px; vertical-align: text-bottom;"
+                style="margin-left: 15px; vertical-align: text-bottom;"
               >请上传分辨率为355*150，png、jpg格式的图片，大小不超过500KB</span>
             </div>
             <Modal title="View Image" v-model="visible">

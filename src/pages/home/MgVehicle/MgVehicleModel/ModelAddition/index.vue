@@ -10,7 +10,7 @@
           </FormItem>
           <FormItem label="车型图片">
             <!-- <span>车型图片：</span> -->
-            <div>
+            <div style="line-height: 1;">
               <div
                 class="upload-list"
                 v-for="(item, index) in basicInfoForm.upload_list"
@@ -20,7 +20,7 @@
                   <img :src="item.url" />
                   <div class="upload-list-cover">
                     <Icon type="ios-eye-outline" @click.native="handleView(item)"></Icon>
-                    <Icon type="ios-trash-outline" @click.native="handleRemove(item)"></Icon>
+                    <Icon type="ios-trash-outline" @click="handleRemove(item)"></Icon>
                   </div>
                 </template>
                 <template v-else>
@@ -40,14 +40,14 @@
                 :before-upload="handleBeforeUpload"
                 type="drag"
                 :action="uploadUrl"
-                style="display: inline-block;width:200px;"
-                v-if="basicInfoForm.upload_list.length === 0"
+                style="display: inline-block;"
+                :style="basicInfoForm.upload_list.length === 0 ? null : {display: 'none'}"
               >
-                <div style="width:200px; height:110px; line-height:110px;">
+                <div style="width:198px; height:108px; line-height:108px;">
                   <Icon type="ios-camera" size="20"></Icon>
                 </div>
               </Upload>
-              <span style="margin-left: 10px;">请上传分辨率为100*55，png、jpg格式的图片，大小不超过500KB</span>
+              <span style="margin-left: 15px;">请上传分辨率为200*110，png、jpg格式的图片，大小不超过500KB</span>
             </div>
             <Modal title="View Image" v-model="visible">
               <img :src="this.imgUrl" v-if="visible" style="width: 100%" />

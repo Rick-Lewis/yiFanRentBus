@@ -71,14 +71,14 @@
                 multiple
                 type="drag"
                 :action="uploadUrl"
-                style="display: inline-block;width:58px;"
-                v-if="basicInfoForm.upload_list.length === 0"
+                style="display: inline-block;"
+                :style="basicInfoForm.upload_list.length === 0 ? null : {display: 'none'}"
               >
-                <div style="width: 58px;height:58px;line-height: 58px;">
+                <div style="width: 56px;height:56px;line-height: 56px;">
                   <Icon type="ios-camera" size="20"></Icon>
                 </div>
               </Upload>
-              <span style="margin-left: 10px; vertical-align: text-bottom;"
+              <span style="margin-left: 15px; vertical-align: text-bottom;"
                 >支持格式png、jpg，分辨率100*100的图片，大小不超过500k</span
               >
             </div>

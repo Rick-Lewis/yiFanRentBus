@@ -53,6 +53,13 @@ export default {
       this.username = window.localStorage.getItem('username');
       this.password = window.localStorage.getItem('password');
     }
+    let that = this;
+    document.onkeydown = function(e) {
+      var key = window.event.keyCode;
+      if (key === 13) {
+        that.handleLogin();
+      }
+    };
   },
   methods: {
     // 登录回调

@@ -478,17 +478,20 @@ export default {
       if (this.formItem.key) {
         strTemp = strTemp + '&operator_name=' + this.formItem.key;
       }
+      strTemp =
+        strTemp +
+        '&pageIndex=' +
+        this.currentPage +
+        '&pageSize=' +
+        this.currentPageSize +
+        '&sortField=create_time&sortOrder=desc';
       if (strTemp) {
         strTemp = '?' + strTemp.substr(1);
       }
-      console.log('MaintenanceOrder index.vue handleSearch');
+      console.log('MaintenanceOrder index.vue handleSearch', strTemp);
       this.spinShow = true;
       this.axios({
-        url:
-          this.global_.path.baseUrl +
-          '/rentalcars/ticket/page' +
-          strTemp +
-          '&sortField=create_time&sortOrder=desc',
+        url: this.global_.path.baseUrl + '/rentalcars/ticket/page' + strTemp,
         method: 'get',
         headers: { 'Content-Type': 'application/json' }
       }).then(
