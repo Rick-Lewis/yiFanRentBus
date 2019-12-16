@@ -12,7 +12,11 @@
           label-colon
         >
           <FormItem label="门店名称" prop="name">
-            <Input v-model="basicInfoForm.name" placeholder="请输入门店名称" style="width: 475px" />
+            <Input
+              v-model="basicInfoForm.name"
+              placeholder="请输入门店名称"
+              style="width: 475px"
+            />
           </FormItem>
           <FormItem label="门店图片(选填)" prop="upload_list">
             <div>
@@ -24,12 +28,22 @@
                 <template v-if="item.status === 'finished'">
                   <img :src="item.url" />
                   <div class="upload-list-cover">
-                    <Icon type="ios-eye-outline" @click.native="handleView(item)"></Icon>
-                    <Icon type="ios-trash-outline" @click.native="handleRemove(item)"></Icon>
+                    <Icon
+                      type="ios-eye-outline"
+                      @click.native="handleView(item)"
+                    ></Icon>
+                    <Icon
+                      type="ios-trash-outline"
+                      @click.native="handleRemove(item)"
+                    ></Icon>
                   </div>
                 </template>
                 <template v-else>
-                  <Progress v-if="item.showProgress" :percent="item.percentage" hide-info></Progress>
+                  <Progress
+                    v-if="item.showProgress"
+                    :percent="item.percentage"
+                    hide-info
+                  ></Progress>
                 </template>
               </div>
               <Upload
@@ -47,20 +61,30 @@
                 type="drag"
                 :action="uploadUrl"
                 style="display:inline-block;"
-                :style="basicInfoForm.upload_list.length === 0 ? null : {display: 'none'}"
+                :style="
+                  basicInfoForm.upload_list.length === 0
+                    ? null
+                    : { display: 'none' }
+                "
               >
                 <div style="width:98px; height:98px; line-height:98px;">
                   <Icon type="ios-camera" size="20"></Icon>
                 </div>
               </Upload>
-              <span style="margin-left: 15px;">请上传100×100，png、jpg格式的图片，大小不超过500KB</span>
+              <span style="margin-left: 15px;"
+                >请上传100×100，png、jpg格式的图片，大小不超过500KB</span
+              >
             </div>
             <Modal title="View Image" v-model="visible">
               <img :src="this.imgUrl" v-if="visible" style="width: 100%" />
             </Modal>
           </FormItem>
           <FormItem label="门店电话" prop="telephone">
-            <Input v-model="basicInfoForm.telephone" placeholder="请输入门店电话" style="width: 475px" />
+            <Input
+              v-model="basicInfoForm.telephone"
+              placeholder="请输入门店电话"
+              style="width: 475px"
+            />
           </FormItem>
           <FormItem label="营业时间" class="time">
             <TimePicker
@@ -94,17 +118,30 @@
               v-model="posInfoForm.currentAddress"
               :load-data="loadData"
               style="width: 475px;"
+              change-on-select
             ></Cascader>
           </FormItem>
           <FormItem label="门店地址" prop="address">
-            <Input v-model="posInfoForm.address" placeholder="请输入门店地址" style="width: 475px;" />
+            <Input
+              v-model="posInfoForm.address"
+              placeholder="请输入门店地址"
+              style="width: 475px;"
+            />
           </FormItem>
           <div style="display: flex;">
             <FormItem label="经度">
-              <Input v-model="posInfoForm.latitude" placeholder="请输入门店经度" style="width: 150px;" />
+              <Input
+                v-model="posInfoForm.latitude"
+                placeholder="请输入门店经度"
+                style="width: 150px;"
+              />
             </FormItem>
             <FormItem label="纬度">
-              <Input v-model="posInfoForm.longitude" placeholder="请输入门店纬度" style="width: 150px;" />
+              <Input
+                v-model="posInfoForm.longitude"
+                placeholder="请输入门店纬度"
+                style="width: 150px;"
+              />
             </FormItem>
           </div>
           <FormItem label="步行指引" prop="address">
@@ -162,7 +199,10 @@ export default {
         this.global_.path.baseUrl +
         '/rentalcars/upload/image?image&folderName=store',
       visible: false,
-      statusList: [{ name: '停运', status: 0 }, { name: '运营', status: 1 }],
+      statusList: [
+        { name: '停运', status: 0 },
+        { name: '运营', status: 1 }
+      ],
       addressData: [],
       ruleValidate: {
         name: [
@@ -223,14 +263,20 @@ export default {
               status_check: temp2.name,
               time: [res.data.data.start_time, res.data.data.end_time]
             });
+            let addressTemp = [];
+            if (res.data.data.province) {
+              addressTemp.push(res.data.data.province);
+              if (res.data.data.city) {
+                addressTemp.push(res.data.data.city);
+                if (res.data.data.county) {
+                  addressTemp.push(res.data.data.county);
+                }
+              }
+            }
             this.posInfoForm = Object.assign({}, this.posInfoForm, {
               address: res.data.data.address,
               guide: res.data.data.guide,
-              currentAddress: [
-                res.data.data.province,
-                res.data.data.city,
-                res.data.data.county
-              ],
+              currentAddress: addressTemp,
               latitude: res.data.data.latitude,
               longitude: res.data.data.longitude
             });
@@ -363,9 +409,15 @@ export default {
             start_time: this.basicInfoForm.time[0],
             end_time: this.basicInfoForm.time[1],
             status: this.statusList[tempIndex2].status,
-            province: this.posInfoForm.currentAddress[0],
-            city: this.posInfoForm.currentAddress[1],
-            county: this.posInfoForm.currentAddress[2],
+            province: this.posInfoForm.currentAddress[0]
+              ? this.posInfoForm.currentAddress[0]
+              : '',
+            city: this.posInfoForm.currentAddress[1]
+              ? this.posInfoForm.currentAddress[2]
+              : '',
+            county: this.posInfoForm.currentAddress[2]
+              ? this.posInfoForm.currentAddress[3]
+              : '',
             address: this.posInfoForm.address,
             guide: this.posInfoForm.address,
             latitude: this.posInfoForm.latitude,
