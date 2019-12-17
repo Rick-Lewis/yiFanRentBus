@@ -75,6 +75,8 @@
         }
 
         .page-container {
+            display: flex;
+            justify-content: space-between;
             text-align: right;
             margin-top: 20px;
         }

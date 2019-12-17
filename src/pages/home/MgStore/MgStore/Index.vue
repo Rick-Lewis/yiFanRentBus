@@ -31,8 +31,8 @@
         border
         :columns="storeColumns"
         :data="storeData"
-        stripe
-        @on-selection-change="handleTableChange"
+        highlight-row
+        @on-current-change="handleTableChange"
       >
         <template v-slot:duration="{ row }">
           <div>{{row.start_time + '-' + row.end_time}}</div>
@@ -49,11 +49,8 @@
         </template>
       </Table>
       <div class="page-container">
+        <div>注：点击行选择相应门店</div>
         <template>
-          <Button @click="handleSelectAll(true)">全选</Button>
-          <Button @click="handleSelectAll(false)">取消全选</Button>
-        </template>
-        <!-- <template>
           <Page
             :total="total"
             size="small"
@@ -63,13 +60,14 @@
             @on-page-size-change="handlePageSizeChange"
             show-total
           />
-        </template>-->
+        </template>
       </div>
       <Spin size="large" fix v-if="spinShow"></Spin>
     </div>
   </div>
 </template>
 <script>
+// import storeStore from '@/store/home/MgStore/index';
 export default {
   name: '',
   data: function() {
@@ -85,11 +83,6 @@ export default {
         name: ''
       },
       storeColumns: [
-        {
-          type: 'selection',
-          width: 60,
-          align: 'center'
-        },
         {
           title: '门店名称',
           key: 'name',
@@ -141,6 +134,7 @@ export default {
     };
   },
   created() {
+    // this.$store.registerModule('storeStore', storeStore);
     this.axios({
       url:
         this.global_.path.baseUrl +
@@ -184,9 +178,10 @@ export default {
     handleSelectAll(status) {
       this.$refs.selection.selectAll(status);
     },
-    handleTableChange(selection) {
-      console.log('MgStore index.vue handleTableChange', selection);
-      this.idSelection = selection.map(item => item.id);
+    handleTableChange(currentRow, oldCurrentRow) {
+      console.log('MgStore index.vue handleTableChange', currentRow);
+      this.idSelection = [currentRow.id];
+      // this.$store.dispatch('storeStore/setSelStoreList', [currentRow]);
     },
     // 上下架
     toggleStatus(index) {
@@ -403,92 +398,92 @@ export default {
           this.spinShow = false;
         }
       );
+    },
+    // 页码改变
+    handlePageChange(e) {
+      console.log('MgStore Index.vue handlePageChange', e);
+      this.currentPage = e;
+      this.spinShow = true;
+      this.axios({
+        url:
+          this.global_.path.baseUrl +
+          '/rentalcars/store/page?pageIndex=' +
+          this.currentPage +
+          '&pageSize=' +
+          this.currentPageSize,
+        method: 'get',
+        headers: { 'Content-Type': 'application/json' }
+      }).then(
+        res => {
+          console.log(
+            'MgStore Index.vue created axios /store/page success',
+            res
+          );
+          if (res.data.code === 0) {
+            this.storeData.length = 0;
+            this.storeData.push(...res.data.data.data);
+            this.total = res.data.data.total;
+          } else {
+            this.$Message.error({
+              content: '门店数据请求失败'
+            });
+          }
+          this.spinShow = false;
+        },
+        err => {
+          console.log(
+            'MgStore Index.vue created axios /store/page failure',
+            err
+          );
+          this.$Message.error({
+            content: '门店数据请求失败'
+          });
+          this.spinShow = false;
+        }
+      );
+    },
+    // 每页条数改变
+    handlePageSizeChange(e) {
+      console.log('MgStore Index.vue handlePageSizeChange', e);
+      this.currentPageSize = e;
+      this.axios({
+        url:
+          this.global_.path.baseUrl +
+          '/rentalcars/store/page?pageIndex=' +
+          this.currentPage +
+          '&pageSize=' +
+          this.currentPageSize,
+        method: 'get',
+        headers: { 'Content-Type': 'application/json' }
+      }).then(
+        res => {
+          console.log(
+            'MgStore Index.vue created axios /store/page success',
+            res
+          );
+          if (res.data.code === 0) {
+            this.storeData.length = 0;
+            this.storeData.push(...res.data.data.data);
+            this.total = res.data.data.total;
+          } else {
+            this.$Message.error({
+              content: '门店数据请求失败'
+            });
+          }
+          this.spinShow = false;
+        },
+        err => {
+          console.log(
+            'MgStore Index.vue created axios /store/page failure',
+            err
+          );
+          this.$Message.error({
+            content: '门店数据请求失败'
+          });
+          this.spinShow = false;
+        }
+      );
     }
-    // // 页码改变
-    // handlePageChange(e) {
-    //   console.log('MgStore Index.vue handlePageChange', e);
-    //   this.currentPage = e;
-    //   this.spinShow = true;
-    //   this.axios({
-    //     url:
-    //       this.global_.path.baseUrl +
-    //       '/rentalcars/store/page?pageIndex=' +
-    //       this.currentPage +
-    //       '&pageSize=' +
-    //       this.currentPageSize,
-    //     method: 'get',
-    //     headers: { 'Content-Type': 'application/json' }
-    //   }).then(
-    //     res => {
-    //       console.log(
-    //         'MgStore Index.vue created axios /store/page success',
-    //         res
-    //       );
-    //       if (res.data.code === 0) {
-    //         this.storeData.length = 0;
-    //         this.storeData.push(...res.data.data.data);
-    //         this.total = res.data.data.total;
-    //       } else {
-    //         this.$Message.error({
-    //           content: '门店数据请求失败'
-    //         });
-    //       }
-    //       this.spinShow = false;
-    //     },
-    //     err => {
-    //       console.log(
-    //         'MgStore Index.vue created axios /store/page failure',
-    //         err
-    //       );
-    //       this.$Message.error({
-    //         content: '门店数据请求失败'
-    //       });
-    //       this.spinShow = false;
-    //     }
-    //   );
-    // },
-    // // 每页条数改变
-    // handlePageSizeChange(e) {
-    //   console.log('MgStore Index.vue handlePageSizeChange', e);
-    //   this.currentPageSize = e;
-    //   this.axios({
-    //     url:
-    //       this.global_.path.baseUrl +
-    //       '/rentalcars/store/page?pageIndex=' +
-    //       this.currentPage +
-    //       '&pageSize=' +
-    //       this.currentPageSize,
-    //     method: 'get',
-    //     headers: { 'Content-Type': 'application/json' }
-    //   }).then(
-    //     res => {
-    //       console.log(
-    //         'MgStore Index.vue created axios /store/page success',
-    //         res
-    //       );
-    //       if (res.data.code === 0) {
-    //         this.storeData.length = 0;
-    //         this.storeData.push(...res.data.data.data);
-    //         this.total = res.data.data.total;
-    //       } else {
-    //         this.$Message.error({
-    //           content: '门店数据请求失败'
-    //         });
-    //       }
-    //       this.spinShow = false;
-    //     },
-    //     err => {
-    //       console.log(
-    //         'MgStore Index.vue created axios /store/page failure',
-    //         err
-    //       );
-    //       this.$Message.error({
-    //         content: '门店数据请求失败'
-    //       });
-    //       this.spinShow = false;
-    //     }
-    //   );
-    // }
   },
   computed: {}
 };

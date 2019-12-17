@@ -12,11 +12,7 @@
           label-colon
         >
           <FormItem label="门店名称" prop="name">
-            <Input
-              v-model="basicInfoForm.name"
-              placeholder="请输入门店名称"
-              style="width: 475px"
-            />
+            <Input v-model="basicInfoForm.name" placeholder="请输入门店名称" style="width: 475px" />
           </FormItem>
           <FormItem label="门店图片(选填)" prop="upload_list">
             <div>
@@ -28,22 +24,12 @@
                 <template v-if="item.status === 'finished'">
                   <img :src="item.url" />
                   <div class="upload-list-cover">
-                    <Icon
-                      type="ios-eye-outline"
-                      @click.native="handleView(item)"
-                    ></Icon>
-                    <Icon
-                      type="ios-trash-outline"
-                      @click.native="handleRemove(item)"
-                    ></Icon>
+                    <Icon type="ios-eye-outline" @click.native="handleView(item)"></Icon>
+                    <Icon type="ios-trash-outline" @click.native="handleRemove(item)"></Icon>
                   </div>
                 </template>
                 <template v-else>
-                  <Progress
-                    v-if="item.showProgress"
-                    :percent="item.percentage"
-                    hide-info
-                  ></Progress>
+                  <Progress v-if="item.showProgress" :percent="item.percentage" hide-info></Progress>
                 </template>
               </div>
               <Upload
@@ -71,20 +57,14 @@
                   <Icon type="ios-camera" size="20"></Icon>
                 </div>
               </Upload>
-              <span style="margin-left: 15px;"
-                >请上传100×100，png、jpg格式的图片，大小不超过500KB</span
-              >
+              <span style="margin-left: 15px;">请上传100×100，png、jpg格式的图片，大小不超过500KB</span>
             </div>
             <Modal title="View Image" v-model="visible">
               <img :src="this.imgUrl" v-if="visible" style="width: 100%" />
             </Modal>
           </FormItem>
           <FormItem label="门店电话" prop="telephone">
-            <Input
-              v-model="basicInfoForm.telephone"
-              placeholder="请输入门店电话"
-              style="width: 475px"
-            />
+            <Input v-model="basicInfoForm.telephone" placeholder="请输入门店电话" style="width: 475px" />
           </FormItem>
           <FormItem label="营业时间" class="time">
             <TimePicker
@@ -112,36 +92,25 @@
       <div class="header">位置信息</div>
       <div class="form-container">
         <Form :model="posInfoForm" :label-width="120" label-colon>
-          <FormItem label="所在城市" prop="currentAddress">
+          <FormItem label="所在城市">
             <Cascader
               :data="addressData"
               v-model="posInfoForm.currentAddress"
               :load-data="loadData"
               style="width: 475px;"
               change-on-select
+              @on-change="handleAddressChange"
             ></Cascader>
           </FormItem>
           <FormItem label="门店地址" prop="address">
-            <Input
-              v-model="posInfoForm.address"
-              placeholder="请输入门店地址"
-              style="width: 475px;"
-            />
+            <Input v-model="posInfoForm.address" placeholder="请输入门店地址" style="width: 475px;" />
           </FormItem>
           <div style="display: flex;">
             <FormItem label="经度">
-              <Input
-                v-model="posInfoForm.latitude"
-                placeholder="请输入门店经度"
-                style="width: 150px;"
-              />
+              <Input v-model="posInfoForm.latitude" placeholder="请输入门店经度" style="width: 150px;" />
             </FormItem>
             <FormItem label="纬度">
-              <Input
-                v-model="posInfoForm.longitude"
-                placeholder="请输入门店纬度"
-                style="width: 150px;"
-              />
+              <Input v-model="posInfoForm.longitude" placeholder="请输入门店纬度" style="width: 150px;" />
             </FormItem>
           </div>
           <FormItem label="步行指引" prop="guide">
@@ -169,12 +138,6 @@
 export default {
   name: 'StoreAddition',
   data: function() {
-    const validateCurAddress = (rule, value, callback) => {
-      if (value.length < 2) {
-          callback(new Error('地址至少需要选择到市'));
-        }
-        callback();
-    };
     const validateUploadList = (rule, value, callback) => {
       if (this.errorText) {
         callback(new Error(this.errorText));
@@ -205,15 +168,9 @@ export default {
         this.global_.path.baseUrl +
         '/rentalcars/upload/image?image&folderName=store',
       visible: false,
-      statusList: [
-        { name: '停运', status: 0 },
-        { name: '运营', status: 1 }
-      ],
+      statusList: [{ name: '停运', status: 2 }, { name: '运营', status: 1 }],
       addressData: [],
       ruleValidate: {
-        currentAddress: [
-          { validator: validateCurAddress, trigger: 'change' }
-        ],
         name: [
           {
             required: true,
@@ -330,6 +287,7 @@ export default {
           let ite = {
             value: item.code,
             label: item.name,
+            level: item.level,
             children: [],
             loading: false
           };
@@ -355,6 +313,13 @@ export default {
     this.basicInfoForm.upload_list = this.$refs.upload.fileList;
   },
   methods: {
+    handleAddressChange(value, selectedData) {
+      console.log(
+        'StoreAddition methods handleAddressChange',
+        value,
+        selectedData
+      );
+    },
     loadData(item, callback) {
       item.loading = true;
       this.axios({
@@ -375,7 +340,8 @@ export default {
           temp = res.data.map(obj => {
             let ite = {
               value: obj.code,
-              label: obj.name
+              label: obj.name,
+              level: obj.level
             };
             if (obj.level < 3) {
               ite = Object.assign({}, ite, {
@@ -477,7 +443,7 @@ export default {
             }
           );
         } else {
-          this.$Message.error('有必填项未填写');
+          this.$Message.warning('有必填项未填写');
         }
       });
     },

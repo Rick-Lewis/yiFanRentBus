@@ -329,7 +329,7 @@ export default {
             }
           );
         } else {
-          this.$Message.error('有必填项未填写');
+          this.$Message.warning('有必填项未填写');
         }
       });
     },

@@ -1,15 +1,12 @@
 <template>
   <div class="model-associated-container">
     <div class="display-container">
-      <div></div>
+      <span>已选门店：</span>
+      <Tag size="large">{{storeDetail && storeDetail.name}}</Tag>
     </div>
     <div class="content-container">
-      <Button type="primary" style="margin-bottom: 10px;" @click="add"
-        >新增车型</Button
-      >
-      <Button type="primary" style="margin-bottom: 10px;" @click="remove"
-        >删除车型</Button
-      >
+      <Button type="primary" style="margin-bottom: 10px;" @click="add">新增车型</Button>
+      <Button type="primary" style="margin-bottom: 10px;" @click="remove">删除车型</Button>
       <Table
         border
         ref="selection"
@@ -28,15 +25,26 @@
           </Switch>
         </template>
       </Table>
+      <div class="page-container">
+        <template>
+          <Page
+            :total="total1"
+            size="small"
+            show-elevator
+            show-sizer
+            @on-change="handlePageChange1"
+            @on-page-size-change="handlePageSizeChange1"
+            show-total
+          />
+        </template>
+        <Spin size="large" fix v-if="spinShow1"></Spin>
+      </div>
     </div>
     <Modal v-model="addVehicleShow" fullscreen title="新增车型" @on-ok="ok">
       <div class="filtrate-container">
         <Form :model="formItem" label-colon @submit.native.prevent>
           <FormItem label="所属品牌" class="from-brand">
-            <RadioGroup
-              v-model="formItem.from_brand_check"
-              @on-change="handleSearch"
-            >
+            <RadioGroup v-model="formItem.from_brand_check" @on-change="handleSearch">
               <Radio
                 v-for="(item, index) in fromBrandList"
                 v-bind:key="index"
@@ -46,10 +54,7 @@
             </RadioGroup>
           </FormItem>
           <FormItem label="车型类型" class="vehicle-type">
-            <RadioGroup
-              v-model="formItem.vehicle_type_check"
-              @on-change="handleSearch"
-            >
+            <RadioGroup v-model="formItem.vehicle_type_check" @on-change="handleSearch">
               <Radio
                 v-for="(item, index) in vehicleTypeList"
                 v-bind:key="index"
@@ -59,10 +64,7 @@
             </RadioGroup>
           </FormItem>
           <FormItem label="车型状态" class="vehicle-status">
-            <RadioGroup
-              v-model="formItem.vehicle_model_status_check"
-              @on-change="handleSearch"
-            >
+            <RadioGroup v-model="formItem.vehicle_model_status_check" @on-change="handleSearch">
               <Radio
                 v-for="(item, index) in vehicleModelStatusList"
                 v-bind:key="index"
@@ -81,9 +83,7 @@
             </FormItem>
             <FormItem>
               <Button type="primary" @click="handleSearch">查询</Button>
-              <Button style="margin-left: 8px" @click="handleReset"
-                >重置</Button
-              >
+              <Button style="margin-left: 8px" @click="handleReset">重置</Button>
             </FormItem>
           </div>
         </Form>
@@ -211,24 +211,60 @@ export default {
         }
       ],
       vehicleModelData: [],
+      total1: 0, // 数据总条数
       total: 0, // 数据总条数
+      currentPage1: 1, // 当前页码
       currentPage: 1, // 当前页码
+      currentPageSize1: 500, // 当前每页条数
       currentPageSize: 500, // 当前每页条数
+      spinShow1: true,
       spinShow: true,
       idSelection1: [],
       idSelection: [],
-      addVehicleShow: false
+      addVehicleShow: false,
+      storeDetail: null
     };
   },
   created() {
-    console.log('ModelAssociated index.vue created');
-    this.axios({
+    console.log('ModelAssociated index.vue created', this.$store);
+    let p1 = this.axios({
+      url:
+        this.global_.path.baseUrl +
+        '/rentalcars/store/detail/' +
+        this.$route.query.store_id,
+      method: 'get',
+      headers: { 'Content-Type': 'application/json' }
+    }).then(
+      res => {
+        console.log(
+          'ModelAssociated Index.vue created axios /store/detail/{id} success',
+          res
+        );
+        if (res.data.code === 0) {
+          this.storeDetail = res.data.data;
+        } else {
+          this.$Message.error({
+            content: '操作失败'
+          });
+        }
+      },
+      err => {
+        console.log(
+          'ModelAssociated Index.vue created axios /store/detail/{id} failure',
+          err
+        );
+        this.$Message.error({
+          content: '操作失败'
+        });
+      }
+    );
+    let p2 = this.axios({
       url:
         this.global_.path.baseUrl +
         '/rentalcars/vehicle/model/page?pageIndex=' +
-        this.currentPage +
+        this.currentPage1 +
         '&pageSize=' +
-        this.currentPageSize +
+        this.currentPageSize1 +
         '&sortField=create_time&sortOrder=desc&store_id=' +
         this.$route.query.store_id,
       method: 'get',
@@ -241,6 +277,7 @@ export default {
         );
         if (res.data.code === 0) {
           this.vehicleModelData1.push(...res.data.data.data);
+          this.total1 = res.data.data.total;
         } else {
           this.$Message.error({
             content: '车型数据请求失败'
@@ -257,6 +294,21 @@ export default {
         });
       }
     );
+    Promise.all([p1, p2])
+      .then(res => {
+        console.log(
+          'ModelAssociated Index.vue created Promise.all success',
+          res
+        );
+        this.spinShow1 = false;
+      })
+      .catch(err => {
+        console.log(
+          'ModelAssociated Index.vue created Promise.all failure',
+          err
+        );
+        this.spinShow1 = false;
+      });
     let that = this;
     document.onkeydown = function(e) {
       var key = window.event.keyCode;
@@ -268,45 +320,89 @@ export default {
   methods: {
     ok() {
       if (this.idSelection.length !== 0) {
-        await this.handleSubmit();
-        this.axios({
-      url:
-        this.global_.path.baseUrl +
-        '/rentalcars/vehicle/model/page?pageIndex=' +
-        this.currentPage +
-        '&pageSize=' +
-        this.currentPageSize +
-        '&sortField=create_time&sortOrder=desc&store_id=' +
-        this.$route.query.store_id,
-      method: 'get',
-      headers: { 'Content-Type': 'application/json' }
-    }).then(
-      res => {
-        console.log(
-          'ModelAssociated Index.vue created axios /model success',
-          res
-        );
-        if (res.data.code === 0) {
-          this.vehicleModelData1.push(...res.data.data.data);
-        } else {
-          this.$Message.error({
-            content: '车型数据请求失败'
-          });
-        }
-      },
-      err => {
-        console.log(
-          'ModelAssociated Index.vue created axios /model failure',
-          err
-        );
-        this.$Message.error({
-          content: '车型数据请求失败'
-        });
-      }
-    );
+        this.handleSubmit();
       }
     },
-    remove() {},
+    remove() {
+      this.$Modal.confirm({
+        title: `确定删除所选车型吗？`,
+        content: '',
+        onOk: () => {
+          this.spinShow = true;
+          let dataTemp = {
+            stores: this.$route.query.store_id,
+            models: this.idSelection1.join(',')
+          };
+          this.axios({
+            url: this.global_.path.baseUrl + '/rentalcars/store/model/delete',
+            method: 'delete',
+            headers: { 'Content-Type': 'application/json' },
+            data: dataTemp
+          }).then(
+            res => {
+              console.log(
+                'ModelAssociated Index.vue created axios /model/delete success',
+                res
+              );
+              if (res.data.code === 0) {
+                this.axios({
+                  url:
+                    this.global_.path.baseUrl +
+                    '/rentalcars/vehicle/model/page?pageIndex=' +
+                    this.currentPage +
+                    '&pageSize=' +
+                    this.currentPageSize +
+                    '&sortField=create_time&sortOrder=desc&store_id=' +
+                    this.$route.query.store_id,
+                  method: 'get',
+                  headers: { 'Content-Type': 'application/json' }
+                }).then(
+                  res => {
+                    console.log(
+                      'ModelAssociated Index.vue created axios /model success',
+                      res
+                    );
+                    if (res.data.code === 0) {
+                      this.vehicleModelData1.length = 0;
+                      this.vehicleModelData1.push(...res.data.data.data);
+                    } else {
+                      this.$Message.error({
+                        content: '车型数据请求失败'
+                      });
+                    }
+                  },
+                  err => {
+                    console.log(
+                      'ModelAssociated Index.vue created axios /model/delete failure',
+                      err
+                    );
+                    this.$Message.error({
+                      content: '车型数据请求失败'
+                    });
+                  }
+                );
+              } else {
+                this.$Message.error({
+                  content: '车型数据请求失败'
+                });
+              }
+            },
+            err => {
+              console.log(
+                'ModelAssociated Index.vue created axios /model/delete failure',
+                err
+              );
+              this.$Message.error({
+                content: '车型数据删除失败'
+              });
+            }
+          );
+        },
+        onCancel: () => {
+          console.log('ModelAssociated index.vue remove onCancel');
+        }
+      });
+    },
     add() {
       console.log('ModelAssociated index.vue add');
       this.addVehicleShow = true;
@@ -428,14 +524,14 @@ export default {
           break;
       }
     },
-    async handleSubmit() {
+    handleSubmit() {
       let temp = {
         stores: this.$route.query.store_id,
         models: this.idSelection.join(',')
       };
       console.log('ModelAssociated index.vue handleSubmit', temp);
       this.spinShow = true;
-      return this.axios({
+      this.axios({
         url: this.global_.path.baseUrl + '/rentalcars/store/model/saveData',
         method: 'post',
         headers: { 'Content-Type': 'application/json' },
@@ -605,6 +701,96 @@ export default {
       this.formItem.vehicle_model_status_check = '全部';
       this.formItem.vehicle_type_check = '全部';
       this.formItem.from_brand_check = '全部';
+    },
+    // 页码改变
+    handlePageChange1(e) {
+      console.log('ModelAssociated Index.vue handlePageChange', e);
+      this.currentPage = e;
+      this.spinShow = true;
+      this.axios({
+        url:
+          this.global_.path.baseUrl +
+          '/rentalcars/vehicle/model/page?pageIndex=' +
+          this.currentPage1 +
+          '&pageSize=' +
+          this.currentPageSize1 +
+          '&sortField=create_time&sortOrder=desc&store_id=' +
+          this.$route.query.store_id,
+        method: 'get',
+        headers: { 'Content-Type': 'application/json' }
+      }).then(
+        res => {
+          console.log(
+            'ModelAssociated Index.vue created axios /model success',
+            res
+          );
+          if (res.data.code === 0) {
+            this.vehicleModelData1.length = 0;
+            this.vehicleModelData1.push(...res.data.data.data);
+            this.total1 = res.data.data.total;
+          } else {
+            this.$Message.error({
+              content: '车型数据请求失败'
+            });
+          }
+          this.spinShow = false;
+        },
+        err => {
+          console.log(
+            'ModelAssociated Index.vue created axios /model failure',
+            err
+          );
+          this.$Message.error({
+            content: '车型数据请求失败'
+          });
+          this.spinShow = false;
+        }
+      );
+    },
+    // 每页条数改变
+    handlePageSizeChange1(e) {
+      console.log('ModelAssociated Index.vue handlePageSizeChange', e);
+      this.currentPageSize = e;
+      this.spinShow = true;
+      this.axios({
+        url:
+          this.global_.path.baseUrl +
+          '/rentalcars/vehicle/model/page?pageIndex=' +
+          this.currentPage1 +
+          '&pageSize=' +
+          this.currentPageSize1 +
+          '&sortField=create_time&sortOrder=desc&store_id=' +
+          this.$route.query.store_id,
+        method: 'get',
+        headers: { 'Content-Type': 'application/json' }
+      }).then(
+        res => {
+          console.log(
+            'ModelAssociated Index.vue created axios /model success',
+            res
+          );
+          if (res.data.code === 0) {
+            this.vehicleModelData1.length = 0;
+            this.vehicleModelData1.push(...res.data.data.data);
+            this.total1 = res.data.data.total;
+          } else {
+            this.$Message.error({
+              content: '车型数据请求失败'
+            });
+          }
+          this.spinShow = false;
+        },
+        err => {
+          console.log(
+            'ModelAssociated Index.vue created axios /model failure',
+            err
+          );
+          this.$Message.error({
+            content: '车型数据请求失败'
+          });
+          this.spinShow = false;
+        }
+      );
     },
     // 页码改变
     handlePageChange(e) {

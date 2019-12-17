@@ -1,7 +1,7 @@
 /** @Author: xu.long
  * @Date: 2019-09-20 09:30:54
  * @Last Modified by: xu.long
- * @Last Modified time: 2019-12-17 19:08:32
+ * @Last Modified time: 2019-12-17 21:29:33
  */
 export default {
   namespaced: true,
@@ -14,6 +14,9 @@ export default {
     setSelStoreList: ({ commit }, data) => commit('setSelStoreList', data)
   },
   mutations: {
-    setSelStoreList: (state, data) => state.selStoreList.push(...data)
+    setSelStoreList: (state, data) => {
+      state.selStoreList.length = 0;
+      state.selStoreList.push(...data);
+    }
   }
 };
