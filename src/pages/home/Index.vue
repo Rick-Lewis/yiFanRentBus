@@ -119,7 +119,7 @@
 </template>
 <script>
 import homeStore from '../../store/home/index';
-import myOrderStore from '../../store/home/OrderCenter/MyOrder/index';
+// import myOrderStore from '../../store/home/OrderCenter/MyOrder/index';
 export default {
   name: 'home',
   data: function() {
@@ -131,7 +131,7 @@ export default {
   created() {
     console.log('home Index.vue created', this.$store);
     this.$store.registerModule('homeStore', homeStore);
-    this.$store.registerModule('myOrderStore', myOrderStore);
+    // this.$store.registerModule('myOrderStore', myOrderStore);
     // let urlTemp = '';
     // this.axios.get(urlTemp).then(
     //   res => {
@@ -154,7 +154,7 @@ export default {
   destroyed() {
     console.log('home Index.vue destroyed');
     // this.$store.unregisterModule('homeStore');
-    this.$store.unregisterModule('myOrderStore');
+    // this.$store.unregisterModule('myOrderStore');
   },
   computed: {
     rotateIcon() {

@@ -1,14 +1,22 @@
 <template>
   <div class="model-associated-container">
+    <div class="display-container">
+      <div></div>
+    </div>
     <div class="content-container">
-      <Button type="primary" style="margin-bottom: 10px;" @click="add">新增车型</Button>
-      <Button type="primary" style="margin-bottom: 10px;" @click="remove">删除车型</Button>
+      <Button type="primary" style="margin-bottom: 10px;" @click="add"
+        >新增车型</Button
+      >
+      <Button type="primary" style="margin-bottom: 10px;" @click="remove"
+        >删除车型</Button
+      >
       <Table
         border
         ref="selection"
         :columns="vehicleModelColumns1"
         :data="vehicleModelData1"
         stripe
+        @on-selection-change="sel => handleTableChange(sel, 'someModal')"
       >
         <template v-slot:brand_name="{ row }">
           <span>{{ row.brand_name }}</span>
@@ -25,7 +33,10 @@
       <div class="filtrate-container">
         <Form :model="formItem" label-colon @submit.native.prevent>
           <FormItem label="所属品牌" class="from-brand">
-            <RadioGroup v-model="formItem.from_brand_check" @on-change="handleSearch">
+            <RadioGroup
+              v-model="formItem.from_brand_check"
+              @on-change="handleSearch"
+            >
               <Radio
                 v-for="(item, index) in fromBrandList"
                 v-bind:key="index"
@@ -35,7 +46,10 @@
             </RadioGroup>
           </FormItem>
           <FormItem label="车型类型" class="vehicle-type">
-            <RadioGroup v-model="formItem.vehicle_type_check" @on-change="handleSearch">
+            <RadioGroup
+              v-model="formItem.vehicle_type_check"
+              @on-change="handleSearch"
+            >
               <Radio
                 v-for="(item, index) in vehicleTypeList"
                 v-bind:key="index"
@@ -45,7 +59,10 @@
             </RadioGroup>
           </FormItem>
           <FormItem label="车型状态" class="vehicle-status">
-            <RadioGroup v-model="formItem.vehicle_model_status_check" @on-change="handleSearch">
+            <RadioGroup
+              v-model="formItem.vehicle_model_status_check"
+              @on-change="handleSearch"
+            >
               <Radio
                 v-for="(item, index) in vehicleModelStatusList"
                 v-bind:key="index"
@@ -64,7 +81,9 @@
             </FormItem>
             <FormItem>
               <Button type="primary" @click="handleSearch">查询</Button>
-              <Button style="margin-left: 8px" @click="handleReset">重置</Button>
+              <Button style="margin-left: 8px" @click="handleReset"
+                >重置</Button
+              >
             </FormItem>
           </div>
         </Form>
@@ -76,7 +95,7 @@
           :columns="vehicleModelColumns"
           :data="vehicleModelData"
           stripe
-          @on-selection-change="handleTableChange"
+          @on-selection-change="sel => handleTableChange(sel, 'allModal')"
         >
           <template v-slot:brand_name="{ row }">
             <span>{{ row.brand_name }}</span>
@@ -196,6 +215,7 @@ export default {
       currentPage: 1, // 当前页码
       currentPageSize: 500, // 当前每页条数
       spinShow: true,
+      idSelection1: [],
       idSelection: [],
       addVehicleShow: false
     };
@@ -248,7 +268,42 @@ export default {
   methods: {
     ok() {
       if (this.idSelection.length !== 0) {
-        this.handleSubmit();
+        await this.handleSubmit();
+        this.axios({
+      url:
+        this.global_.path.baseUrl +
+        '/rentalcars/vehicle/model/page?pageIndex=' +
+        this.currentPage +
+        '&pageSize=' +
+        this.currentPageSize +
+        '&sortField=create_time&sortOrder=desc&store_id=' +
+        this.$route.query.store_id,
+      method: 'get',
+      headers: { 'Content-Type': 'application/json' }
+    }).then(
+      res => {
+        console.log(
+          'ModelAssociated Index.vue created axios /model success',
+          res
+        );
+        if (res.data.code === 0) {
+          this.vehicleModelData1.push(...res.data.data.data);
+        } else {
+          this.$Message.error({
+            content: '车型数据请求失败'
+          });
+        }
+      },
+      err => {
+        console.log(
+          'ModelAssociated Index.vue created axios /model failure',
+          err
+        );
+        this.$Message.error({
+          content: '车型数据请求失败'
+        });
+      }
+    );
       }
     },
     remove() {},
@@ -362,18 +417,25 @@ export default {
           this.spinShow = false;
         });
     },
-    handleTableChange(selection) {
+    handleTableChange(selection, type) {
       console.log('ModelAssociated index.vue handleTableChange', selection);
-      this.idSelection = selection.map(item => item.id);
+      switch (type) {
+        case 'someModal':
+          this.idSelection1 = selection.map(item => item.id);
+          break;
+        case 'allModal':
+          this.idSelection = selection.map(item => item.id);
+          break;
+      }
     },
-    handleSubmit() {
+    async handleSubmit() {
       let temp = {
         stores: this.$route.query.store_id,
         models: this.idSelection.join(',')
       };
       console.log('ModelAssociated index.vue handleSubmit', temp);
       this.spinShow = true;
-      this.axios({
+      return this.axios({
         url: this.global_.path.baseUrl + '/rentalcars/store/model/saveData',
         method: 'post',
         headers: { 'Content-Type': 'application/json' },
@@ -682,6 +744,6 @@ export default {
   }
 };
 </script>
-<style lang='scss' scoped>
+<style lang="scss" scoped>
 @import './Index.scss';
 </style>

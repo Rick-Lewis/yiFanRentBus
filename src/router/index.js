@@ -23,7 +23,7 @@ import AdAddition from '@/pages/home/ActivityCenter/MgAd/AdAddition';
 import MgStore from '@/pages/home/MgStore/MgStore';
 import StoreAddition from '@/pages/home/MgStore/MgStore/StoreAddition';
 import StoreDetail from '@/pages/home/MgStore/MgStore/StoreDetail';
-import ModelAssociated from '@/pages/home/MgStore/ModelAssociated';
+import ModelAssociated from '@/pages/home/MgStore/MgStore/ModelAssociated';
 
 Vue.use(Router);
 

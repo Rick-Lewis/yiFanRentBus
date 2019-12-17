@@ -211,7 +211,7 @@ export default {
           res
         );
         this.orderStatusList.push({ name: '全部', status: -2 }, ...res.data);
-        this.$store.dispatch('myOrderStore/initrOderStatusList', res.data);
+        // this.$store.dispatch('myOrderStore/initrOderStatusList', res.data);
       },
       err => {
         console.log(

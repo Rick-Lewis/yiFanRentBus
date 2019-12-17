@@ -112,7 +112,7 @@
       <div class="header">位置信息</div>
       <div class="form-container">
         <Form :model="posInfoForm" :label-width="120" label-colon>
-          <FormItem label="所在城市">
+          <FormItem label="所在城市" prop="currentAddress">
             <Cascader
               :data="addressData"
               v-model="posInfoForm.currentAddress"
@@ -144,7 +144,7 @@
               />
             </FormItem>
           </div>
-          <FormItem label="步行指引" prop="address">
+          <FormItem label="步行指引" prop="guide">
             <Input
               v-model="posInfoForm.guide"
               maxlength="200"
@@ -169,6 +169,12 @@
 export default {
   name: 'StoreAddition',
   data: function() {
+    const validateCurAddress = (rule, value, callback) => {
+      if (value.length < 2) {
+          callback(new Error('地址至少需要选择到市'));
+        }
+        callback();
+    };
     const validateUploadList = (rule, value, callback) => {
       if (this.errorText) {
         callback(new Error(this.errorText));
@@ -205,6 +211,9 @@ export default {
       ],
       addressData: [],
       ruleValidate: {
+        currentAddress: [
+          { validator: validateCurAddress, trigger: 'change' }
+        ],
         name: [
           {
             required: true,

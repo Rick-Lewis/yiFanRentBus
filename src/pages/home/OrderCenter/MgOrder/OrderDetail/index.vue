@@ -219,12 +219,35 @@ export default {
       ],
       evalData: [],
       orderDetail: null,
-      spinShow: true
+      spinShow: true,
+      orderStatusList: []
     };
   },
   created() {
     console.log('OrderDetail Index.vue created');
     // this.$store.dispatch('homeStore/initBreadcrumbList', window.location.href);
+    this.axios({
+      url: this.global_.path.baseUrl + '/rentalcars/status/order',
+      method: 'get',
+      headers: { 'Content-Type': 'application/json' }
+    }).then(
+      res => {
+        console.log(
+          'OrderDetail Index.vue created axios /status/order success',
+          res
+        );
+        this.orderStatusList.push(...res.data);
+      },
+      err => {
+        console.log(
+          'OrderDetail Index.vue created axios /status/order failure',
+          err
+        );
+        this.$Message.error({
+          content: '车辆状态数据请求失败'
+        });
+      }
+    );
     this.axios({
       url:
         this.global_.path.baseUrl +
@@ -262,7 +285,7 @@ export default {
   },
   computed: {
     orderStatus() {
-      let temp = this.$store.state.myOrderStore.orderStatusList.find(
+      let temp = this.orderStatusList.find(
         item => item.status === this.orderDetail.order.status
       );
       return temp ? temp.name : '';
