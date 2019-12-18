@@ -40,7 +40,7 @@
         <Spin size="large" fix v-if="spinShow1"></Spin>
       </div>
     </div>
-    <Modal v-model="addVehicleShow" fullscreen title="新增车型" @on-ok="ok">
+    <Modal v-model="addVehicleShow" width="85%" :styles="{top: '50px'}" title="新增车型" @on-ok="ok">
       <div class="filtrate-container">
         <Form :model="formItem" label-colon @submit.native.prevent>
           <FormItem label="所属品牌" class="from-brand">

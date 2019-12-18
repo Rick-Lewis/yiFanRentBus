@@ -25,15 +25,8 @@
     </div>
     <div class="content-container">
       <Button type="primary" style="margin-bottom: 10px;" @click="add">+新增</Button>
-      <Button type="primary" style="margin-bottom: 10px;" @click="relateTo">关联车型</Button>
-      <Table
-        ref="selection"
-        border
-        :columns="storeColumns"
-        :data="storeData"
-        highlight-row
-        @on-current-change="handleTableChange"
-      >
+      <!-- <Button type="primary" style="margin-bottom: 10px;" @click="relateTo">关联车型</Button> -->
+      <Table ref="selection" border :columns="storeColumns" :data="storeData">
         <template v-slot:duration="{ row }">
           <div>{{row.start_time + '-' + row.end_time}}</div>
         </template>
@@ -46,10 +39,10 @@
           <a v-if="row.status === 1" @click="toggleStatus(index)">下架</a>
           <a @click="edit(index)">编辑</a>
           <a @click="show(index)">详情</a>
+          <a @click="relateTo(index)">关联车型</a>
         </template>
       </Table>
       <div class="page-container">
-        <div>注：点击行选择相应门店</div>
         <template>
           <Page
             :total="total"
@@ -129,8 +122,7 @@ export default {
         '2': 'storage',
         '3': 'rent',
         '4': 'maintenance'
-      },
-      idSelection: []
+      }
     };
   },
   created() {
@@ -177,11 +169,6 @@ export default {
   methods: {
     handleSelectAll(status) {
       this.$refs.selection.selectAll(status);
-    },
-    handleTableChange(currentRow, oldCurrentRow) {
-      console.log('MgStore index.vue handleTableChange', currentRow);
-      this.idSelection = [currentRow.id];
-      // this.$store.dispatch('storeStore/setSelStoreList', [currentRow]);
     },
     // 上下架
     toggleStatus(index) {
@@ -316,16 +303,10 @@ export default {
     add() {
       this.$router.push('/home/storeAddition?action=add');
     },
-    relateTo() {
-      if (this.idSelection.length > 0) {
-        this.$router.push(
-          '/home/modelAssociated?store_id=' + this.idSelection.join(',')
-        );
-      } else {
-        this.$Message.warning({
-          content: '请选择关联门店'
-        });
-      }
+    relateTo(index) {
+      this.$router.push(
+        '/home/modelAssociated?store_id=' + this.storeData[index].id
+      );
     },
     // 编辑
     edit(index) {

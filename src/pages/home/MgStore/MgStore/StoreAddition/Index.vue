@@ -48,7 +48,7 @@
                 :action="uploadUrl"
                 style="display:inline-block;"
                 :style="
-                  basicInfoForm.upload_list.length === 0
+                  basicInfoForm.upload_list.length < 5
                     ? null
                     : { display: 'none' }
                 "
@@ -57,7 +57,7 @@
                   <Icon type="ios-camera" size="20"></Icon>
                 </div>
               </Upload>
-              <span style="margin-left: 15px;">请上传100×100，png、jpg格式的图片，大小不超过500KB</span>
+              <div style="margin-left: 15px;">请上传100×100，png、jpg格式的图片，大小不超过500KB</div>
             </div>
             <Modal title="View Image" v-model="visible">
               <img :src="this.imgUrl" v-if="visible" style="width: 100%" />
@@ -99,6 +99,7 @@
               :load-data="loadData"
               style="width: 475px;"
               change-on-select
+              not-found-text="没有数据"
               @on-change="handleAddressChange"
             ></Cascader>
           </FormItem>
@@ -335,23 +336,31 @@ export default {
             'StoreAddition Index.vue created /district/children success',
             res
           );
-          let temp = res.data;
-          temp.shift();
-          temp = res.data.map(obj => {
-            let ite = {
-              value: obj.code,
-              label: obj.name,
-              level: obj.level
-            };
-            if (obj.level < 3) {
-              ite = Object.assign({}, ite, {
-                children: [],
-                loading: false
-              });
-            }
-            return ite;
-          });
-          item.children.push(...temp);
+          if (res.data.length !== 0) {
+            let temp = res.data;
+            temp.shift();
+            temp = res.data.map(obj => {
+              let ite = {
+                value: obj.code,
+                label: obj.name,
+                level: obj.level
+              };
+              if (obj.level < 3) {
+                ite = Object.assign({}, ite, {
+                  children: [],
+                  loading: false
+                });
+              }
+              return ite;
+            });
+            item.children.push(...temp);
+          } else {
+            item.children.push({
+              value: '',
+              label: '市区',
+              level: 3
+            });
+          }
 
           item.loading = false;
           callback();
@@ -388,10 +397,10 @@ export default {
               ? this.posInfoForm.currentAddress[0]
               : '',
             city: this.posInfoForm.currentAddress[1]
-              ? this.posInfoForm.currentAddress[2]
+              ? this.posInfoForm.currentAddress[1]
               : '',
             county: this.posInfoForm.currentAddress[2]
-              ? this.posInfoForm.currentAddress[3]
+              ? this.posInfoForm.currentAddress[2]
               : '',
             address: this.posInfoForm.address,
             guide: this.posInfoForm.address,
