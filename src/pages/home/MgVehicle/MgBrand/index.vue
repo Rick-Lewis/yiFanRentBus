@@ -10,7 +10,11 @@
         @submit.native.prevent
       >
         <FormItem label="品牌名称">
-          <Input v-model="formItem.brand_name" placeholder="请输入品牌名称" style="width: 200px" />
+          <Input
+            v-model="formItem.brand_name"
+            placeholder="请输入品牌名称"
+            style="width: 200px"
+          />
         </FormItem>
         <div>
           <Button type="primary" @click="handleSearch">查询</Button>
@@ -19,7 +23,9 @@
       </Form>
     </div>
     <div class="content-container">
-      <Button type="primary" style="margin-bottom: 10px;" @click="add">+新增</Button>
+      <Button type="primary" style="margin-bottom: 10px;" @click="add"
+        >+新增</Button
+      >
       <Table border :columns="brandColumns" :data="brandData" stripe>
         <template v-slot:logo="{ row, index }">
           <div class="logo-container">
@@ -101,7 +107,8 @@ export default {
         '/rentalcars/vehicle/brand/page?pageIndex=' +
         this.currentPage +
         '&pageSize=' +
-        this.currentPageSize,
+        this.currentPageSize +
+        '&sortField=create_time&sortOrder=desc',
       method: 'get',
       headers: { 'Content-Type': 'application/json' }
     }).then(
@@ -151,7 +158,8 @@ export default {
           '&pageIndex=' +
           this.currentPage +
           '&pageSize=' +
-          this.currentPageSize,
+          this.currentPageSize +
+          '&sortField=create_time&sortOrder=desc',
         method: 'get',
         headers: { 'Content-Type': 'application/json' }
       }).then(
@@ -256,7 +264,8 @@ export default {
           '/rentalcars/vehicle/brand/page?pageIndex=' +
           this.currentPage +
           '&pageSize=' +
-          this.currentPageSize,
+          this.currentPageSize +
+          '&sortField=create_time&sortOrder=desc',
         method: 'get',
         headers: { 'Content-Type': 'application/json' }
       }).then(
@@ -298,7 +307,8 @@ export default {
           '/rentalcars/vehicle/brand/page?pageIndex=' +
           this.currentPage +
           '&pageSize=' +
-          this.currentPageSize,
+          this.currentPageSize +
+          '&sortField=create_time&sortOrder=desc',
         method: 'get',
         headers: { 'Content-Type': 'application/json' }
       }).then(
@@ -334,6 +344,6 @@ export default {
 };
 </script>
 
-<style lang='scss' scoped>
+<style lang="scss" scoped>
 @import './Index.scss';
 </style>

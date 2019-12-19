@@ -49,12 +49,12 @@
       </div>
       <Table border :columns="vehicleColumns" :data="vehicleData" stripe>
         <template v-slot:state="{ row }">
-          <div :class="statusColor[row.state]">{{getStatusNameByValue(row.state)}}</div>
+          <div :class="statusColor[row.state]">{{getStatusNameByValue(row.state).name}}</div>
         </template>
         <template slot-scope="{ row, index }" slot="action">
           <a style="margin-right: 5px" @click="edit(index)">编辑</a>
           <a @click="remove(index)">删除</a>
-          <a @click="check(index)">{{getStatusNameByValue(row.state + 1)}}</a>
+          <a @click="check(index)">{{getStatusNameByValue(row.state).nextName}}</a>
           <a @click="show(index)">详情</a>
         </template>
       </Table>
@@ -232,10 +232,13 @@ export default {
         status,
         this.vehicleStatusList.slice()
       );
-      let objTemp = this.vehicleStatusList
+      let indexTemp = this.vehicleStatusList
         .slice()
-        .find(item => item.status === status);
-      return objTemp.name;
+        .findIndex(item => item.status === status);
+      return {
+        name: this.vehicleStatusList[indexTemp].name,
+        nextName: this.vehicleStatusList[indexTemp + 1].name
+      };
     },
     handleSelected(e, type) {
       console.log('MgVehicleModel index.vue handleRadioChange', e, type);
