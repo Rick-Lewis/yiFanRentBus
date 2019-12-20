@@ -23,7 +23,7 @@
         </div>
         <div class="string"></div>
         <div class="center">
-          <div class="top">实际取还时间：</div>
+          <div class="top">预计取还时间：</div>
           <div class="bottom">
             <div class="start">
               <div>{{ orderDetail && orderDetail.order.time_start.split(' ')[0] }}</div>
@@ -41,7 +41,7 @@
         <div class="string"></div>
         <div class="right">
           <div>
-            <div class="top">实际取还地点：</div>
+            <div class="top">预计取还地点：</div>
             <div class="bottom">
               <div class="fetch">
                 <span>

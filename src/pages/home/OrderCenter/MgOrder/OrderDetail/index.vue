@@ -15,7 +15,7 @@
               :src="
                 orderDetail && global_.path.baseUrl + orderDetail.model.image
               "
-              style="width: 130px; height: 88px;"
+              style="width: 200px; height: 110px;"
             />
           </div>
           <div>
@@ -26,7 +26,7 @@
         </div>
         <div class="string"></div>
         <div class="center">
-          <div class="top">实际取还时间：</div>
+          <div class="top">预计取还时间：</div>
           <div class="bottom">
             <div class="start">
               <div>
@@ -52,7 +52,7 @@
         <div class="string"></div>
         <div class="right">
           <div>
-            <div class="top">实际取还地点：</div>
+            <div class="top">预计取还地点：</div>
             <div class="bottom">
               <div class="fetch">
                 <span>{{
@@ -83,31 +83,31 @@
     </div>
     <div class="other-container">
       <div class="reserve-info-container">
-        <div class="header">预定信息</div>
+        <div class="header">实际取还信息</div>
         <div class="content">
           <div class="fetch">
             <div>
-              取车时间：
+              实际取车时间：
               {{ orderDetail && orderDetail.order.time_start }}
             </div>
             <div style="margin-top: 15px;">
-              取车门店：
+              实际取车门店：
               {{ orderDetail && orderDetail.order.store_pick_up_name }}
             </div>
           </div>
           <div class="return">
             <div>
-              还车时间：
+              实际还车时间：
               {{ orderDetail && orderDetail.order.time_end }}
             </div>
             <div style="margin-top: 15px;">
-              还车门店：
+              实际还车门店：
               {{ orderDetail && orderDetail.order.store_drop_off_name }}
             </div>
           </div>
           <div class="duration">
             <div>
-              预计租车时长：
+              实际租车时长：
               {{ orderDetail && orderDetail.order.days }} 天
             </div>
           </div>
