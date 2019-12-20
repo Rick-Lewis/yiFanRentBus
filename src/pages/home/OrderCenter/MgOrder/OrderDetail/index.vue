@@ -285,10 +285,14 @@ export default {
   },
   computed: {
     orderStatus() {
-      let temp = this.orderStatusList.find(
-        item => item.status === this.orderDetail.order.status
-      );
-      return temp ? temp.name : '';
+      if (this.orderDetail) {
+        let temp = this.orderStatusList.find(
+          item => item.status === this.orderDetail.order.status
+        );
+        return temp ? temp.name : '';
+      } else {
+        return '';
+      }
     }
   }
 };
