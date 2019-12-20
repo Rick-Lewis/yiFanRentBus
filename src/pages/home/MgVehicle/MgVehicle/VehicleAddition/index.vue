@@ -160,7 +160,7 @@ export default {
         purchase_price: '',
         upload_list: [],
         vehicleModelCheck: '其他',
-        shopCheck: '其他'
+        shopCheck: ''
       },
       imgName: '',
       visible: false,
@@ -192,7 +192,7 @@ export default {
         );
         if (res.data.code === 0) {
           this.shopList.push(...res.data.data.data);
-          this.basicInfoForm.shopCheck = this.shopList[0].name;
+          // this.basicInfoForm.shopCheck = this.shopList[0].name;
         } else {
           this.$Message.error({
             content: '门店获取失败'

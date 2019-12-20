@@ -238,7 +238,7 @@ export default {
   data() {
     return {
       basicInfoForm: {
-        from_brand_check: '全部',
+        from_brand_check: '',
         vehicle_type_check: '其他',
         energy_types_check: '其他',
         vehicle_status_check: '已关停',
