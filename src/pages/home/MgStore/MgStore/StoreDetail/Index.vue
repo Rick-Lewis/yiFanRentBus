@@ -14,7 +14,7 @@
         <div class="right">
           <div class="status">
             <div>状态</div>
-            <div>{{storeDetail && storeDetail.state === 1 ? '已启用' : '已停用'}}</div>
+            <div>{{storeDetail && storeDetail.status === 1 ? '已启用' : '已停用'}}</div>
           </div>
         </div>
       </div>
