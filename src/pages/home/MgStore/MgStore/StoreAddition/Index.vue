@@ -203,6 +203,7 @@ export default {
   },
   created() {
     console.log('StoreAddition Index.vue created', this.$route.query);
+    this.spinShow = true;
     if (this.$route.query.action === 'edit') {
       this.axios({
         method: 'get',
@@ -233,12 +234,151 @@ export default {
             let addressTemp = [];
             if (res.data.data.province) {
               addressTemp.push(res.data.data.province);
-              if (res.data.data.city) {
-                addressTemp.push(res.data.data.city);
-                if (res.data.data.county) {
-                  addressTemp.push(res.data.data.county);
+              this.axios({
+                method: 'get',
+                url:
+                  this.global_.path.baseUrl + '/rentalcars/district/provinces',
+                headers: { 'Content-Type': 'application/json' }
+              }).then(
+                res1 => {
+                  console.log(
+                    'StoreAddition Index.vue created /district/children success',
+                    res1
+                  );
+                  if (res1.data.length !== 0) {
+                    let temp = res1.data;
+                    temp = res1.data.map(obj => {
+                      let ite = {
+                        value: obj.code,
+                        label: obj.name,
+                        level: obj.level
+                      };
+                      if (obj.level < 3) {
+                        ite = Object.assign({}, ite, {
+                          children: [],
+                          loading: false
+                        });
+                      }
+                      return ite;
+                    });
+                    this.addressData.push(...temp);
+                    if (res.data.data.city) {
+                      addressTemp.push(res.data.data.city);
+                      this.axios({
+                        method: 'get',
+                        url:
+                          this.global_.path.baseUrl +
+                          '/rentalcars/district/children?parent=' +
+                          res.data.data.province,
+                        headers: { 'Content-Type': 'application/json' }
+                      }).then(
+                        res2 => {
+                          console.log(
+                            'StoreAddition Index.vue created /district/children success',
+                            res2
+                          );
+                          if (res2.data.length !== 0) {
+                            let temp = res2.data;
+                            temp.shift();
+                            temp = res2.data.map(obj => {
+                              let ite = {
+                                value: obj.code,
+                                label: obj.name,
+                                level: obj.level,
+                                parent: obj.parent
+                              };
+                              if (obj.level < 3) {
+                                ite = Object.assign({}, ite, {
+                                  children: [],
+                                  loading: false
+                                });
+                              }
+                              return ite;
+                            });
+                            console.log('afsdafdsa', this.addressData);
+                            let itemTemp = this.addressData.find(
+                              item => item.parent === res.data.data.province
+                            );
+                            itemTemp.children.push(...temp);
+                            if (res.data.data.county) {
+                              addressTemp.push(res.data.data.county);
+                              this.axios({
+                                method: 'get',
+                                url:
+                                  this.global_.path.baseUrl +
+                                  '/rentalcars/district/children?parent=' +
+                                  res.data.data.city,
+                                headers: { 'Content-Type': 'application/json' }
+                              }).then(
+                                res3 => {
+                                  console.log(
+                                    'StoreAddition Index.vue created /district/children success',
+                                    res3
+                                  );
+                                  if (res3.data.length !== 0) {
+                                    let temp = res3.data;
+                                    temp.shift();
+                                    temp = res.data.map(obj => {
+                                      let ite = {
+                                        value: obj.code,
+                                        label: obj.name,
+                                        level: obj.level,
+                                        parent: obj.parent
+                                      };
+                                      if (obj.level < 3) {
+                                        ite = Object.assign({}, ite, {
+                                          children: [],
+                                          loading: false
+                                        });
+                                      }
+                                      return ite;
+                                    });
+                                    let provinceTemp = this.addressData.find(
+                                      item =>
+                                        item.parent === res.data.data.province
+                                    );
+                                    let cityTemp = provinceTemp.find(
+                                      item => item.parent === res.data.data.city
+                                    );
+                                    cityTemp.children.push(...temp);
+                                  }
+                                },
+                                err3 => {
+                                  console.log(
+                                    'StoreAddition Index.vue created /district/children failure',
+                                    err3
+                                  );
+                                  this.$Message.error({
+                                    content: '操作失败'
+                                  });
+                                }
+                              );
+                            }
+                          }
+                        },
+                        err2 => {
+                          console.log(
+                            'StoreAddition Index.vue created /district/children failure',
+                            err2
+                          );
+                          this.$Message.error({
+                            content: '操作失败'
+                          });
+                        }
+                      );
+                    }
+                  }
+                },
+                err1 => {
+                  console.log(
+                    'StoreAddition Index.vue created /district/children failure',
+                    err1
+                  );
+                  this.$Message.error({
+                    content: '操作失败'
+                  });
                 }
-              }
+              );
             }
             this.posInfoForm = Object.assign({}, this.posInfoForm, {
               address: res.data.data.address,
@@ -270,45 +410,43 @@ export default {
           });
         }
       );
+    } else {
+      this.axios({
+        method: 'get',
+        url: this.global_.path.baseUrl + '/rentalcars/district/provinces',
+        headers: { 'Content-Type': 'application/json' }
+      }).then(
+        res => {
+          console.log(
+            'StoreAddition Index.vue created /district/provinces success',
+            res
+          );
+          let temp = res.data;
+          temp = temp.map(item => {
+            let ite = {
+              value: item.code,
+              label: item.name,
+              level: item.level,
+              children: [],
+              loading: false
+            };
+            return ite;
+          });
+          this.addressData.push(...temp);
+          this.spinShow = false;
+        },
+        err => {
+          console.log(
+            'StoreAddition Index.vue created /district/provinces failure',
+            err
+          );
+          this.$Message.error({
+            content: '操作失败'
+          });
+          this.spinShow = false;
+        }
+      );
     }
-    this.spinShow = true;
-    this.axios({
-      method: 'get',
-      url: this.global_.path.baseUrl + '/rentalcars/district/provinces',
-      headers: { 'Content-Type': 'application/json' }
-    }).then(
-      res => {
-        console.log(
-          'StoreAddition Index.vue created /district/provinces success',
-          res
-        );
-
-        let temp = res.data;
-        temp = temp.map(item => {
-          let ite = {
-            value: item.code,
-            label: item.name,
-            level: item.level,
-            children: [],
-            loading: false
-          };
-          return ite;
-        });
-        this.addressData.push(...temp);
-
-        this.spinShow = false;
-      },
-      err => {
-        console.log(
-          'StoreAddition Index.vue created /district/provinces failure',
-          err
-        );
-        this.$Message.error({
-          content: '操作失败'
-        });
-        this.spinShow = false;
-      }
-    );
   },
   mounted() {
     this.basicInfoForm.upload_list = this.$refs.upload.fileList;
