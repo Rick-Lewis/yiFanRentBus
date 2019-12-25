@@ -12,11 +12,7 @@
           label-colon
         >
           <FormItem label="门店名称" prop="name">
-            <Input
-              v-model="basicInfoForm.name"
-              placeholder="请输入门店名称"
-              style="width: 475px"
-            />
+            <Input v-model="basicInfoForm.name" placeholder="请输入门店名称" style="width: 475px" />
           </FormItem>
           <FormItem label="门店图片(选填)" prop="upload_list">
             <div>
@@ -28,22 +24,12 @@
                 <template v-if="item.status === 'finished'">
                   <img :src="item.url" />
                   <div class="upload-list-cover">
-                    <Icon
-                      type="ios-eye-outline"
-                      @click.native="handleView(item)"
-                    ></Icon>
-                    <Icon
-                      type="ios-trash-outline"
-                      @click.native="handleRemove(item)"
-                    ></Icon>
+                    <Icon type="ios-eye-outline" @click.native="handleView(item)"></Icon>
+                    <Icon type="ios-trash-outline" @click.native="handleRemove(item)"></Icon>
                   </div>
                 </template>
                 <template v-else>
-                  <Progress
-                    v-if="item.showProgress"
-                    :percent="item.percentage"
-                    hide-info
-                  ></Progress>
+                  <Progress v-if="item.showProgress" :percent="item.percentage" hide-info></Progress>
                 </template>
               </div>
               <Upload
@@ -71,20 +57,14 @@
                   <Icon type="ios-camera" size="20"></Icon>
                 </div>
               </Upload>
-              <div style="margin-left: 15px;">
-                请上传100×100，png、jpg格式的图片，大小不超过500KB
-              </div>
+              <div style="margin-left: 15px;">请上传100×100，png、jpg格式的图片，大小不超过500KB</div>
             </div>
             <Modal title="View Image" v-model="visible">
               <img :src="this.imgUrl" v-if="visible" style="width: 100%" />
             </Modal>
           </FormItem>
           <FormItem label="门店电话" prop="telephone">
-            <Input
-              v-model="basicInfoForm.telephone"
-              placeholder="请输入门店电话"
-              style="width: 475px"
-            />
+            <Input v-model="basicInfoForm.telephone" placeholder="请输入门店电话" style="width: 475px" />
           </FormItem>
           <FormItem label="营业时间" class="time">
             <TimePicker
@@ -124,26 +104,14 @@
             ></Cascader>
           </FormItem>
           <FormItem label="门店地址" prop="address">
-            <Input
-              v-model="posInfoForm.address"
-              placeholder="请输入门店地址"
-              style="width: 475px;"
-            />
+            <Input v-model="posInfoForm.address" placeholder="请输入门店地址" style="width: 475px;" />
           </FormItem>
           <div style="display: flex;">
             <FormItem label="经度">
-              <Input
-                v-model="posInfoForm.latitude"
-                placeholder="请输入门店经度"
-                style="width: 150px;"
-              />
+              <Input v-model="posInfoForm.latitude" placeholder="请输入门店经度" style="width: 150px;" />
             </FormItem>
             <FormItem label="纬度">
-              <Input
-                v-model="posInfoForm.longitude"
-                placeholder="请输入门店纬度"
-                style="width: 150px;"
-              />
+              <Input v-model="posInfoForm.longitude" placeholder="请输入门店纬度" style="width: 150px;" />
             </FormItem>
           </div>
           <FormItem label="步行指引" prop="guide">
@@ -201,10 +169,7 @@ export default {
         this.global_.path.baseUrl +
         '/rentalcars/upload/image?image&folderName=store',
       visible: false,
-      statusList: [
-        { name: '停运', status: 2 },
-        { name: '运营', status: 1 }
-      ],
+      statusList: [{ name: '停运', status: 2 }, { name: '运营', status: 1 }],
       addressData: [],
       ruleValidate: {
         name: [
@@ -367,8 +332,8 @@ export default {
                                       item =>
                                         item.value === res.data.data.province
                                     );
-                                    let cityTemp = provinceTemp.find(
-                                      item => item.parent === res.data.data.city
+                                    let cityTemp = provinceTemp.children.find(
+                                      item => item.value === res.data.data.city
                                     );
                                     cityTemp.children.push(...temp3);
                                   }
@@ -423,16 +388,23 @@ export default {
             this.posInfoForm = Object.assign({}, this.posInfoForm, {
               address: res.data.data.address,
               guide: res.data.data.guide,
-              currentAddress: [res.data.data.province, res.data.data.city, res.data.data.county],
+              currentAddress: [
+                res.data.data.province,
+                res.data.data.city,
+                res.data.data.county
+              ],
               latitude: res.data.data.latitude,
               longitude: res.data.data.longitude
             });
             if (res.data.data.image) {
-              this.basicInfoForm.upload_list.push({
-                name: res.data.data.image,
-                url: this.global_.path.baseUrl + '/' + res.data.data.image,
-                status: 'finished'
-              });
+              let listTemp = res.data.data.image.split(',');
+              this.basicInfoForm.upload_list.push(
+                ...listTemp.map(item => ({
+                  name: item,
+                  url: this.global_.path.baseUrl + '/' + item,
+                  status: 'finished'
+                }))
+              );
             }
           } else {
             this.$Message.error({
@@ -566,10 +538,11 @@ export default {
       );
       this.$refs[name].validate(valid => {
         if (valid) {
+          let listTemp = this.basicInfoForm.upload_list.map(item => item.name);
           let temp = {
             name: this.basicInfoForm.name,
             telephone: this.basicInfoForm.telephone,
-            image: this.basicInfoForm.upload_list[0].name,
+            image: listTemp.join(','),
             start_time: this.basicInfoForm.time[0],
             end_time: this.basicInfoForm.time[1],
             status: this.statusList[tempIndex2].status,
