@@ -88,21 +88,21 @@
           <div class="fetch">
             <div>
               实际取车时间：
-              {{ orderDetail && orderDetail.order.time_start }}
+              {{ orderDetail && orderDetail.order.time_pick_up }}
             </div>
             <div style="margin-top: 15px;">
               实际取车门店：
-              {{ orderDetail && orderDetail.order.store_pick_up_name }}
+              {{ orderDetail && orderDetail.order.time_pick_up && orderDetail.order.store_pick_up_name }}
             </div>
           </div>
           <div class="return">
             <div>
               实际还车时间：
-              {{ orderDetail && orderDetail.order.time_end }}
+              {{ orderDetail && orderDetail.order.time_drop_off }}
             </div>
             <div style="margin-top: 15px;">
               实际还车门店：
-              {{ orderDetail && orderDetail.order.store_drop_off_name }}
+              {{ orderDetail && orderDetail.order.time_drop_off && orderDetail.order.store_drop_off_name }}
             </div>
           </div>
           <div class="duration">
