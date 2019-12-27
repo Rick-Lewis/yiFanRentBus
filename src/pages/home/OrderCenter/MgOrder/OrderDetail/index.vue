@@ -3,9 +3,7 @@
     <div class="basic-info-container">
       <div class="header">
         <span>单号：{{ orderDetail && orderDetail.order.order_no }}</span>
-        <span
-          >下单时间：{{ orderDetail && orderDetail.order.time_create }}</span
-        >
+        <span>下单时间：{{ orderDetail && orderDetail.order.time_create }}</span>
         <!-- <span>司机：王大伟（130 8888 8888）</span> -->
       </div>
       <div class="content">
@@ -29,23 +27,15 @@
           <div class="top">预计取还时间：</div>
           <div class="bottom">
             <div class="start">
-              <div>
-                {{ orderDetail && orderDetail.order.time_start.split(' ')[0] }}
-              </div>
-              <div>
-                {{ orderDetail && orderDetail.order.time_start.split(' ')[1] }}
-              </div>
+              <div>{{ orderDetail && orderDetail.order.time_start.split(' ')[0] }}</div>
+              <div>{{ orderDetail && orderDetail.order.time_start.split(' ')[1] }}</div>
             </div>
             <div class="time">
               <div>{{ orderDetail && orderDetail.order.days }}</div>
             </div>
             <div class="end">
-              <div>
-                {{ orderDetail && orderDetail.order.time_end.split(' ')[0] }}
-              </div>
-              <div>
-                {{ orderDetail && orderDetail.order.time_end.split(' ')[1] }}
-              </div>
+              <div>{{ orderDetail && orderDetail.order.time_end.split(' ')[0] }}</div>
+              <div>{{ orderDetail && orderDetail.order.time_end.split(' ')[1] }}</div>
             </div>
           </div>
         </div>
@@ -55,15 +45,19 @@
             <div class="top">预计取还地点：</div>
             <div class="bottom">
               <div class="fetch">
-                <span>{{
+                <span>
+                  {{
                   orderDetail && orderDetail.order.store_pick_up_name
-                }}</span>
+                  }}
+                </span>
                 <div>取</div>
               </div>
               <div class="return">
-                <span>{{
+                <span>
+                  {{
                   orderDetail && orderDetail.order.store_drop_off_name
-                }}</span>
+                  }}
+                </span>
                 <div>还</div>
               </div>
             </div>
@@ -93,9 +87,9 @@
             <div style="margin-top: 15px;">
               实际取车门店：
               {{
-                orderDetail &&
-                  orderDetail.order.time_pick_up &&
-                  orderDetail.order.store_pick_up_name
+              orderDetail &&
+              orderDetail.order.time_pick_up &&
+              orderDetail.order.store_pick_up_name
               }}
             </div>
           </div>
@@ -107,16 +101,16 @@
             <div style="margin-top: 15px;">
               实际还车门店：
               {{
-                orderDetail &&
-                  orderDetail.order.time_drop_off &&
-                  orderDetail.order.store_drop_off_name
+              orderDetail &&
+              orderDetail.order.time_drop_off &&
+              orderDetail.order.store_drop_off_name
               }}
             </div>
           </div>
           <div class="duration">
             <div>
               实际租车时长：
-              {{ orderDetail && orderDetail.order.days }} 天
+              {{ actualDuration && actualDuration + '天' }}
             </div>
           </div>
         </div>
@@ -141,7 +135,7 @@
           <Table border :columns="optColumns" :data="optData" stripe>
             <!-- <template v-slot:operator="{ row }">
               <div>{{ row.user_name || row.nick_name }}</div>
-            </template> -->
+            </template>-->
           </Table>
         </div>
       </div>
@@ -274,7 +268,7 @@ export default {
           this.optData.push(...this.orderDetail.order.orderOperations);
         } else {
           this.$Message.error({
-            content: res.data.data.message
+            content: res.data.message
           });
         }
         this.spinShow = false;
@@ -311,14 +305,15 @@ export default {
       ) {
         result =
           '' +
-          Math.floor(
+          Math.round(
             (new Date(this.orderDetail.order.time_drop_off) -
-              new Date(this.orderDetail.order.time_drop_off)) /
-              1000 /
+              new Date(this.orderDetail.order.time_pick_up)) /
+              100 /
               60 /
               60 /
               24
-          );
+          ) /
+            10;
       }
       return result;
     }

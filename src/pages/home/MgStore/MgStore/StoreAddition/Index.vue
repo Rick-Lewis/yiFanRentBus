@@ -150,6 +150,7 @@ export default {
       }
     };
     return {
+      count: 0,
       basicInfoForm: {
         name: '',
         upload_list: [],
@@ -249,14 +250,10 @@ export default {
                       let ite = {
                         value: obj.code,
                         label: obj.name,
-                        level: obj.level
+                        level: obj.level,
+                        children: [],
+                        loading: false
                       };
-                      if (obj.level < 3) {
-                        ite = Object.assign({}, ite, {
-                          children: [],
-                          loading: false
-                        });
-                      }
                       return ite;
                     });
                     this.addressData.push(...temp1);
@@ -396,6 +393,7 @@ export default {
               latitude: res.data.data.latitude,
               longitude: res.data.data.longitude
             });
+            console.log('dfasdfsd', this.posInfoForm.currentAddress);
             if (res.data.data.image) {
               let listTemp = res.data.data.image.split(',');
               this.basicInfoForm.upload_list.push(
@@ -408,7 +406,7 @@ export default {
             }
           } else {
             this.$Message.error({
-              content: res.data.data.message
+              content: res.data.message
             });
             this.spinShow = false;
           }
@@ -474,6 +472,10 @@ export default {
       );
     },
     loadData(item, callback) {
+      console.log('StoreAddition methods loadData', this);
+      if (this.spinShow) {
+        return;
+      }
       item.loading = true;
       this.axios({
         method: 'get',
@@ -490,7 +492,6 @@ export default {
           );
           if (res.data.length !== 0) {
             let temp = res.data;
-            temp.shift();
             temp = res.data.map(obj => {
               let ite = {
                 value: obj.code,
@@ -513,7 +514,6 @@ export default {
               level: 3
             });
           }
-
           item.loading = false;
           callback();
         },
@@ -583,12 +583,12 @@ export default {
               );
               if (res.data.code === 0) {
                 this.$Message.success({
-                  content: res.data.data.message
+                  content: res.data.message
                 });
                 this.$router.back();
               } else {
                 this.$Message.error({
-                  content: res.data.data.message
+                  content: res.data.message
                 });
               }
               this.spinShow = false;

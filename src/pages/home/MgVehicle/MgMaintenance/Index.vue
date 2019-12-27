@@ -202,7 +202,7 @@ export default {
                 this.total = res.data.data.total;
               } else {
                 this.$Message.error({
-                  content: res.data.data.message
+                  content: res.data.message
                 });
               }
               this.spinShow = false;
@@ -220,7 +220,7 @@ export default {
           );
         } else {
           this.$Message.error({
-            content: res.data.data.message
+            content: res.data.message
           });
         }
       },
@@ -319,11 +319,11 @@ export default {
                 res
               );
               if (res.data.code === 0) {
-                this.$Message.success(res.data.data.message);
+                this.$Message.success(res.data.message);
                 this.mOrderData.splice(index, 1);
               } else {
                 this.$Message.error({
-                  content: res.data.data.message
+                  content: res.data.message
                 });
               }
               this.spinShow = false;
@@ -383,7 +383,7 @@ export default {
             this.total = res.data.data.total;
           } else {
             this.$Message.error({
-              content: res.data.data.message
+              content: res.data.message
             });
           }
           this.spinShow = false;
@@ -426,7 +426,7 @@ export default {
             this.total = res.data.data.total;
           } else {
             this.$Message.error({
-              content: res.data.data.message
+              content: res.data.message
             });
           }
           this.spinShow = false;
@@ -506,7 +506,7 @@ export default {
             this.total = res.data.data.total;
           } else {
             this.$Message.error({
-              content: res.data.data.message
+              content: res.data.message
             });
           }
           this.spinShow = false;

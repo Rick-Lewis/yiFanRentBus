@@ -172,7 +172,7 @@ export default {
           );
         } else {
           this.$Message.error({
-            content: res.data.data.message
+            content: res.data.message
           });
         }
       },
@@ -229,7 +229,7 @@ export default {
           this.total = res.data.data.total;
         } else {
           this.$Message.error({
-            content: res.data.data.message
+            content: res.data.message
           });
         }
       },
@@ -302,7 +302,7 @@ export default {
               this.vehicleModelData[index].state === 1 ? 2 : 1;
           } else {
             this.$Message.error({
-              content: res.data.data.message
+              content: res.data.message
             });
           }
           this.spinShow = false;
@@ -431,7 +431,7 @@ export default {
             this.total = res.data.data.total;
           } else {
             this.$Message.error({
-              content: res.data.data.message
+              content: res.data.message
             });
           }
           this.spinShow = false;
@@ -482,7 +482,7 @@ export default {
                 this.vehicleModelData.splice(index, 1);
               } else {
                 this.$Message.error({
-                  content: res.data.data.message
+                  content: res.data.message
                 });
               }
               this.spinShow = false;
@@ -546,7 +546,7 @@ export default {
             this.total = res.data.data.total;
           } else {
             this.$Message.error({
-              content: res.data.data.message
+              content: res.data.message
             });
           }
         },
@@ -587,7 +587,7 @@ export default {
             this.total = res.data.data.total;
           } else {
             this.$Message.error({
-              content: res.data.data.message
+              content: res.data.message
             });
           }
         },

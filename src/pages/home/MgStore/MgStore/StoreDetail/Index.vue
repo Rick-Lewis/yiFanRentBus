@@ -4,7 +4,7 @@
       <div class="header">基础信息</div>
       <div class="content">
         <div class="left">
-          <img :src="storeDetail && (global_.path.baseUrl + storeDetail.image)" />
+          <img :src="storeDetail && (global_.path.baseUrl + storeDetail.image.split(',')[0])" />
         </div>
         <div class="center">
           <div class="title">{{storeDetail && storeDetail.name}}</div>
@@ -14,7 +14,7 @@
         <div class="right">
           <div class="status">
             <div>状态</div>
-            <div>{{storeDetail && storeDetail.status === 1 ? '已启用' : '已停用'}}</div>
+            <div>{{storeDetail && storeDetail.status === 1 ? '运营' : '停运'}}</div>
           </div>
         </div>
       </div>
@@ -145,7 +145,7 @@ export default {
           this.storeDetail = res.data.data;
         } else {
           this.$Message.error({
-            content: res.data.data.message
+            content: res.data.message
           });
         }
         this.spinShow = false;
@@ -180,7 +180,7 @@ export default {
           this.total = res.data.data.total;
         } else {
           this.$Message.error({
-            content: res.data.data.message
+            content: res.data.message
           });
         }
       },
@@ -219,7 +219,7 @@ export default {
             this.total = res.data.data.total;
           } else {
             this.$Message.error({
-              content: res.data.data.message
+              content: res.data.message
             });
           }
         },
@@ -259,7 +259,7 @@ export default {
             this.total = res.data.data.total;
           } else {
             this.$Message.error({
-              content: res.data.data.message
+              content: res.data.message
             });
           }
         },

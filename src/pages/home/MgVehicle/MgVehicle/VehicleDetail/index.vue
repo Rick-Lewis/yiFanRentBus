@@ -267,7 +267,7 @@ export default {
           this.vehicleDetail = res.data.data;
         } else {
           this.$Message.error({
-            content: res.data.data.message
+            content: res.data.message
           });
         }
       },

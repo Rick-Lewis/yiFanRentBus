@@ -67,7 +67,6 @@ export default {
     return {
       statusList: [
         { name: '全部', status: -2 },
-        { name: '未上架', status: 0 },
         { name: '运营', status: 1 },
         { name: '停运', status: 2 }
       ],
@@ -145,7 +144,7 @@ export default {
           this.total = res.data.data.total;
         } else {
           this.$Message.error({
-            content: res.data.data.message
+            content: res.data.message
           });
         }
         this.spinShow = false;
@@ -209,7 +208,7 @@ export default {
                   this.storeData[index].status !== 1 ? 1 : 2;
               } else {
                 this.$Message.error({
-                  content: res.data.data.message
+                  content: res.data.message
                 });
               }
               this.spinShow = false;
@@ -257,7 +256,7 @@ export default {
                 this.storeData.splice(index, 1);
               } else {
                 this.$Message.error({
-                  content: res.data.data.message
+                  content: res.data.message
                 });
               }
               this.spinShow = false;
@@ -363,7 +362,7 @@ export default {
             this.total = res.data.data.total;
           } else {
             this.$Message.error({
-              content: res.data.data.message
+              content: res.data.message
             });
           }
           this.spinShow = false;
@@ -406,7 +405,7 @@ export default {
             this.total = res.data.data.total;
           } else {
             this.$Message.error({
-              content: res.data.data.message
+              content: res.data.message
             });
           }
           this.spinShow = false;
@@ -448,7 +447,7 @@ export default {
             this.total = res.data.data.total;
           } else {
             this.$Message.error({
-              content: res.data.data.message
+              content: res.data.message
             });
           }
           this.spinShow = false;

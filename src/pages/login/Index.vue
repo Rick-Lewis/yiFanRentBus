@@ -92,7 +92,7 @@ export default {
               this.$router.push('/home/workspace');
             } else {
               this.$Message.error({
-                content: res.data.data.message
+                content: res.data.message
               });
             }
           },

@@ -199,7 +199,7 @@ export default {
           this.modelDetail = res.data.data;
         } else {
           this.$Message.error({
-            content: res.data.data.message
+            content: res.data.message
           });
         }
         this.spinShow = false;
@@ -249,7 +249,7 @@ export default {
               this.total = res.data.data.total;
             } else {
               this.$Message.error({
-                content: res.data.data.message
+                content: res.data.message
               });
             }
             this.spinShow = false;

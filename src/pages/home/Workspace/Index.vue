@@ -306,7 +306,7 @@ export default {
           this.vehicleOnline.total = res.data.data.total;
         } else {
           this.$Message.error({
-            content: res.data.data.message
+            content: res.data.message
           });
         }
       },
@@ -390,7 +390,7 @@ export default {
                 this.todayVehicle.fetch.total = res.data.data.total;
               } else {
                 this.$Message.error({
-                  content: res.data.data.message
+                  content: res.data.message
                 });
               }
             },
@@ -433,7 +433,7 @@ export default {
                 this.todayVehicle.return.total = res.data.data.total;
               } else {
                 this.$Message.error({
-                  content: res.data.data.message
+                  content: res.data.message
                 });
               }
             },
@@ -449,7 +449,7 @@ export default {
           );
         } else {
           this.$Message.error({
-            content: res.data.data.message
+            content: res.data.message
           });
         }
       },
@@ -487,7 +487,7 @@ export default {
             this.vehicleOnline.total = res.data.data.total;
           } else {
             this.$Message.error({
-              content: res.data.data.message
+              content: res.data.message
             });
           }
         },
@@ -547,7 +547,7 @@ export default {
             }
           } else {
             this.$Message.error({
-              content: res.data.data.message
+              content: res.data.message
             });
           }
         },
@@ -606,7 +606,7 @@ export default {
             }
           } else {
             this.$Message.error({
-              content: res.data.data.message
+              content: res.data.message
             });
           }
         },
@@ -688,11 +688,11 @@ export default {
                     res
                   );
                   if (res.data.code === 0) {
-                    this.$Message.success('操作成功');
+                    this.$Message.success(res.data.message);
                     this.vehicleOnline.list[index].status = 2;
                   } else {
                     this.$Message.error({
-                      content: res.data.data.message
+                      content: res.data.message
                     });
                   }
                   this.spinShow = false;
@@ -851,7 +851,7 @@ export default {
               this.todayVehicle.fetch.total = res.data.data.total;
             } else {
               this.$Message.error({
-                content: res.data.data.message
+                content: res.data.message
               });
             }
           },
@@ -902,7 +902,7 @@ export default {
               this.todayVehicle.return.total = res.data.data.total;
             } else {
               this.$Message.error({
-                content: res.data.data.message
+                content: res.data.message
               });
             }
           },

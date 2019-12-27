@@ -201,7 +201,7 @@ export default {
             }
           } else {
             this.$Message.error({
-              content: res.data.data.message
+              content: res.data.message
             });
           }
           this.spinShow = false;
@@ -320,7 +320,7 @@ export default {
                 this.$router.back();
               } else {
                 this.$Message.error({
-                  content: res.data.data.message
+                  content: res.data.message
                 });
               }
               this.spinShow = false;
