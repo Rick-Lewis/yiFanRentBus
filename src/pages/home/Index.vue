@@ -276,7 +276,7 @@ export default {
                 this.$router.push('/login');
               } else {
                 this.$Message.error({
-                  content: '退出失败'
+                  content: res.data.data.message
                 });
               }
             },

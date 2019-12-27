@@ -337,7 +337,7 @@ export default {
             }
           } else {
             this.$Message.error({
-              content: '操作失败'
+              content: res.data.data.message
             });
           }
         },
@@ -367,7 +367,7 @@ export default {
           this.vehicleTypeList.push(...res.data.data.data);
         } else {
           this.$Message.error({
-            content: '车辆类型请求失败'
+            content: res.data.data.message
           });
         }
       },
@@ -532,12 +532,12 @@ export default {
           );
           if (res.data.code === 0) {
             this.$Message.success({
-              content: '操作成功'
+              content: res.data.data.message
             });
             this.$router.back();
           } else {
             this.$Message.error({
-              content: '操作失败'
+              content: res.data.data.message
             });
           }
         },

@@ -244,7 +244,7 @@ export default {
           this.total = res.data.data.total;
         } else {
           this.$Message.error({
-            content: '操作失败'
+            content: res.data.data.message
           });
         }
       },
@@ -318,11 +318,11 @@ export default {
                   res
                 );
                 if (res.data.code === 0) {
-                  this.$Message.success('操作成功');
+                  this.$Message.success(res.data.data.message);
                   this.orderData[index].status = 2;
                 } else {
                   this.$Message.error({
-                    content: '操作失败'
+                    content: res.data.data.message
                   });
                 }
                 this.spinShow = false;
@@ -603,7 +603,7 @@ export default {
             this.total = res.data.data.total;
           } else {
             this.$Message.error({
-              content: '操作失败'
+              content: res.data.data.message
             });
           }
           this.spinShow = false;
@@ -688,7 +688,7 @@ export default {
             this.total = res.data.data.total;
           } else {
             this.$Message.error({
-              content: '操作失败'
+              content: res.data.data.message
             });
           }
           this.spinShow = false;
@@ -757,7 +757,7 @@ export default {
             this.total = res.data.data.total;
           } else {
             this.$Message.error({
-              content: '操作失败'
+              content: res.data.data.message
             });
           }
           this.spinShow = false;

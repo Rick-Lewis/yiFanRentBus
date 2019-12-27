@@ -263,11 +263,11 @@ export default {
           res
         );
         if (res.data.code === 0) {
-          this.$Message.success('操作成功');
+          this.$Message.success(res.data.data.message);
           this.vehicleDetail = res.data.data;
         } else {
           this.$Message.error({
-            content: '操作失败'
+            content: res.data.data.message
           });
         }
       },

@@ -122,7 +122,7 @@ export default {
           this.total = res.data.data.total;
         } else {
           this.$Message.error({
-            content: '品牌数据请求失败'
+            content: res.data.data.message
           });
         }
         this.spinShow = false;
@@ -174,7 +174,7 @@ export default {
             this.total = res.data.data.total;
           } else {
             this.$Message.error({
-              content: '品牌数据请求失败'
+              content: res.data.data.message
             });
           }
           this.spinShow = false;
@@ -222,7 +222,7 @@ export default {
                 this.brandData.splice(index, 1);
               } else {
                 this.$Message.error({
-                  content: '操作失败'
+                  content: res.data.data.message
                 });
               }
               this.spinShow = false;
@@ -280,7 +280,7 @@ export default {
             this.total = res.data.data.total;
           } else {
             this.$Message.error({
-              content: '品牌数据请求失败'
+              content: res.data.data.message
             });
           }
           this.spinShow = false;
@@ -323,7 +323,7 @@ export default {
             this.total = res.data.data.total;
           } else {
             this.$Message.error({
-              content: '品牌数据请求失败'
+              content: res.data.data.message
             });
           }
           this.spinShow = false;

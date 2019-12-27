@@ -92,7 +92,11 @@
             </div>
             <div style="margin-top: 15px;">
               实际取车门店：
-              {{ orderDetail && orderDetail.order.time_pick_up && orderDetail.order.store_pick_up_name }}
+              {{
+                orderDetail &&
+                  orderDetail.order.time_pick_up &&
+                  orderDetail.order.store_pick_up_name
+              }}
             </div>
           </div>
           <div class="return">
@@ -102,7 +106,11 @@
             </div>
             <div style="margin-top: 15px;">
               实际还车门店：
-              {{ orderDetail && orderDetail.order.time_drop_off && orderDetail.order.store_drop_off_name }}
+              {{
+                orderDetail &&
+                  orderDetail.order.time_drop_off &&
+                  orderDetail.order.store_drop_off_name
+              }}
             </div>
           </div>
           <div class="duration">
@@ -266,7 +274,7 @@ export default {
           this.optData.push(...this.orderDetail.order.orderOperations);
         } else {
           this.$Message.error({
-            content: '操作失败'
+            content: res.data.data.message
           });
         }
         this.spinShow = false;
@@ -293,6 +301,26 @@ export default {
       } else {
         return '';
       }
+    },
+    actualDuration() {
+      let result = '';
+      if (
+        this.orderDetail &&
+        this.orderDetail.order.time_pick_up &&
+        this.orderDetail.order.time_drop_off
+      ) {
+        result =
+          '' +
+          Math.floor(
+            (new Date(this.orderDetail.order.time_drop_off) -
+              new Date(this.orderDetail.order.time_drop_off)) /
+              1000 /
+              60 /
+              60 /
+              24
+          );
+      }
+      return result;
     }
   }
 };

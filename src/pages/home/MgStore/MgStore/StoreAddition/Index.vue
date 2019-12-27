@@ -408,7 +408,7 @@ export default {
             }
           } else {
             this.$Message.error({
-              content: '操作失败'
+              content: res.data.data.message
             });
             this.spinShow = false;
           }
@@ -583,12 +583,12 @@ export default {
               );
               if (res.data.code === 0) {
                 this.$Message.success({
-                  content: '操作成功'
+                  content: res.data.data.message
                 });
                 this.$router.back();
               } else {
                 this.$Message.error({
-                  content: '操作失败'
+                  content: res.data.data.message
                 });
               }
               this.spinShow = false;

@@ -244,11 +244,11 @@ export default {
           res
         );
         if (res.data.code === 0) {
-          this.$Message.success('操作成功');
+          this.$Message.success(res.data.data.message);
           this.maintenanceDetail = res.data.data;
         } else {
           this.$Message.error({
-            content: '操作失败'
+            content: res.data.data.message
           });
         }
         this.spinShow = false;
@@ -298,13 +298,13 @@ export default {
               );
               if (res.data.code === 0) {
                 this.$Message.success({
-                  content: '操作成功'
+                  content: res.data.data.message
                 });
                 this.maintenanceDetail = Object.assign({}, this.maintenanceDetail, res.data.data);
                 // this.$router.back();
               } else {
                 this.$Message.error({
-                  content: '操作失败'
+                  content: res.data.data.message
                 });
               }
             },

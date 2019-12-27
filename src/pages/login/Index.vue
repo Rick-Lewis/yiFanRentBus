@@ -92,7 +92,7 @@ export default {
               this.$router.push('/home/workspace');
             } else {
               this.$Message.error({
-                content: '账号或密码错误'
+                content: res.data.data.message
               });
             }
           },

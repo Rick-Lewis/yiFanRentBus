@@ -140,7 +140,7 @@ export default {
             });
           } else {
             this.$Message.error({
-              content: '工单数据请求失败'
+              content: res.data.data.message
             });
           }
         },
@@ -170,7 +170,7 @@ export default {
           this.itemList.push(...res.data.data.data);
         } else {
           this.$Message.error({
-            content: '服务项目数据请求失败'
+            content: res.data.data.message
           });
         }
       },
@@ -198,7 +198,7 @@ export default {
           this.serviceList.push(...res.data.data.data);
         } else {
           this.$Message.error({
-            content: '服务类型数据请求失败'
+            content: res.data.data.message
           });
         }
       },
@@ -226,7 +226,7 @@ export default {
           this.providerList.push(...res.data.data.data);
         } else {
           this.$Message.error({
-            content: '服务商数据请求失败'
+            content: res.data.data.message
           });
         }
       },
@@ -254,7 +254,7 @@ export default {
           this.vehicleData.push(...res.data.data.data);
         } else {
           this.$Message.error({
-            content: '车辆数据请求失败'
+            content: res.data.data.message
           });
         }
       },
@@ -348,12 +348,12 @@ export default {
           );
           if (res.data.code === 0) {
             this.$Message.success({
-              content: '操作成功'
+              content: res.data.data.message
             });
             this.$router.back();
           } else {
             this.$Message.error({
-              content: '操作失败'
+              content: res.data.data.message
             });
           }
           this.spinShow = false;

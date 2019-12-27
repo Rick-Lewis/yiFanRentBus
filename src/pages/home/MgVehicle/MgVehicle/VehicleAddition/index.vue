@@ -195,7 +195,7 @@ export default {
           // this.basicInfoForm.shopCheck = this.shopList[0].name;
         } else {
           this.$Message.error({
-            content: '门店获取失败'
+            content: res.data.data.message
           });
         }
       },
@@ -268,7 +268,7 @@ export default {
                   }
                 } else {
                   this.$Message.error({
-                    content: '操作失败'
+                    content: res.data.data.message
                   });
                 }
               },
@@ -285,7 +285,7 @@ export default {
           }
         } else {
           this.$Message.error({
-            content: '车辆类型请求失败'
+            content: res.data.data.message
           });
         }
       },
@@ -404,12 +404,12 @@ export default {
           );
           if (res.data.code === 0) {
             this.$Message.success({
-              content: '操作成功'
+              content: res.data.data.message
             });
             this.$router.back();
           } else {
             this.$Message.error({
-              content: '操作失败'
+              content: res.data.data.message
             });
           }
           this.spinShow = false;

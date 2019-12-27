@@ -200,7 +200,7 @@ export default {
             }
           } else {
             this.$Message.error({
-              content: '操作失败'
+              content: res.data.data.message
             });
           }
           this.spinShow = false;
@@ -312,7 +312,7 @@ export default {
                 this.$router.back();
               } else {
                 this.$Message.error({
-                  content: '操作失败'
+                  content: res.data.data.message
                 });
               }
               this.spinShow = false;
