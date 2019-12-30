@@ -203,7 +203,7 @@ export default {
                 res
               );
               if (res.data.code === 0) {
-                this.$Message.success('操作成功');
+                this.$Message.success(res.data.message);
                 this.storeData[index].status =
                   this.storeData[index].status !== 1 ? 1 : 2;
               } else {
@@ -252,7 +252,7 @@ export default {
                 res
               );
               if (res.data.code === 0) {
-                this.$Message.success('操作成功');
+                this.$Message.success(res.data.message);
                 this.storeData.splice(index, 1);
               } else {
                 this.$Message.error({

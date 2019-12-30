@@ -288,7 +288,7 @@ export default {
                 this.$router.back();
               } else {
                 this.$Message.error({
-                  content: '操作失败'
+                  content: res.data.message
                 });
               }
             },

@@ -332,7 +332,7 @@ export default {
                 res
               );
               if (res.data.code === 0) {
-                this.$Message.success('操作成功');
+                this.$Message.success(res.data.message);
                 this.adData.splice(index, 1);
               } else {
                 this.$Message.error({
