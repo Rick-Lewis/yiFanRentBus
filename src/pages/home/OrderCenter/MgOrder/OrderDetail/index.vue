@@ -3,7 +3,9 @@
     <div class="basic-info-container">
       <div class="header">
         <span>单号：{{ orderDetail && orderDetail.order.order_no }}</span>
-        <span>下单时间：{{ orderDetail && orderDetail.order.time_create }}</span>
+        <span
+          >下单时间：{{ orderDetail && orderDetail.order.time_create }}</span
+        >
         <!-- <span>司机：王大伟（130 8888 8888）</span> -->
       </div>
       <div class="content">
@@ -27,15 +29,23 @@
           <div class="top">预计取还时间：</div>
           <div class="bottom">
             <div class="start">
-              <div>{{ orderDetail && orderDetail.order.time_start.split(' ')[0] }}</div>
-              <div>{{ orderDetail && orderDetail.order.time_start.split(' ')[1] }}</div>
+              <div>
+                {{ orderDetail && orderDetail.order.time_start.split(' ')[0] }}
+              </div>
+              <div>
+                {{ orderDetail && orderDetail.order.time_start.split(' ')[1] }}
+              </div>
             </div>
             <div class="time">
               <div>{{ orderDetail && orderDetail.order.days }}</div>
             </div>
             <div class="end">
-              <div>{{ orderDetail && orderDetail.order.time_end.split(' ')[0] }}</div>
-              <div>{{ orderDetail && orderDetail.order.time_end.split(' ')[1] }}</div>
+              <div>
+                {{ orderDetail && orderDetail.order.time_end.split(' ')[0] }}
+              </div>
+              <div>
+                {{ orderDetail && orderDetail.order.time_end.split(' ')[1] }}
+              </div>
             </div>
           </div>
         </div>
@@ -46,17 +56,13 @@
             <div class="bottom">
               <div class="fetch">
                 <span>
-                  {{
-                  orderDetail && orderDetail.order.store_pick_up_name
-                  }}
+                  {{ orderDetail && orderDetail.order.store_pick_up_name }}
                 </span>
                 <div>取</div>
               </div>
               <div class="return">
                 <span>
-                  {{
-                  orderDetail && orderDetail.order.store_drop_off_name
-                  }}
+                  {{ orderDetail && orderDetail.order.store_drop_off_name }}
                 </span>
                 <div>还</div>
               </div>
@@ -87,9 +93,9 @@
             <div style="margin-top: 15px;">
               实际取车门店：
               {{
-              orderDetail &&
-              orderDetail.order.time_pick_up &&
-              orderDetail.order.store_pick_up_name
+                orderDetail &&
+                  orderDetail.order.time_pick_up &&
+                  orderDetail.order.store_pick_up_name
               }}
             </div>
           </div>
@@ -101,9 +107,9 @@
             <div style="margin-top: 15px;">
               实际还车门店：
               {{
-              orderDetail &&
-              orderDetail.order.time_drop_off &&
-              orderDetail.order.store_drop_off_name
+                orderDetail &&
+                  orderDetail.order.time_drop_off &&
+                  orderDetail.order.store_drop_off_name
               }}
             </div>
           </div>
@@ -199,13 +205,18 @@ export default {
           title: '租车费用（元）',
           key: 'rental_fee',
           align: 'center'
+        },
+        {
+          title: '合计（元）',
+          key: 'price_total',
+          align: 'center'
         }
       ],
       costData: [],
       evalColumns: [
         {
           title: '星级',
-          key: 'level',
+          key: 'grade',
           align: 'center'
         },
         {
@@ -215,7 +226,7 @@ export default {
         },
         {
           title: '评价时间',
-          key: 'time',
+          key: 'create_time',
           align: 'center'
         }
       ],
@@ -265,8 +276,12 @@ export default {
         );
         if (res.data.code === 0) {
           this.orderDetail = res.data.data;
+          let feeListTemp = Object.assign({}, this.orderDetail.fee_list, {
+            price_total: this.orderDetail.order.price_total
+          });
           this.optData.push(...this.orderDetail.order.orderOperations);
-          this.costData.push(...[this.orderDetail.fee_list]);
+          this.costData.push(...[feeListTemp]);
+          this.evalData.push(...this.orderDetail.order.orderComments);
         } else {
           this.$Message.error({
             content: res.data.message
