@@ -186,18 +186,18 @@ export default {
       optData: [],
       costColumns: [
         {
-          title: '费用项目',
-          key: 'costItem',
+          title: '押金（元）',
+          key: 'deposit',
           align: 'center'
         },
         {
-          title: '金额（元）',
-          key: 'sum',
+          title: '保险（元）',
+          key: 'insurance_fee',
           align: 'center'
         },
         {
-          title: '子订单编号',
-          key: 'oderNo',
+          title: '租车费用（元）',
+          key: 'rental_fee',
           align: 'center'
         }
       ],
@@ -266,6 +266,7 @@ export default {
         if (res.data.code === 0) {
           this.orderDetail = res.data.data;
           this.optData.push(...this.orderDetail.order.orderOperations);
+          this.costData.push(...[this.orderDetail.fee_list]);
         } else {
           this.$Message.error({
             content: res.data.message
