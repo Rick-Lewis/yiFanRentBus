@@ -32,7 +32,7 @@ export default new Router({
   routes: [
     {
       path: '/',
-      redirect: '/home/workspace'
+      redirect: '/login'
     },
     {
       path: '/login',
