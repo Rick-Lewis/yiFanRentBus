@@ -236,8 +236,8 @@ export default {
         .slice()
         .findIndex(item => item.status === status);
       return {
-        name: this.vehicleStatusList[indexTemp].name,
-        nextName: this.vehicleStatusList[indexTemp + 1].name
+        name: indexTemp === -1 ? '' : this.vehicleStatusList[indexTemp].name,
+        nextName: indexTemp === -1 ? '' : this.vehicleStatusList[indexTemp + 1].name
       };
     },
     handleSelected(e, type) {

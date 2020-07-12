@@ -35,8 +35,8 @@
         </template>
         <template v-slot:action="{ row, index }">
           <a v-if="row.status === 0" @click="remove(index)">删除</a>
-          <a v-if="row.status === 0 || row.status === 2" @click="toggleStatus(index)">上架</a>
-          <a v-if="row.status === 1" @click="toggleStatus(index)">下架</a>
+          <a v-if="row.status === 0 || row.status === 2" @click="toggleStatus(index)">运营</a>
+          <a v-if="row.status === 1" @click="toggleStatus(index)">停运</a>
           <a @click="edit(index)">编辑</a>
           <a @click="show(index)">详情</a>
           <a @click="relateTo(index)">关联车型</a>
@@ -178,13 +178,13 @@ export default {
           this.global_.path.baseUrl +
           '/rentalcars/store/off?ids=' +
           this.storeData[index].id;
-        tempText = '下架';
+        tempText = '停运';
       } else {
         urlTemp =
           this.global_.path.baseUrl +
           '/rentalcars/store/on?ids=' +
           this.storeData[index].id;
-        tempText = '上架';
+        tempText = '运营';
       }
       this.$Modal.confirm({
         title: `确定${tempText + this.storeData[index].name}门店吗？`,

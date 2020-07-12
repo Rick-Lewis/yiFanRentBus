@@ -8,13 +8,13 @@
           :model="basicInfoForm"
           class="content"
           :rules="ruleValidate"
-          :label-width="120"
+          :label-width="100"
           label-colon
         >
           <FormItem label="门店名称" prop="name">
             <Input v-model="basicInfoForm.name" placeholder="请输入门店名称" style="width: 475px" />
           </FormItem>
-          <FormItem label="门店图片(选填)" prop="upload_list">
+          <FormItem label="门店图片" prop="upload_list">
             <div>
               <div
                 class="upload-list"
@@ -64,10 +64,11 @@
             </Modal>
           </FormItem>
           <FormItem label="门店电话" prop="telephone">
-            <Input v-model="basicInfoForm.telephone" placeholder="请输入门店电话" style="width: 475px" />
+            <Input v-model="basicInfoForm.telephone" type="number" maxlength="12" placeholder="请输入门店电话" style="width: 475px" />
           </FormItem>
           <FormItem label="营业时间" class="time">
             <TimePicker
+              format="HH:mm"
               type="timerange"
               placement="bottom-end"
               placeholder="请选择营业时间"
@@ -104,7 +105,7 @@
             ></Cascader>
           </FormItem>
           <FormItem label="门店地址" prop="address">
-            <Input v-model="posInfoForm.address" placeholder="请输入门店地址" style="width: 475px;" />
+            <Input v-model="posInfoForm.address" @on-change="e => handleDetailAddressChange(posInfoForm.address)" placeholder="请输入门店地址" style="width: 475px;" />
           </FormItem>
           <div style="display: flex;">
             <FormItem label="经度">
@@ -150,6 +151,7 @@ export default {
       }
     };
     return {
+      editData: {}, // 编辑时修改的值
       count: 0,
       basicInfoForm: {
         name: '',
@@ -170,7 +172,10 @@ export default {
         this.global_.path.baseUrl +
         '/rentalcars/upload/image?image&folderName=store',
       visible: false,
-      statusList: [{ name: '停运', status: 2 }, { name: '运营', status: 1 }],
+      statusList: [
+        { name: '停运', status: 2 },
+        { name: '运营', status: 1 }
+      ],
       addressData: [],
       ruleValidate: {
         name: [
@@ -263,7 +268,8 @@ export default {
                         url:
                           this.global_.path.baseUrl +
                           '/rentalcars/district/children?parent=' +
-                          res.data.data.province,
+                          res.data.data.province +
+                          '&level=2',
                         headers: { 'Content-Type': 'application/json' }
                       }).then(
                         res2 => {
@@ -273,7 +279,7 @@ export default {
                           );
                           if (res2.data.length !== 0) {
                             let temp2 = res2.data;
-                            temp2.shift();
+                            // temp2.shift();
                             temp2 = temp2.map(obj => {
                               let ite = {
                                 value: obj.code,
@@ -299,7 +305,8 @@ export default {
                                 url:
                                   this.global_.path.baseUrl +
                                   '/rentalcars/district/children?parent=' +
-                                  res.data.data.city,
+                                  res.data.data.city +
+                                  '&level=3',
                                 headers: { 'Content-Type': 'application/json' }
                               }).then(
                                 res3 => {
@@ -307,9 +314,9 @@ export default {
                                     'StoreAddition Index.vue created /district/children county success',
                                     res3
                                   );
-                                  if (res3.data.length !== 0) {
-                                    let temp3 = res3.data;
-                                    temp3.shift();
+                                  let temp3 = res3.data;
+                                  if (temp3.length !== 0) {
+                                    // temp3.shift();
                                     temp3 = temp3.map(obj => {
                                       let ite = {
                                         value: obj.code,
@@ -317,23 +324,30 @@ export default {
                                         level: obj.level,
                                         parent: obj.parent
                                       };
-                                      if (obj.level < 3) {
-                                        ite = Object.assign({}, ite, {
-                                          children: [],
-                                          loading: false
-                                        });
-                                      }
+                                      // if (obj.level < 3) {
+                                      //   ite = Object.assign({}, ite, {
+                                      //     children: [],
+                                      //     loading: false
+                                      //   });
+                                      // }
                                       return ite;
                                     });
-                                    let provinceTemp = this.addressData.find(
-                                      item =>
-                                        item.value === res.data.data.province
-                                    );
-                                    let cityTemp = provinceTemp.children.find(
-                                      item => item.value === res.data.data.city
-                                    );
-                                    cityTemp.children.push(...temp3);
+                                  } else {
+                                    temp3 = {
+                                      value: '',
+                                      label: '市区',
+                                      level: 3,
+                                      parent: res.data.data.city
+                                    };
                                   }
+                                  let provinceTemp = this.addressData.find(
+                                    item =>
+                                      item.value === res.data.data.province
+                                  );
+                                  let cityTemp = provinceTemp.children.find(
+                                    item => item.value === res.data.data.city
+                                  );
+                                  cityTemp.children.push(...temp3);
                                   this.spinShow = false;
                                 },
                                 err3 => {
@@ -464,12 +478,26 @@ export default {
     this.basicInfoForm.upload_list = this.$refs.upload.fileList;
   },
   methods: {
+    handleDetailAddressChange(val) {
+      console.log(
+        'StoreAddition methods handleDetailAddressChange',
+        val
+      );
+      this.editData = Object.assign({}, this.editData, {
+        address: val
+      });
+    },
     handleAddressChange(value, selectedData) {
       console.log(
         'StoreAddition methods handleAddressChange',
         value,
         selectedData
       );
+      this.editData = Object.assign({}, this.editData, {
+        province: value[0],
+        city: value[1],
+        county: value[2]
+      });
     },
     loadData(item, callback) {
       console.log('StoreAddition methods loadData', this);
@@ -482,7 +510,9 @@ export default {
         url:
           this.global_.path.baseUrl +
           '/rentalcars/district/children?parent=' +
-          item.value,
+          item.value +
+          '&level=' +
+          (item.level + 1),
         headers: { 'Content-Type': 'application/json' }
       }).then(
         res => {
@@ -546,22 +576,29 @@ export default {
             start_time: this.basicInfoForm.time[0],
             end_time: this.basicInfoForm.time[1],
             status: this.statusList[tempIndex2].status,
-            province: this.posInfoForm.currentAddress[0]
-              ? this.posInfoForm.currentAddress[0]
-              : '',
-            city: this.posInfoForm.currentAddress[1]
-              ? this.posInfoForm.currentAddress[1]
-              : '',
-            county: this.posInfoForm.currentAddress[2]
-              ? this.posInfoForm.currentAddress[2]
-              : '',
-            address: this.posInfoForm.address,
-            guide: this.posInfoForm.address,
+
+            guide: this.posInfoForm.guide,
             latitude: this.posInfoForm.latitude,
             longitude: this.posInfoForm.longitude
           };
           if (this.$route.query.action === 'edit') {
             temp = Object.assign({}, temp, { id: this.$route.query.id });
+            if (JSON.stringify(this.editData) !== '{}') {
+              temp = Object.assign({}, temp, this.editData);
+            }
+          } else {
+            temp = Object.assign({}, temp, {
+              province: this.posInfoForm.currentAddress[0]
+                ? this.posInfoForm.currentAddress[0]
+                : '',
+              city: this.posInfoForm.currentAddress[1]
+                ? this.posInfoForm.currentAddress[1]
+                : '',
+              county: this.posInfoForm.currentAddress[2]
+                ? this.posInfoForm.currentAddress[2]
+                : '',
+              address: this.posInfoForm.address
+            });
           }
           console.log(
             'StoreAddition index.vue methods handleSubmit',

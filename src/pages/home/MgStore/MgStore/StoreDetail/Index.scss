@@ -55,7 +55,12 @@
                         &:last-child {
                             font-size: 18px;
                             padding-left: 25px;
-
+                            &.normal::before {
+                                background-color: green;
+                            }
+                            &.unnormal::before {
+                                background-color: #f74d00;
+                            }
                             &::before {
                                 content: '';
                                 position: absolute;
@@ -66,7 +71,6 @@
                                 width: 20px;
                                 height: 20px;
                                 border-radius: 20px;
-                                background-color: #f74d00;
                             }
                         }
                     }

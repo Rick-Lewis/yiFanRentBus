@@ -14,7 +14,7 @@
         <div class="right">
           <div class="status">
             <div>状态</div>
-            <div>{{storeDetail && storeDetail.status === 1 ? '运营' : '停运'}}</div>
+            <div :class="storeDetail && storeDetail.status === 1 ? 'normal' : 'unnormal'">{{storeDetail && storeDetail.status === 1 ? '运营' : '停运'}}</div>
           </div>
         </div>
       </div>

@@ -5,8 +5,8 @@
       <Tag size="large">{{storeDetail && storeDetail.name}}</Tag>
     </div>
     <div class="content-container">
-      <Button type="primary" style="margin-bottom: 10px;" @click="add">新增车型</Button>
-      <Button type="primary" style="margin-bottom: 10px;" @click="remove">删除车型</Button>
+      <Button type="primary" style="margin-bottom: 10px;" @click="add">选择关联车型</Button>
+      <Button type="primary" style="margin-bottom: 10px;" @click="remove">取消关联</Button>
       <Table
         border
         ref="selection"
@@ -324,6 +324,10 @@ export default {
       }
     },
     remove() {
+      if (this.idSelection1.length <= 0) {
+        this.$Message.info('您未选择需要取消关联的车型');
+        return;
+      }
       this.$Modal.confirm({
         title: `确定删除所选车型吗？`,
         content: '',
