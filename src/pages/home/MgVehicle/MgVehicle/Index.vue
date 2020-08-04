@@ -179,7 +179,7 @@ export default {
         this.currentPage +
         '&pageSize=' +
         this.currentPageSize +
-        '&sortField=create_time&sortOrder=desc',
+        '&sortField=createTime&sortOrder=desc',
       method: 'get',
       headers: { 'Content-Type': 'application/json' }
     }).then(
@@ -281,7 +281,7 @@ export default {
           '&pageSize=' +
           this.currentPageSize +
           strTemp +
-          '&sortField=create_time&sortOrder=desc',
+          '&sortField=createTime&sortOrder=desc',
         method: 'get',
         headers: { 'Content-Type': 'application/json' }
       }).then(
@@ -442,7 +442,7 @@ export default {
           this.currentPage +
           '&pageSize=' +
           this.currentPageSize +
-          '&sortField=create_time&sortOrder=desc',
+          '&sortField=createTime&sortOrder=desc',
         method: 'get',
         headers: { 'Content-Type': 'application/json' }
       }).then(
@@ -485,7 +485,7 @@ export default {
           this.currentPage +
           '&pageSize=' +
           this.currentPageSize +
-          '&sortField=create_time&sortOrder=desc',
+          '&sortField=createTime&sortOrder=desc',
         method: 'get',
         headers: { 'Content-Type': 'application/json' }
       }).then(

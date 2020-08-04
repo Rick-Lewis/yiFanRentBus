@@ -329,7 +329,7 @@ export default {
         return;
       }
       this.$Modal.confirm({
-        title: `确定删除所选车型吗？`,
+        title: `确定取消关联所选车型吗？`,
         content: '',
         onOk: () => {
           this.spinShow = true;

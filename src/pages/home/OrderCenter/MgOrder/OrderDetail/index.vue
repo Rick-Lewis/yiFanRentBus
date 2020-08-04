@@ -279,9 +279,9 @@ export default {
           let feeListTemp = Object.assign({}, this.orderDetail.fee_list, {
             price_total: this.orderDetail.order.price_total
           });
-          this.optData.push(...this.orderDetail.order.orderOperations);
+          this.orderDetail.order.orderOperations && this.optData.push(...this.orderDetail.order.orderOperations);
           this.costData.push(...[feeListTemp]);
-          this.evalData.push(...this.orderDetail.order.orderComments);
+          this.orderDetail.order.orderComments && this.evalData.push(...this.orderDetail.order.orderComments);
         } else {
           this.$Message.error({
             content: res.data.message

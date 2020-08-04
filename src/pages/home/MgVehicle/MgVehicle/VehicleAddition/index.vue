@@ -3,7 +3,7 @@
     <div>
       <div class="basic-info-container">
         <div class="header">基础信息</div>
-        <Form :model="basicInfoForm" class="content" :label-width="120" label-colon>
+        <Form :model="basicInfoForm" :rules="ruleCustom" ref="basicInfoForm" class="content" :label-width="120" label-colon>
           <FormItem label="车牌号" style="margin-left: 0;">
             <!-- <span>车牌号：</span> -->
             <Input v-model="basicInfoForm.plate_num" placeholder="请输入车牌号" style="width: 200px" />
@@ -82,7 +82,7 @@
             <!-- <span>颜色：</span> -->
             <Input v-model="basicInfoForm.color" placeholder="请输入颜色" style="width: 200px" />
           </FormItem>
-          <FormItem label="出厂日期" style="margin-left: 0;">
+          <FormItem :show-message="isShow.product_date" prop="product_date" label="出厂日期" style="margin-left: 0;">
             <!-- <span>出厂时间：</span> -->
             <!-- <Input v-model="basicInfoForm.product_date" placeholder="请输入出厂日期" style="width: 200px" /> -->
             <DatePicker
@@ -92,7 +92,7 @@
               style="width: 200px"
             ></DatePicker>
           </FormItem>
-          <FormItem label="购买日期" style="margin-left: 0;">
+          <FormItem :show-message="isShow.purchase_date" prop="purchase_date" label="购买日期" style="margin-left: 0;">
             <!-- <span>购买日期：</span> -->
             <!-- <Input
               v-model="basicInfoForm.purchase_date"
@@ -148,7 +148,37 @@
 export default {
   name: 'VehicleAddition',
   data: function() {
+    const validatePurDate = (rule, value, callback) => {
+      console.log('VehicleAddition validatePurDate', rule, value, callback);
+      this.isShow.purchase_date = true;
+      this.isShow.product_date = false;
+      if (this.basicInfoForm.product_date && new Date(this.basicInfoForm.product_date) > new Date(value)) {
+        return callback(new Error('购买日期不能小于生产日期'));
+      }
+      callback();
+    };
+    const validateProDate = (rule, value, callback) => {
+      console.log('VehicleAddition validateProDate', rule, value, callback);
+      this.isShow.purchase_date = false;
+      this.isShow.product_date = true;
+      if (this.basicInfoForm.purchase_date && new Date(this.basicInfoForm.purchase_date) < new Date(value)) {
+        return callback(new Error('购买日期不能小于生产日期'));
+      }
+      callback();
+    };
     return {
+      isShow: {
+        purchase_date: true,
+        product_date: true
+      },
+      ruleCustom: {
+        purchase_date: [{
+          validator: validatePurDate, trigger: 'blur'
+        }],
+        product_date: [{
+          validator: validateProDate, trigger: 'blur'
+        }]
+      },
       type: '',
       basicInfoForm: {
         plate_num: '',

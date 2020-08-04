@@ -109,10 +109,10 @@
           </FormItem>
           <div style="display: flex;">
             <FormItem label="经度">
-              <Input v-model="posInfoForm.latitude" placeholder="请输入门店经度" style="width: 150px;" />
+              <Input v-model="posInfoForm.latitude" type="number" placeholder="请输入门店经度" style="width: 150px;" />
             </FormItem>
             <FormItem label="纬度">
-              <Input v-model="posInfoForm.longitude" placeholder="请输入门店纬度" style="width: 150px;" />
+              <Input v-model="posInfoForm.longitude" type="number" placeholder="请输入门店纬度" style="width: 150px;" />
             </FormItem>
           </div>
           <FormItem label="步行指引" prop="guide">
