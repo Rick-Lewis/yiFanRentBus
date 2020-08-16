@@ -569,10 +569,10 @@ export default {
       if (withDriverTemp !== -2) {
         strTemp = strTemp + '&with_driver=' + withDriverTemp;
       }
-      if (this.duration.timeStart) {
+      if (this.duration && this.duration.timeStart) {
         strTemp = strTemp + '&time_start=' + this.duration.timeStart;
       }
-      if (this.duration.timeEnd) {
+      if (this.duration && this.duration.timeEnd) {
         strTemp = strTemp + '&time_end=' + this.duration.timeEnd;
       }
       if (this.formItem.key) {
