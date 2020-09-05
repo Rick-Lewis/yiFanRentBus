@@ -407,7 +407,6 @@ export default {
               latitude: res.data.data.latitude,
               longitude: res.data.data.longitude
             });
-            console.log('dfasdfsd', this.posInfoForm.currentAddress);
             if (res.data.data.image) {
               let listTemp = res.data.data.image.split(',');
               this.basicInfoForm.upload_list.push(
@@ -596,7 +595,7 @@ export default {
                 : '',
               county: this.posInfoForm.currentAddress[2]
                 ? this.posInfoForm.currentAddress[2]
-                : '',
+                : '市区',
               address: this.posInfoForm.address
             });
           }

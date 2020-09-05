@@ -263,7 +263,7 @@ export default {
           res
         );
         if (res.data.code === 0) {
-          this.$Message.success(res.data.data.message);
+          this.$Message.success(res.data.message);
           this.vehicleDetail = res.data.data;
         } else {
           this.$Message.error({

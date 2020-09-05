@@ -112,7 +112,7 @@ export default {
       storeData: [],
       total: 0, // 数据总条数
       currentPage: 1, // 当前页码
-      currentPageSize: 500, // 当前每页条数
+      currentPageSize: 10, // 当前每页条数
       spinShow: true,
       statusColor: {
         '-1': 'invalid',

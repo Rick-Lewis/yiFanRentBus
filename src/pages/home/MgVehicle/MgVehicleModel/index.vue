@@ -297,7 +297,7 @@ export default {
             res
           );
           if (res.data.code === 0) {
-            this.$Message.success(res.data.data.message);
+            this.$Message.success(res.data.message);
             this.vehicleModelData[index].state =
               this.vehicleModelData[index].state === 1 ? 2 : 1;
           } else {

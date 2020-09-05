@@ -49,7 +49,7 @@
       </div>
       <Table border :columns="vehicleColumns" :data="vehicleData" stripe>
         <template v-slot:state="{ row }">
-          <div :class="statusColor[row.state]">{{getStatusNameByValue(row.state).name}}</div>
+          <div :class="statusColor[row.state]">{{'已' + getStatusNameByValue(row.state).name}}</div>
         </template>
         <template slot-scope="{ row, index }" slot="action">
           <a style="margin-right: 5px" @click="edit(index)">编辑</a>
@@ -232,13 +232,36 @@ export default {
         status,
         this.vehicleStatusList.slice()
       );
+      let result = {
+        status: status,
+        name: '',
+        nextStatus: '',
+        nextName: ''
+      };
       let indexTemp = this.vehicleStatusList
         .slice()
         .findIndex(item => item.status === status);
-      return {
-        name: indexTemp === -1 ? '' : this.vehicleStatusList[indexTemp].name,
-        nextName: indexTemp === -1 ? '' : this.vehicleStatusList[indexTemp + 1].name
-      };
+      result.name = this.vehicleStatusList[indexTemp].name;
+      switch (status) {
+        case 0:
+          result.nextStatus = 1;
+          indexTemp = this.vehicleStatusList
+            .slice()
+            .findIndex(item => item.status === result.nextStatus);
+          result.nextName = this.vehicleStatusList[indexTemp].name;
+          break;
+        case 1:
+          result.nextStatus = 3;
+          indexTemp = this.vehicleStatusList
+            .slice()
+            .findIndex(item => item.status === result.nextStatus);
+          result.nextName = this.vehicleStatusList[indexTemp].name;
+          break;
+        case 2:
+          break;
+        case 3: break;
+      }
+      return result;
     },
     handleSelected(e, type) {
       console.log('MgVehicleModel index.vue handleRadioChange', e, type);
@@ -349,7 +372,7 @@ export default {
             res
           );
           if (res.data.code === 0) {
-            this.vehicleData[index].state = this.vehicleData[index].state + 1;
+            this.vehicleData[index].state = this.getStatusNameByValue(this.vehicleData[index].state).nextStatus;
             this.$Message.success({
               content: res.data.message
             });
