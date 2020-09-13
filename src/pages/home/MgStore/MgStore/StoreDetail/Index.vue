@@ -198,14 +198,18 @@ export default {
     handlePageChange(e) {
       console.log('StoreDetail Index.vue handlePageChange', e);
       this.currentPageSize = e;
+      let config = {
+        pageIndex: this.currentPage,
+        pageSize: this.currentPageSize,
+        sortField: 'create_time',
+        sortOrder: 'desc'
+      };
       this.axios({
         url:
           this.global_.path.baseUrl +
-          '/rentalcars/vehicle/model/page?pageIndex=' +
-          this.currentPage +
-          '&pageSize=' +
-          this.currentPageSize,
+          '/rentalcars/vehicle/model/page',
         method: 'get',
+        params: config,
         headers: { 'Content-Type': 'application/json' }
       }).then(
         res => {
@@ -238,14 +242,18 @@ export default {
     handlePageSizeChange(e) {
       console.log('StoreDetail Index.vue handlePageSizeChange', e);
       this.currentPageSize = e;
+      let config = {
+        pageIndex: this.currentPage,
+        pageSize: this.currentPageSize,
+        sortField: 'create_time',
+        sortOrder: 'desc'
+      };
       this.axios({
         url:
           this.global_.path.baseUrl +
-          '/rentalcars/vehicle/model/page?pageIndex=' +
-          this.currentPage +
-          '&pageSize=' +
-          this.currentPageSize,
+          '/rentalcars/vehicle/model/page',
         method: 'get',
+        params: config,
         headers: { 'Content-Type': 'application/json' }
       }).then(
         res => {

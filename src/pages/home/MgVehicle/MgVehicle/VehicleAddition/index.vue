@@ -138,7 +138,7 @@
         </Form>
       </div>
       <div class="btn-container">
-        <Button type="primary" @click="handleSubmit">提交</Button>
+        <Button type="primary" @click="handleSubmit('basicInfoForm')">提交</Button>
         <Button style="margin-left: 8px" @click="handleCancel">取消</Button>
       </div>
     </div>
@@ -392,69 +392,75 @@ export default {
       return check;
     },
     // 提交
-    handleSubmit() {
-      let tempIndex1 = this.shopList.findIndex(
-        item => item.name === this.basicInfoForm.shopCheck
-      );
-      let tempIndex2 = this.vehicleModelList.findIndex(
-        item => item.name === this.basicInfoForm.vehicleModelCheck
-      );
-      let temp = {
-        image: this.basicInfoForm.upload_list[0].name,
-        plate_num: this.basicInfoForm.plate_num,
-        engine_no: this.basicInfoForm.engine_no,
-        vin: this.basicInfoForm.vin,
-        color: this.basicInfoForm.color,
-        state: this.basicInfoForm.state,
-        product_date: this.$moment(this.basicInfoForm.product_date).format(
-          'YYYY-MM-DD'
-        ),
-        purchase_date: this.$moment(this.basicInfoForm.purchase_date).format(
-          'YYYY-MM-DD'
-        ),
-        purchase_price: this.basicInfoForm.purchase_price,
-        model_id: this.vehicleModelList[tempIndex2].id,
-        store_id: this.shopList[tempIndex1].id
-      };
-      if (this.$route.query.action === 'edit') {
-        temp = Object.assign({}, temp, { id: this.$route.query.id });
-      }
-      console.log('VehicleAddition index.vue methods handleSubmit', temp);
-      this.spinShow = true;
-      this.axios({
-        method: 'post',
-        url: this.global_.path.baseUrl + '/rentalcars/vehicle/detail/saveData',
-        headers: { 'Content-Type': 'application/json' },
-        data: temp
-      }).then(
-        res => {
-          console.log(
-            'VehicleAddition Index.vue created axios /saveData success',
-            res
+    handleSubmit(name) {
+      this.$refs[name].validate(valid => {
+        if (valid) {
+          let tempIndex1 = this.shopList.findIndex(
+            item => item.name === this.basicInfoForm.shopCheck
           );
-          if (res.data.code === 0) {
-            this.$Message.success({
-              content: res.data.message
-            });
-            this.$router.back();
-          } else {
-            this.$Message.error({
-              content: res.data.message
-            });
+          let tempIndex2 = this.vehicleModelList.findIndex(
+            item => item.name === this.basicInfoForm.vehicleModelCheck
+          );
+          let temp = {
+            image: this.basicInfoForm.upload_list[0].name,
+            plate_num: this.basicInfoForm.plate_num,
+            engine_no: this.basicInfoForm.engine_no,
+            vin: this.basicInfoForm.vin,
+            color: this.basicInfoForm.color,
+            state: this.basicInfoForm.state,
+            product_date: this.$moment(this.basicInfoForm.product_date).format(
+              'YYYY-MM-DD'
+            ),
+            purchase_date: this.$moment(this.basicInfoForm.purchase_date).format(
+              'YYYY-MM-DD'
+            ),
+            purchase_price: this.basicInfoForm.purchase_price,
+            model_id: this.vehicleModelList[tempIndex2].id,
+            store_id: this.shopList[tempIndex1].id
+          };
+          if (this.$route.query.action === 'edit') {
+            temp = Object.assign({}, temp, { id: this.$route.query.id });
           }
-          this.spinShow = false;
-        },
-        err => {
-          console.log(
-            'VehicleAddition Index.vue created axios /saveData failure',
-            err
+          console.log('VehicleAddition index.vue methods handleSubmit', temp);
+          this.spinShow = true;
+          this.axios({
+            method: 'post',
+            url: this.global_.path.baseUrl + '/rentalcars/vehicle/detail/saveData',
+            headers: { 'Content-Type': 'application/json' },
+            data: temp
+          }).then(
+            res => {
+              console.log(
+                'VehicleAddition Index.vue created axios /saveData success',
+                res
+              );
+              if (res.data.code === 0) {
+                this.$Message.success({
+                  content: res.data.message
+                });
+                this.$router.back();
+              } else {
+                this.$Message.error({
+                  content: res.data.message
+                });
+              }
+              this.spinShow = false;
+            },
+            err => {
+              console.log(
+                'VehicleAddition Index.vue created axios /saveData failure',
+                err
+              );
+              this.$Message.error({
+                content: '操作失败'
+              });
+              this.spinShow = false;
+            }
           );
-          this.$Message.error({
-            content: '操作失败'
-          });
-          this.spinShow = false;
+        } else {
+          this.$Message.warning('未按要求填写');
         }
-      );
+      });
     },
     // 取消
     handleCancel() {

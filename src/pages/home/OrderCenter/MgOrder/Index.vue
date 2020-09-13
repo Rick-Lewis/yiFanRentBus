@@ -638,6 +638,8 @@ export default {
     },
     // 页码改变
     handlePageChange(e) {
+      console.log('MgOrder Index.vue handlePageChange', e);
+      this.currentPage = e;
       let indexTemp = this.handleSelected(
         this.formItem.order_status_check,
         'status'
@@ -648,33 +650,37 @@ export default {
         'with_driver'
       );
       let withDriverTemp = this.driverExistenceList[indexTemp].value;
-      let strTemp = '';
+      // let strTemp = '';
+      let config = {
+        pageIndex: this.currentPage,
+        pageSize: this.currentPageSize,
+        sortField: 'time_create',
+        sortOrder: 'desc'
+      };
       if (statusTemp !== -2) {
-        strTemp = strTemp + '&status=' + statusTemp;
+        config['status'] = statusTemp;
+        // strTemp = strTemp + '&status=' + statusTemp;
       }
       if (withDriverTemp !== -2) {
-        strTemp = strTemp + '&with_driver=' + withDriverTemp;
+        config['with_driver'] = withDriverTemp;
+        // strTemp = strTemp + '&with_driver=' + withDriverTemp;
       }
       if (this.duration) {
-        strTemp =
-          strTemp +
-          '&time_start=' +
-          this.duration.timeStart +
-          '&time_end=' +
-          this.duration.timeEnd;
+        config['time_start'] = this.duration.timeStart;
+        config['time_end'] = this.duration.timeEnd;
+        // strTemp =
+        //   strTemp +
+        //   '&time_start=' +
+        //   this.duration.timeStart +
+        //   '&time_end=' +
+        //   this.duration.timeEnd;
       }
-      console.log('MgOrder Index.vue handlePageChange', e);
-      this.currentPage = e;
       this.axios({
         url:
           this.global_.path.baseUrl +
-          '/rentalcars/order/rental/page?pageIndex=' +
-          this.currentPage +
-          '&pageSize=' +
-          this.currentPageSize +
-          strTemp +
-          '&sortField=time_create&sortOrder=desc',
+          '/rentalcars/order/rental/page',
         method: 'get',
+        params: config,
         headers: { 'Content-Type': 'application/json' }
       }).then(
         res => {
@@ -707,6 +713,8 @@ export default {
     },
     // 每页条数改变
     handlePageSizeChange(e) {
+      console.log('MgOrder Index.vue handlePageSizeChange', e);
+      this.currentPageSize = e;
       let indexTemp = this.handleSelected(
         this.formItem.order_status_check,
         'status'
@@ -717,33 +725,37 @@ export default {
         'with_driver'
       );
       let withDriverTemp = this.driverExistenceList[indexTemp].value;
-      let strTemp = '';
+      // let strTemp = '';
+      let config = {
+        pageIndex: this.currentPage,
+        pageSize: this.currentPageSize,
+        sortField: 'time_create',
+        sortOrder: 'desc'
+      };
       if (statusTemp !== -2) {
-        strTemp = strTemp + '&status=' + statusTemp;
+        config['status'] = statusTemp;
+        // strTemp = strTemp + '&status=' + statusTemp;
       }
       if (withDriverTemp !== -2) {
-        strTemp = strTemp + '&with_driver=' + withDriverTemp;
+        config['with_driver'] = withDriverTemp;
+        // strTemp = strTemp + '&with_driver=' + withDriverTemp;
       }
       if (this.duration) {
-        strTemp =
-          strTemp +
-          '&time_start=' +
-          this.duration.timeStart +
-          '&time_end=' +
-          this.duration.timeEnd;
+        config['time_start'] = this.duration.timeStart;
+        config['time_end'] = this.duration.timeEnd;
+        // strTemp =
+        //   strTemp +
+        //   '&time_start=' +
+        //   this.duration.timeStart +
+        //   '&time_end=' +
+        //   this.duration.timeEnd;
       }
-      console.log('MgOrder Index.vue handlePageSizeChange', e);
-      this.currentPageSize = e;
       this.axios({
         url:
           this.global_.path.baseUrl +
-          '/rentalcars/order/rental/page?pageIndex=' +
-          this.currentPage +
-          '&pageSize=' +
-          this.currentPageSize +
-          strTemp +
-          '&sortField=time_create&sortOrder=desc',
+          '/rentalcars/order/rental/page',
         method: 'get',
+        params: config,
         headers: { 'Content-Type': 'application/json' }
       }).then(
         res => {

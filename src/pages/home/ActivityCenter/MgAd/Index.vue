@@ -427,15 +427,18 @@ export default {
       console.log('MgAd Index.vue handlePageChange', e);
       this.currentPage = e;
       this.spinShow = true;
+      let config = {
+        pageIndex: this.currentPage,
+        pageSize: this.currentPageSize,
+        sortField: 'create_time',
+        sortOrder: 'desc'
+      };
       this.axios({
         url:
           this.global_.path.baseUrl +
-          '/rentalcars/banner/page?pageIndex=' +
-          this.currentPage +
-          '&pageSize=' +
-          this.currentPageSize +
-          '&sortField=time_create&sortOrder=desc',
+          '/rentalcars/banner/page',
         method: 'get',
+        params: config,
         headers: { 'Content-Type': 'application/json' }
       }).then(
         res => {
@@ -464,15 +467,18 @@ export default {
     handlePageSizeChange(e) {
       console.log('MgAd Index.vue handlePageSizeChange', e);
       this.currentPageSize = e;
+      let config = {
+        pageIndex: this.currentPage,
+        pageSize: this.currentPageSize,
+        sortField: 'create_time',
+        sortOrder: 'desc'
+      };
       this.axios({
         url:
           this.global_.path.baseUrl +
-          '/rentalcars/banner/page?pageIndex=' +
-          this.currentPage +
-          '&pageSize=' +
-          this.currentPageSize +
-          '&sortField=time_create&sortOrder=desc',
+          '/rentalcars/banner/page',
         method: 'get',
+        params: config,
         headers: { 'Content-Type': 'application/json' }
       }).then(
         res => {

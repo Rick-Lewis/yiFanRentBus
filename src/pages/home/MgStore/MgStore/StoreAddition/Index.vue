@@ -64,7 +64,7 @@
             </Modal>
           </FormItem>
           <FormItem label="门店电话" prop="telephone">
-            <Input v-model="basicInfoForm.telephone" type="number" maxlength="12" placeholder="请输入门店电话" style="width: 475px" />
+            <Input v-model="basicInfoForm.telephone" maxlength="12" placeholder="请输入门店电话" style="width: 475px" />
           </FormItem>
           <FormItem label="营业时间" class="time">
             <TimePicker
@@ -198,8 +198,17 @@ export default {
         telephone: [
           {
             required: true,
-            message: '请输入门店电话',
-            trigger: 'blur'
+            // message: '请输入正确的电话号码',
+            trigger: 'blur',
+            validator: (rule, value, callback) => {
+              if (value.length === 0) {
+                callback(new Error('请输入门店电话号码'));
+              } else if (/^1[3456789]\d{9}$/.test(value) || /^(\(\d{3,4}\)|\d{3,4}-|\s)?\d{7,14}$/.test(value)) {
+                callback();
+              } else {
+                callback(new Error('请输入正确的电话号码'));
+              }
+            }
           }
         ]
       },
@@ -333,12 +342,12 @@ export default {
                                       return ite;
                                     });
                                   } else {
-                                    temp3 = {
-                                      value: '',
-                                      label: '市区',
+                                    temp3 = [{
+                                      value: res.data.data.city,
+                                      label: res.data.data.city_name,
                                       level: 3,
                                       parent: res.data.data.city
-                                    };
+                                    }];
                                   }
                                   let provinceTemp = this.addressData.find(
                                     item =>
@@ -499,7 +508,7 @@ export default {
       });
     },
     loadData(item, callback) {
-      console.log('StoreAddition methods loadData', this);
+      console.log('StoreAddition methods loadData', item, this);
       if (this.spinShow) {
         return;
       }
@@ -538,9 +547,9 @@ export default {
             item.children.push(...temp);
           } else {
             item.children.push({
-              value: '',
-              label: '市区',
-              level: 3
+              value: item.value,
+              label: item.label,
+              level: item.level
             });
           }
           item.loading = false;
@@ -595,7 +604,7 @@ export default {
                 : '',
               county: this.posInfoForm.currentAddress[2]
                 ? this.posInfoForm.currentAddress[2]
-                : '市区',
+                : '',
               address: this.posInfoForm.address
             });
           }
@@ -640,9 +649,10 @@ export default {
               this.spinShow = false;
             }
           );
-        } else {
-          this.$Message.warning('有必填项未填写');
         }
+        // else {
+        //   this.$Message.warning('有必填项未填写');
+        // }
       });
     },
     // 取消

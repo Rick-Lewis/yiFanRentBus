@@ -798,6 +798,8 @@ export default {
     },
     // 页码改变
     handlePageChange(e) {
+      console.log('ModelAssociated Index.vue handlePageChange', e);
+      this.currentPage = e;
       let indexTemp = this.handleSelected(
         this.formItem.from_brand_check,
         'brand'
@@ -810,32 +812,36 @@ export default {
         'status'
       );
       let state = this.vehicleModelStatusList[indexTemp].state;
-      let strTemp = '';
+      // let strTemp = '';
+      let config = {
+        pageIndex: this.currentPage,
+        pageSize: this.currentPageSize,
+        sortField: 'create_time',
+        sortOrder: 'desc'
+      };
       if (this.formItem.vehicle_model_name) {
-        strTemp = strTemp + '&name=' + this.formItem.vehicle_model_name;
+        config['name'] = this.formItem.vehicle_model_name;
+        // strTemp = strTemp + '&name=' + this.formItem.vehicle_model_name;
       }
       if (brandId !== -1) {
-        strTemp = strTemp + '&brand_id=' + brandId;
+        config['brand_id'] = brandId;
+        // strTemp = strTemp + '&brand_id=' + brandId;
       }
       if (categoryId !== -1) {
-        strTemp = strTemp + '&category_id=' + categoryId;
+        config['category_id'] = categoryId;
+        // strTemp = strTemp + '&category_id=' + categoryId;
       }
       if (state !== -1) {
-        strTemp = strTemp + '&state=' + state;
+        config['state'] = state;
+        // strTemp = strTemp + '&state=' + state;
       }
-      console.log('ModelAssociated Index.vue handlePageChange', e);
-      this.currentPage = e;
       this.spinShow = true;
       this.axios({
         url:
           this.global_.path.baseUrl +
-          '/rentalcars/vehicle/model/page?pageIndex=' +
-          this.currentPage +
-          '&pageSize=' +
-          this.currentPageSize +
-          '&sortField=create_time&sortOrder=desc' +
-          strTemp,
+          '/rentalcars/vehicle/model/page',
         method: 'get',
+        params: config,
         headers: { 'Content-Type': 'application/json' }
       }).then(
         res => {
@@ -866,6 +872,8 @@ export default {
     },
     // 每页条数改变
     handlePageSizeChange(e) {
+      console.log('ModelAssociated Index.vue handlePageSizeChange', e);
+      this.currentPageSize = e;
       let indexTemp = this.handleSelected(
         this.formItem.from_brand_check,
         'brand'
@@ -878,31 +886,35 @@ export default {
         'status'
       );
       let state = this.vehicleModelStatusList[indexTemp].state;
-      let strTemp = '';
+      // let strTemp = '';
+      let config = {
+        pageIndex: this.currentPage,
+        pageSize: this.currentPageSize,
+        sortField: 'create_time',
+        sortOrder: 'desc'
+      };
       if (this.formItem.vehicle_model_name) {
-        strTemp = strTemp + '&name=' + this.formItem.vehicle_model_name;
+        config['name'] = this.formItem.vehicle_model_name;
+        // strTemp = strTemp + '&name=' + this.formItem.vehicle_model_name;
       }
       if (brandId !== -1) {
-        strTemp = strTemp + '&brand_id=' + brandId;
+        config['brand_id'] = brandId;
+        // strTemp = strTemp + '&brand_id=' + brandId;
       }
       if (categoryId !== -1) {
-        strTemp = strTemp + '&category_id=' + categoryId;
+        config['category_id'] = categoryId;
+        // strTemp = strTemp + '&category_id=' + categoryId;
       }
       if (state !== -1) {
-        strTemp = strTemp + '&state=' + state;
+        config['state'] = state;
+        // strTemp = strTemp + '&state=' + state;
       }
-      console.log('ModelAssociated Index.vue handlePageSizeChange', e);
-      this.currentPageSize = e;
       this.axios({
         url:
           this.global_.path.baseUrl +
-          '/rentalcars/vehicle/model/page?pageIndex=' +
-          this.currentPage +
-          '&pageSize=' +
-          this.currentPageSize +
-          '&sortField=create_time&sortOrder=desc' +
-          strTemp,
+          '/rentalcars/vehicle/model/page',
         method: 'get',
+        params: config,
         headers: { 'Content-Type': 'application/json' }
       }).then(
         res => {

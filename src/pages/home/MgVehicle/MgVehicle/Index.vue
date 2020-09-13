@@ -49,7 +49,7 @@
       </div>
       <Table border :columns="vehicleColumns" :data="vehicleData" stripe>
         <template v-slot:state="{ row }">
-          <div :class="statusColor[row.state]">{{'已' + getStatusNameByValue(row.state).name}}</div>
+          <div :class="statusColor[row.state]">{{getStatusNameByValue(row.state).name}}</div>
         </template>
         <template slot-scope="{ row, index }" slot="action">
           <a style="margin-right: 5px" @click="edit(index)">编辑</a>
@@ -241,21 +241,21 @@ export default {
       let indexTemp = this.vehicleStatusList
         .slice()
         .findIndex(item => item.status === status);
-      result.name = this.vehicleStatusList[indexTemp].name;
+      result.name = indexTemp !== -1 ? '已' + this.vehicleStatusList[indexTemp].name : '';
       switch (status) {
         case 0:
           result.nextStatus = 1;
           indexTemp = this.vehicleStatusList
             .slice()
             .findIndex(item => item.status === result.nextStatus);
-          result.nextName = this.vehicleStatusList[indexTemp].name;
+          result.nextName = indexTemp !== -1 ? this.vehicleStatusList[indexTemp].name : '';
           break;
         case 1:
           result.nextStatus = 3;
           indexTemp = this.vehicleStatusList
             .slice()
             .findIndex(item => item.status === result.nextStatus);
-          result.nextName = this.vehicleStatusList[indexTemp].name;
+          result.nextName = indexTemp !== -1 ? this.vehicleStatusList[indexTemp].name : '';
           break;
         case 2:
           break;
@@ -457,16 +457,19 @@ export default {
     // 页码改变
     handlePageChange(e) {
       console.log('MyVehicle Index.vue handlePageChange', e);
-      this.currentPageSize = e;
+      this.currentPage = e;
+      let config = {
+        pageIndex: this.currentPage,
+        pageSize: this.currentPageSize,
+        sortField: 'createTime',
+        sortOrder: 'desc'
+      };
       this.axios({
         url:
           this.global_.path.baseUrl +
-          '/rentalcars/vehicle/detail/page?pageIndex=' +
-          this.currentPage +
-          '&pageSize=' +
-          this.currentPageSize +
-          '&sortField=createTime&sortOrder=desc',
+          '/rentalcars/vehicle/detail/page',
         method: 'get',
+        params: config,
         headers: { 'Content-Type': 'application/json' }
       }).then(
         res => {
@@ -501,15 +504,18 @@ export default {
     handlePageSizeChange(e) {
       console.log('MyVehicle Index.vue handlePageSizeChange', e);
       this.currentPageSize = e;
+      let config = {
+        pageIndex: this.currentPage,
+        pageSize: this.currentPageSize,
+        sortField: 'createTime',
+        sortOrder: 'desc'
+      };
       this.axios({
         url:
           this.global_.path.baseUrl +
-          '/rentalcars/vehicle/detail/page?pageIndex=' +
-          this.currentPage +
-          '&pageSize=' +
-          this.currentPageSize +
-          '&sortField=createTime&sortOrder=desc',
+          '/rentalcars/vehicle/detail/page',
         method: 'get',
+        params: config,
         headers: { 'Content-Type': 'application/json' }
       }).then(
         res => {

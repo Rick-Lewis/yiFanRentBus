@@ -361,15 +361,18 @@ export default {
     handlePageChange(e) {
       console.log('MaintenanceOrder Index.vue handlePageChange', e);
       this.currentPageSize = e;
+      let config = {
+        pageIndex: this.currentPage,
+        pageSize: this.currentPageSize,
+        sortField: 'create_time',
+        sortOrder: 'desc'
+      };
       this.axios({
         url:
           this.global_.path.baseUrl +
-          '/rentalcars/ticket/page?pageIndex=' +
-          this.currentPage +
-          '&pageSize=' +
-          this.currentPageSize +
-          '&sortField=create_time&sortOrder=desc',
+          '/rentalcars/ticket/page',
         method: 'get',
+        params: config,
         headers: { 'Content-Type': 'application/json' }
       }).then(
         res => {

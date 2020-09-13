@@ -258,15 +258,18 @@ export default {
     handlePageChange(e) {
       console.log('MgBrand Index.vue handlePageChange', e);
       this.currentPage = e;
+      let config = {
+        pageIndex: this.currentPage,
+        pageSize: this.currentPageSize,
+        sortField: 'create_time',
+        sortOrder: 'desc'
+      };
       this.axios({
         url:
           this.global_.path.baseUrl +
-          '/rentalcars/vehicle/brand/page?pageIndex=' +
-          this.currentPage +
-          '&pageSize=' +
-          this.currentPageSize +
-          '&sortField=create_time&sortOrder=desc',
+          '/rentalcars/vehicle/brand/page',
         method: 'get',
+        params: config,
         headers: { 'Content-Type': 'application/json' }
       }).then(
         res => {
@@ -301,15 +304,18 @@ export default {
     handlePageSizeChange(e) {
       console.log('MgBrand Index.vue handlePageSizeChange', e);
       this.currentPageSize = e;
+      let config = {
+        pageIndex: this.currentPage,
+        pageSize: this.currentPageSize,
+        sortField: 'create_time',
+        sortOrder: 'desc'
+      };
       this.axios({
         url:
           this.global_.path.baseUrl +
-          '/rentalcars/vehicle/brand/page?pageIndex=' +
-          this.currentPage +
-          '&pageSize=' +
-          this.currentPageSize +
-          '&sortField=create_time&sortOrder=desc',
+          '/rentalcars/vehicle/brand/page',
         method: 'get',
+        params: config,
         headers: { 'Content-Type': 'application/json' }
       }).then(
         res => {
