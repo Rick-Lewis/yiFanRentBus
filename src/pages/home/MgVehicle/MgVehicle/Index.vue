@@ -73,6 +73,31 @@
       </div>
       <Spin size="large" fix v-if="spinShow"></Spin>
     </div>
+    <Modal
+      v-model="checkModalShow"
+      title="检查"
+      ok-text="提交"
+      cancel-text="取消"
+      @on-ok="handleOk">
+      <Form :model="checkForm" label-colon @submit.native.prevent>
+        <FormItem label="检查结果">
+          <RadioGroup v-model="checkForm.result">
+            <Radio
+              v-for="(item, index) in checkList"
+              v-bind:key="index"
+              v-bind:label="item.name"
+              border
+            ></Radio>
+          </RadioGroup>
+        </FormItem>
+        <FormItem label="检查意见">
+          <i-input v-model="checkForm.opinion" type="textarea" :rows="4" placeholder="请输入检查意见"></i-input>
+        </FormItem>
+        <FormItem label="操作人">
+          <div>{{checkForm.operator}}</div>
+        </FormItem>
+      </Form>
+    </Modal>
   </div>
 </template>
 <script>
@@ -80,6 +105,25 @@ export default {
   name: 'MyVehicle',
   data: function() {
     return {
+      currentIndex: -1, // 当前操作的数据的索引
+      checkModalShow: false,
+      checkList: [{
+        name: '合格',
+        status: '1'
+      },
+      {
+        name: '进行维保',
+        status: '4'
+      },
+      {
+        name: '退役',
+        status: '-1'
+      }],
+      checkForm: {
+        result: '合格',
+        opinion: '',
+        operator: window.localStorage.getItem('username')
+      },
       vehicleStatusList: [],
       statusColor: {
         '-1': 'invalid',
@@ -226,6 +270,46 @@ export default {
   },
   computed: {},
   methods: {
+    handleOk() {
+      let tempItem = this.checkList.find(item => item.name === this.checkForm.result);
+      let temp = {
+        plate_nums: this.vehicleData[this.currentIndex].plate_num,
+        state: tempItem.status
+      };
+      this.axios({
+        method: 'post',
+        url: this.global_.path.baseUrl + '/rentalcars/vehicle/detail/status',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        data: this.$qs.stringify(temp)
+      }).then(
+        res => {
+          console.log(
+            'MgVehicle Index.vue created axios /vehilce/detail/status success',
+            res
+          );
+          if (res.data.code === 0) {
+            this.vehicleData[this.currentIndex].state = tempItem.status;
+            this.$Message.success({
+              content: res.data.message
+            });
+            // this.$router.back();
+          } else {
+            this.$Message.error({
+              content: res.data.message
+            });
+          }
+        },
+        err => {
+          console.log(
+            'MgVehicle Index.vue created axios /vehilce/detail/status failure',
+            err
+          );
+          this.$Message.error({
+            content: '操作失败'
+          });
+        }
+      );
+    },
     getStatusNameByValue(status) {
       console.log(
         'MgVehicleModel index.vue getStatusNameByValue',
@@ -240,15 +324,15 @@ export default {
       };
       let indexTemp = this.vehicleStatusList
         .slice()
-        .findIndex(item => item.status === status);
+        .findIndex(item => item.status === parseInt(status));
       result.name = indexTemp !== -1 ? '已' + this.vehicleStatusList[indexTemp].name : '';
-      switch (status) {
+      switch (parseInt(status)) {
         case 0:
-          result.nextStatus = 1;
+          result.nextStatus = -10;
           indexTemp = this.vehicleStatusList
             .slice()
             .findIndex(item => item.status === result.nextStatus);
-          result.nextName = indexTemp !== -1 ? this.vehicleStatusList[indexTemp].name : '';
+          result.nextName = indexTemp !== -1 ? this.vehicleStatusList[indexTemp].name : '检查';
           break;
         case 1:
           result.nextStatus = 3;
@@ -260,6 +344,14 @@ export default {
         case 2:
           break;
         case 3: break;
+        case 4:
+          result.name = indexTemp !== -1 ? this.vehicleStatusList[indexTemp].name + '中' : '';
+          result.nextStatus = 0;
+          indexTemp = this.vehicleStatusList
+            .slice()
+            .findIndex(item => item.status === result.nextStatus);
+          result.nextName = indexTemp !== -1 ? this.vehicleStatusList[indexTemp].name : '';
+          break;
       }
       return result;
     },
@@ -350,16 +442,61 @@ export default {
     },
     // 检查
     check(index) {
+      this.currentIndex = index;
+      if (this.vehicleData[index].state === 0) { // 入库状态
+        this.checkModalShow = true;
+        return;
+      }
+      if (this.vehicleData[index].state === 4) { // 维保状态
+        this.$Modal.confirm({
+          title: '温馨提示',
+          content: '您确定维保是否已经完成，维保完成车辆可进入"入库"状态',
+          onOk: () => {
+            let temp = {
+              plate_nums: this.vehicleData[index].plate_num,
+              state: this.getStatusNameByValue(this.vehicleData[index].state).nextStatus
+            };
+            this.axios({
+              method: 'post',
+              url: this.global_.path.baseUrl + '/rentalcars/vehicle/detail/status',
+              headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+              data: this.$qs.stringify(temp)
+            }).then(
+              res => {
+                console.log(
+                  'MgVehicle Index.vue created axios /vehilce/detail/status success',
+                  res
+                );
+                if (res.data.code === 0) {
+                  this.vehicleData[index].state = this.getStatusNameByValue(this.vehicleData[index].state).nextStatus;
+                  this.$Message.success({
+                    content: res.data.message
+                  });
+                  // this.$router.back();
+                } else {
+                  this.$Message.error({
+                    content: res.data.message
+                  });
+                }
+              },
+              err => {
+                console.log(
+                  'MgVehicle Index.vue created axios /vehilce/detail/status failure',
+                  err
+                );
+                this.$Message.error({
+                  content: '操作失败'
+                });
+              }
+            );
+          }
+        });
+        return;
+      }
       let temp = {
         plate_nums: this.vehicleData[index].plate_num,
-        state: this.vehicleData[index].state + 1
+        state: this.getStatusNameByValue(this.vehicleData[index].state).nextStatus
       };
-      // let temp =
-      //   'plate_nums=' +
-      //   this.vehicleData[index].plate_num +
-      //   '&status=' +
-      //   this.vehicleData[index].state +
-      //   1;
       this.axios({
         method: 'post',
         url: this.global_.path.baseUrl + '/rentalcars/vehicle/detail/status',
@@ -396,6 +533,7 @@ export default {
     },
     // 删除
     remove(index) {
+      this.currentIndex = index;
       this.$Modal.confirm({
         title: `确定删除${this.vehicleData[index].plate_num}车辆吗？`,
         content: '',
@@ -443,6 +581,7 @@ export default {
     },
     // 详情
     show(index) {
+      this.currentIndex = index;
       this.$router.push('/home/vehicleDetail?id=' + this.vehicleData[index].id);
     },
     // 翻页
