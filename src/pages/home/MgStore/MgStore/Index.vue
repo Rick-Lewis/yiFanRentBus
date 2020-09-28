@@ -46,6 +46,8 @@
         <template>
           <Page
             :total="total"
+            :current="currentPage"
+            :page-size="currentPageSize"
             size="small"
             show-elevator
             show-sizer
@@ -126,15 +128,18 @@ export default {
   },
   created() {
     // this.$store.registerModule('storeStore', storeStore);
+    let config = {
+      pageIndex: this.currentPage,
+      pageSize: this.currentPageSize,
+      sortField: 'create_time',
+      sortOrder: 'desc'
+    };
     this.axios({
       url:
         this.global_.path.baseUrl +
-        '/rentalcars/store/page?pageIndex=' +
-        this.currentPage +
-        '&pageSize=' +
-        this.currentPageSize +
-        '&sortField=create_time&sortOrder=desc',
+        '/rentalcars/store/page',
       method: 'get',
+      params: config,
       headers: { 'Content-Type': 'application/json' }
     }).then(
       res => {
@@ -284,6 +289,7 @@ export default {
         this.formItem[item] = '';
       }
       this.formItem.statusName = '全部';
+      this.handleReset();
     },
     getStatusNameByValue(status) {
       console.log(
@@ -331,24 +337,27 @@ export default {
     handleSearch() {
       let indexTemp = this.handleSelected(this.formItem.statusName, 'status');
       let statusTemp = this.statusList[indexTemp].status;
-      let strTemp = '';
+      this.currentPage = 1;
+      this.currentPageSize = 10;
+      let config = {
+        pageIndex: this.currentPage,
+        pageSize: this.currentPageSize,
+        sortField: 'create_time',
+        sortOrder: 'desc'
+      };
       if (this.formItem.name) {
-        strTemp = strTemp + '&name=' + this.formItem.name;
+        config['name'] = this.formItem.name;
       }
       if (statusTemp !== -2) {
-        strTemp = strTemp + '&status=' + statusTemp;
+        config['status'] = statusTemp;
       }
       this.spinShow = true;
       this.axios({
         url:
           this.global_.path.baseUrl +
-          '/rentalcars/store/page?pageIndex=' +
-          this.currentPage +
-          '&pageSize=' +
-          this.currentPageSize +
-          strTemp +
-          '&sortField=create_time&sortOrder=desc',
+          '/rentalcars/store/page',
         method: 'get',
+        params: config,
         headers: { 'Content-Type': 'application/json' }
       }).then(
         res => {

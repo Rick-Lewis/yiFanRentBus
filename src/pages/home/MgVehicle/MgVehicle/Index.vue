@@ -36,6 +36,14 @@
               style="width: 200px"
             />
           </FormItem>
+          <FormItem label="门店名称">
+            <Input
+              v-model="formItem.store_name"
+              @on-enter="handleSearch"
+              placeholder="请输入门店名称"
+              style="width: 200px"
+            />
+          </FormItem>
           <FormItem>
             <Button type="primary" @click="handleSearch">查询</Button>
             <Button style="margin-left: 8px" @click="handleReset">重置</Button>
@@ -62,6 +70,8 @@
         <div style="float: right;">
           <Page
             :total="total"
+            :current="currentPage"
+            :page-size="currentPageSize"
             size="small"
             show-elevator
             show-sizer
@@ -137,7 +147,8 @@ export default {
         vehicle_status_check: '全部',
         plate_num: '',
         brand_name: '',
-        model_name: ''
+        model_name: '',
+        store_name: ''
       },
       vehicleColumns: [
         {
@@ -145,17 +156,6 @@ export default {
           key: 'plate_num',
           align: 'center'
         },
-        // {
-        //   title: '车辆识别代码',
-        //   width: 180,
-        //   key: 'vin',
-        //   align: 'center'
-        // },
-        // {
-        //   title: '发动机号',
-        //   key: 'engine_no',
-        //   align: 'center'
-        // },
         {
           title: '颜色',
           key: 'color',
@@ -169,6 +169,11 @@ export default {
         {
           title: '车型',
           key: 'model_name',
+          align: 'center'
+        },
+        {
+          title: '门店',
+          key: 'store_name',
           align: 'center'
         },
         {
@@ -216,15 +221,18 @@ export default {
         });
       }
     );
+    let config = {
+      pageIndex: this.currentPage,
+      pageSize: this.currentPageSize,
+      sortField: 'createTime',
+      sortOrder: 'desc'
+    };
     let p2 = this.axios({
       url:
         this.global_.path.baseUrl +
-        '/rentalcars/vehicle/detail/page?pageIndex=' +
-        this.currentPage +
-        '&pageSize=' +
-        this.currentPageSize +
-        '&sortField=createTime&sortOrder=desc',
+        '/rentalcars/vehicle/detail/page',
       method: 'get',
+      params: config,
       headers: { 'Content-Type': 'application/json' }
     }).then(
       res => {
@@ -372,32 +380,37 @@ export default {
         'status'
       );
       let statusTemp = this.vehicleStatusList[indexTemp].status;
-      let strTemp = '';
+      this.currentPage = 1;
+      this.currentPageSize = 10;
+      let config = {
+        pageIndex: this.currentPage,
+        pageSize: this.currentPageSize,
+        sortField: 'createTime',
+        sortOrder: 'desc'
+      };
       if (this.formItem.plate_num) {
-        strTemp = strTemp + '&plate_num=' + this.formItem.plate_num;
+        config['plate_num'] = this.formItem.plate_num;
       }
       if (this.formItem.brand_name) {
-        strTemp = strTemp + '&brand_name=' + this.formItem.brand_name;
+        config['brand_name'] = this.formItem.brand_name;
       }
       if (this.formItem.model_name) {
-        strTemp = strTemp + '&model_name=' + this.formItem.model_name;
+        config['model_name'] = this.formItem.model_name;
+      }
+      if (this.formItem.store_name) {
+        config['store_name'] = this.formItem.store_name;
       }
       if (statusTemp !== -2) {
-        strTemp = strTemp + '&state=' + statusTemp;
+        config['state'] = statusTemp;
       }
       console.log('MgVehicle index.vue handleSearch');
       this.spinShow = true;
       this.axios({
         url:
           this.global_.path.baseUrl +
-          '/rentalcars/vehicle/detail/page' +
-          '?pageIndex=' +
-          this.currentPage +
-          '&pageSize=' +
-          this.currentPageSize +
-          strTemp +
-          '&sortField=createTime&sortOrder=desc',
+          '/rentalcars/vehicle/detail/page',
         method: 'get',
+        params: config,
         headers: { 'Content-Type': 'application/json' }
       }).then(
         res => {
@@ -408,6 +421,7 @@ export default {
           if (res.data.code === 0) {
             this.vehicleData.length = 0;
             this.vehicleData.push(...res.data.data.data);
+            this.total = res.data.data.total;
           } else {
             this.$Message.error({
               content: res.data.message
@@ -433,6 +447,7 @@ export default {
         this.formItem[item] = '';
       }
       this.formItem.vehicle_status_check = '全部';
+      this.handleSearch();
     },
     // 编辑
     edit(index) {

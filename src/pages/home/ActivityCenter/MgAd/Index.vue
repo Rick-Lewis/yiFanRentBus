@@ -63,6 +63,8 @@
         <template>
           <Page
             :total="total"
+            :current="currentPage"
+            :page-size="currentPageSize"
             size="small"
             show-elevator
             show-sizer
@@ -164,15 +166,18 @@ export default {
     };
   },
   created() {
+    let config = {
+      pageIndex: this.currentPage,
+      pageSize: this.currentPageSize,
+      sortField: 'time_create',
+      sortOrder: 'desc'
+    };
     this.axios({
       url:
         this.global_.path.baseUrl +
-        '/rentalcars/banner/page?pageIndex=' +
-        this.currentPage +
-        '&pageSize=' +
-        this.currentPageSize +
-        '&sortField=time_create&sortOrder=desc',
+        '/rentalcars/banner/page',
       method: 'get',
+      params: config,
       headers: { 'Content-Type': 'application/json' }
     }).then(
       res => {
@@ -255,29 +260,32 @@ export default {
     handleSearch() {
       let indexTemp = this.handleSelected(this.formItem.typeName, 'type');
       let statusTemp = this.typeList[indexTemp].value;
-      let strTemp = '';
+      this.currentPage = 1;
+      this.currentPageSize = 10;
+      let config = {
+        pageIndex: this.currentPage,
+        pageSize: this.currentPageSize,
+        sortField: 'time_create',
+        sortOrder: 'desc'
+      };
       if (this.formItem.title) {
-        strTemp = '&title=' + this.formItem.title;
+        config['title'] = this.formItem.title;
       }
       if (statusTemp !== -2) {
-        strTemp = strTemp + '&type=' + statusTemp;
+        config['type'] = statusTemp;
       }
       indexTemp = this.handleSelected(this.formItem.statusName, 'status');
       statusTemp = this.statusList[indexTemp].status;
       if (statusTemp !== -2) {
-        strTemp = strTemp + '&status=' + statusTemp;
+        config['status'] = statusTemp;
       }
       this.spinShow = true;
       this.axios({
         url:
           this.global_.path.baseUrl +
-          '/rentalcars/banner/page?pageIndex=' +
-          this.currentPage +
-          '&pageSize=' +
-          this.currentPageSize +
-          strTemp +
-          '&sortField=time_create&sortOrder=desc',
+          '/rentalcars/banner/page',
         method: 'get',
+        params: config,
         headers: { 'Content-Type': 'application/json' }
       }).then(
         res => {
@@ -309,6 +317,7 @@ export default {
       }
       this.formItem.statusName = '全部';
       this.formItem.typeName = '全部';
+      this.handleSearch();
     },
     // 删除行
     remove(index) {
