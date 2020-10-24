@@ -193,33 +193,33 @@
         <Form class="content" :model="priceInfoForm" :label-width="120" label-colon>
           <FormItem label="押金">
             <!-- <span>押金：</span> -->
-            <InputNumber
+            <Input
               v-model="priceInfoForm.deposit"
               placeholder="请输入押金"
               style="width: 200px"
             >
               <div class="suffix" slot="suffix">元</div>
-            </InputNumber>
+            </Input>
           </FormItem>
           <FormItem label="基础险">
             <!-- <span>基础险：</span> -->
-            <InputNumber
+            <Input
               v-model="priceInfoForm.basic_insurance"
               placeholder="请输入基础险"
               style="width: 200px"
             >
               <div class="suffix" slot="suffix">元</div>
-            </InputNumber>
+            </Input>
           </FormItem>
           <FormItem label="基础价格" class="base-price">
             <!-- <span>基础价格：</span> -->
-            <InputNumber
+            <Input
               v-model="priceInfoForm.price"
               placeholder="请输入基础价格"
               style="width: 200px"
             >
               <div class="suffix" slot="suffix">元/日</div>
-            </InputNumber>
+            </Input>
           </FormItem>
         </Form>
       </div>
