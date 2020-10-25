@@ -163,7 +163,7 @@ export default {
           align: 'center'
         }
       ],
-      vehicleModelData1: [],
+      vehicleModelData1: [], // 已关联的车型
       fromBrandList: [],
       vehicleTypeList: [],
       vehicleModelStatusList: [
@@ -210,7 +210,7 @@ export default {
           align: 'center'
         }
       ],
-      vehicleModelData: [],
+      vehicleModelData: [], // 未关联的车型
       total1: 0, // 数据总条数
       total: 0, // 数据总条数
       currentPage1: 1, // 当前页码
@@ -219,8 +219,8 @@ export default {
       currentPageSize: 500, // 当前每页条数
       spinShow1: true,
       spinShow: true,
-      idSelection1: [],
-      idSelection: [],
+      idSelection1: [], // 已关联车型selected后的车型数据
+      idSelection: [], // 未关联车型selected后的车型数据
       addVehicleShow: false,
       storeDetail: null
     };
@@ -477,14 +477,22 @@ export default {
         headers: { 'Content-Type': 'application/json' }
       }).then(
         res => {
-          console.log(
-            'ModelAssociated Index.vue created axios /model success',
-            res
-          );
           if (res.data.code === 0) {
             this.vehicleModelData.length = 0;
-            this.vehicleModelData.push(...res.data.data.data);
-            this.total = res.data.data.total;
+            let temp = res.data.data.data;
+            for (let i = 0; i < temp.length; i++) {
+              if (this.vehicleModelData1.findIndex(item => item.id === temp[i].id) > -1) {
+                temp[i] = Object.assign({}, temp[i], {_checked: true, _disabled: true});
+              } else {
+                temp[i] = Object.assign({}, temp[i], {_checked: false, _disabled: false});
+              }
+            }
+            this.vehicleModelData.push(...temp);
+            this.total = temp.total;
+            console.log(
+              'ModelAssociated Index.vue created axios /model success',
+              res, this.vehicleModelData
+            );
           } else {
             this.$Message.error({
               content: res.data.message
@@ -676,8 +684,16 @@ export default {
           );
           if (res.data.code === 0) {
             this.vehicleModelData.length = 0;
-            this.vehicleModelData.push(...res.data.data.data);
-            this.total = res.data.data.total;
+            let temp = res.data.data.data;
+            for (let i = 0; i < temp.length; i++) {
+              if (this.vehicleModelData1.findIndex(item => item.id === temp[i].id) > -1) {
+                temp[i] = Object.assign({}, temp[i], {_checked: true, _disabled: true});
+              } else {
+                temp[i] = Object.assign({}, temp[i], {_checked: false, _disabled: false});
+              }
+            }
+            this.vehicleModelData.push(...temp);
+            this.total = temp.total;
           } else {
             this.$Message.error({
               content: res.data.message
@@ -851,8 +867,16 @@ export default {
           );
           if (res.data.code === 0) {
             this.vehicleModelData.length = 0;
-            this.vehicleModelData.push(...res.data.data.data);
-            this.total = res.data.data.total;
+            let temp = res.data.data.data;
+            for (let i = 0; i < temp.length; i++) {
+              if (this.vehicleModelData1.findIndex(item => item.id === temp[i].id) > -1) {
+                temp[i] = Object.assign({}, temp[i], {_checked: true, _disabled: true});
+              } else {
+                temp[i] = Object.assign({}, temp[i], {_checked: false, _disabled: false});
+              }
+            }
+            this.vehicleModelData.push(...temp);
+            this.total = temp.total;
           } else {
             this.$Message.error({
               content: res.data.message
@@ -924,8 +948,16 @@ export default {
           );
           if (res.data.code === 0) {
             this.vehicleModelData.length = 0;
-            this.vehicleModelData.push(...res.data.data.data);
-            this.total = res.data.data.total;
+            let temp = res.data.data.data;
+            for (let i = 0; i < temp.length; i++) {
+              if (this.vehicleModelData1.findIndex(item => item.id === temp[i].id) > -1) {
+                temp[i] = Object.assign({}, temp[i], {_checked: true, _disabled: true});
+              } else {
+                temp[i] = Object.assign({}, temp[i], {_checked: false, _disabled: false});
+              }
+            }
+            this.vehicleModelData.push(...temp);
+            this.total = temp.total;
           } else {
             this.$Message.error({
               content: res.data.message
